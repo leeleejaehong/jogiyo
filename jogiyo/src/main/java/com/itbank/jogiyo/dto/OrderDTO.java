@@ -36,6 +36,7 @@ public class OrderDTO {
 	public void setId(String id) {
 		this.id = id;
 	}
+
 	public String getIndate() {
 		return indate;
 	}

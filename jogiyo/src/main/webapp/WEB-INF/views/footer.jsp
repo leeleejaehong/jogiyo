@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-	    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/test.css">
+ 	    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/test.css"> 
 <div class="footer"
 	ng-show="is_yogiyo &amp;&amp; !session_storage.oauth_next">
 	<div class="footer-menu">
@@ -33,7 +33,7 @@
 	</div>
 	<div class="company-wrap">
 		<div class="company-logo">
-			<a href="" ng-click="click_home()">요기요</a>
+			<a href="" ng-click="click_home()">요기요1</a>
 		</div>
 		<div class="company-info">
 			<p>
