@@ -33,7 +33,7 @@
 	</div>
 	<div class="company-wrap">
 		<div class="company-logo">
-			<a href="" ng-click="click_home()">요기요</a>
+			<a href="" ng-click="click_home()">요기요1</a>
 		</div>
 		<div class="company-info">
 			<p>
