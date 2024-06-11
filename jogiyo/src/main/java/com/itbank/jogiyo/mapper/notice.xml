@@ -9,5 +9,7 @@
  	<select id="listNotice" resultType="noticeDTO">
  		select * from jnoti
  	</select>
- 
+ 	<select id="viewNotice" resultType="noticeDTO" parameterType="int">
+ 		select * from jnoti where notiid = #{notiid}
+ 	</select>
  </mapper>

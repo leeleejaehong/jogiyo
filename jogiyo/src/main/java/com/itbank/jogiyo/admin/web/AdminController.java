@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -126,5 +127,12 @@ public class AdminController {
 	public String deleteUser(@RequestParam("id") String id) {
 		adminmapper.deleteUser(id);
 		return "OK";
+	}
+	
+	@RequestMapping(value="admin/viewNotice.do", method = RequestMethod.POST)
+	public String viewNotice(HttpServletRequest req, @RequestParam("notiid") int notiid) {
+		NoticeDTO dto = adminmapper.viewNotice(notiid);
+		req.setAttribute("dto", dto);
+		return "admin/viewNotice";
 	}
 }

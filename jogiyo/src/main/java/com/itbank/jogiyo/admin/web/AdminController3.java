@@ -25,7 +25,7 @@ public class AdminController3 {
 	@RequestMapping(value = "admin/insertNotice.do", method = RequestMethod.POST)
 	public String insertNotice(HttpServletRequest req, NoticeDTO dto) {
 		int res = adminmapper.insertNotice(dto);
-		return "redirect:" + req.getContextPath() + "/index.do";
+		return "redirect:/admin/listNotice.do";
 	}
 	
 
