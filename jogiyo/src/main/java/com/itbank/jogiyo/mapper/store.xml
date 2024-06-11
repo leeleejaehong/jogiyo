@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ <mapper namespace="store">
+ 	<select id="listStore" resultType="storeDTO">
+ 		select * from jstore
+ 	</select>
+ 	<insert id="addStore" parameterType="storeDTO">
+		insert into jstore values(jstore_seq.nextval,#{storename},#{cateid},#{storecontent},
+		#{id},#{lat},#{har},#{img},#{couponid})
+</insert>
+	<select id="getStore" parameterType="string" resultType="storeDTO">
+	select * from jstore where id = #{id}  <!--내 가게리스트 보기 -->
+	</select>
+	
+ </mapper>

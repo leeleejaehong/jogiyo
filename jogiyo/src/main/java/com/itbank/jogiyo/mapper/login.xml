@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="login">
+	<select id="listAccount" resultType="loginDTO">
+		select * from jaccount
+	</select>
+	
+	<select id="isPassword" parameterType="loginDTO" resultType="boolean">
+		select case when count(*) = 1 then 1 else 0 end as result from jaccount where id = #{id} and passwd = #{passwd}
+	</select>
+	
+	<select id="getAccount" parameterType="string" resultType="loginDTO">
+		select * from jaccount where id = #{id}
+	</select>
+	<select id="listAccountGrade" resultType="loginDTO" parameterType="string">
+		select * from jaccount where grade = #{grade}
+	</select>
+	<delete id="deleteUser" parameterType="string">
+		delete from jaccount where id = #{id}
+	</delete>
+</mapper>

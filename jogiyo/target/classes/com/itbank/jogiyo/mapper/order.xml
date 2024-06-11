@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="order">
+	<select id="dateOrder" parameterType="java.util.Map" resultType="orderDTO">
+		SELECT storeid, SUM(totprice) AS totprice, STORENAME, COUNT(*) AS CNT
+		FROM (
+		    SELECT totprice, j2.STORENAME, j1.storeid 
+		    FROM jorder j1
+		    JOIN JSTORE j2 ON j1.STOREID = j2.STOREID
+		    WHERE indate >= TO_DATE(#{cal1}, 'YYYY-MM-DD') 
+		    AND indate &lt; TO_DATE(#{cal2}, 'YYYY-MM-DD')+1
+		) subquery
+		GROUP BY storeid, STORENAME
+	</select>
+</mapper>
