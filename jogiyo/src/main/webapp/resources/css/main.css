@@ -1,14 +1,15 @@
 @charset "UTF-8";
 
 body {
-	font-family: "Gothic A1", sans-serif;
-	margin: 0;
-	padding: 0;
-	box-sizing: border-box;
-	letter-spacing: -1px;
+   font-family: "Gothic A1", sans-serif;
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+   letter-spacing: -1px;
 }
 
 .header {
+   font-family: "Gothic A1", sans-serif;
     background-color: #fa0050;
     color: white;
     padding: 20px 0;
@@ -19,6 +20,7 @@ body {
     text-decoration-line: none;
     display: flex;
     justify-content: space-between; /* 요소들을 양쪽 끝으로 정렬 */
+    align-items: center; /*요소들을 수직 가운데로 정렬*/
 }
 
 .menu {
@@ -34,7 +36,7 @@ body {
 }
 
 .menu a {
-    color: white;
+    color: black;
     text-decoration: none;
 }
 
@@ -42,224 +44,282 @@ body {
     margin-right: 20px; /* 로그인 버튼과 다른 요소 사이의 간격 조정 */
 }
 .menu>li>a {
-	display: block;
-	padding: 20px;
-	font-size: 20px;
-	font-weight: 800;
-	text-decoration: none;
-	color: white;
+   display: block;
+   padding: 20px;
+   font-size: 20px;
+   font-weight: 800;
+   text-decoration: none;
+   color: white;
+   transition: color 0.3s; /*마우스 호버 시 색깔 변화 효과*/
+}
+.menu>li>a:hover {
+   color: #e84343; /*마우스 호버 시 색깔 변경*/
 }
 
 .submenu {
-	display: none;
-	position: absolute;
-	top: 100%; 
-	background-color: #fa0050;
-	padding: 10px 0;
-	margin: 0;
-	list-style-type: none;
-	width: 200px;
-	left: 0; /* 하위 메뉴를 왼쪽에 정렬 */
+   display: none;
+   position: absolute;
+   top: 100%; 
+   background-color: white;
+   padding: 10px 0;
+   margin: 0;
+   list-style-type: none;
+   width: 200px;
+   left: 0; /* 하위 메뉴를 왼쪽에 정렬 */
+   border: 1px solid #fa0050;
 }
 
 .submenu>li {
-	display: block;
+   display: block;
+}
+.submenu {
+    display: none;
+    position: absolute;
+    top: 100%; 
+    background-color: #fa0050; /* 빨간색 배경 */
+    padding: 10px 0;
+    margin: 0;
+    list-style-type: none;
+    width: 200px;
+    left: 0;
+    border: 1px solid #fff;
+    border-radius: 10px; /* 테두리를 동그랗게 만들기 */
+}
+
+.submenu > li {
+    display: block;
+}
+
+.menu > li:hover .submenu {
+    display: block;
+}
+
+.submenu a {
+    display: block;
+    padding: 10px;
+    color: white; /* 흰색 텍스트 */
+    text-decoration: none;
+    transition: background-color 0.3s;
+}
+
+.submenu a:hover {
+    background-color: white; /* 호버 시 흰색 배경 */
+    color: #fa0050; /* 호버 시 빨간색 텍스트 */
 }
 
 .menu>li:hover .submenu {
-	display: block;
+   display: block;
 }
 
 .container {
-	text-align: center;
-	padding: 20px;
+   text-align: center;
+   padding: 20px;
 }
 
 .search-section {
-	width: 100%;
-	background-image: url('/images/bg.jpg');
-	background-size: cover;
-	background-position: center;
-	padding: 40px 0;
+   width: 100%;
+   background-image: url('/images/bg.jpg');
+   background-size: cover;
+   background-position: center;
+   padding: 40px 0;
 }
 
 .search-section h1, .search-section p {
-	color: black;
-	margin: 0;
+   color: black;
+   margin: 0;
 }
 
 .search-bar {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin: 20px 0;
-	position: relative;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin: 20px 0;
+   position: relative;
 }
 
 .search-bar input {
-	width: 300px;
-	padding: 10px;
-	font-size: 16px;
-	padding-right: 30px;
-	border: 1px solid #ddd;
-	border-radius: 5px;
+   width: 300px;
+   padding: 10px;
+   font-size: 16px;
+   padding-right: 30px;
+   border: 1px solid #ddd;
+   border-radius: 5px;
 }
 
 .search-bar button {
-	padding: 10px;
-	width: 70px;
-	background-color: #ffffff;
-	height: 40px;
-	color: #fa0050;
-	border: none;
-	cursor: pointer;
-	font-weight: 800;
-	margin-left: 10px;
-	transition: background-color 0.3s;
-	border-radius: 5px;
+   padding: 10px;
+   width: 70px;
+   background-color: #ffffff;
+   height: 40px;
+   color: #fa0050;
+   border: none;
+   cursor: pointer;
+   font-weight: 800;
+   margin-left: 10px;
+   transition: background-color 0.3s;
+   border-radius: 5px;
 }
 
 .search-bar .x-button {
-	position: absolute;
-	left: 59%;
-	top: 50%;
-	transform: translateY(-50%);
-	background: none;
-	border: none;
-	cursor: pointer;
-	font-size: 16px;
-	font-weight: bold;
-	color: #fa0050;
+   position: absolute;
+   left: 59%;
+   top: 50%;
+   transform: translateY(-50%);
+   background: none;
+   border: none;
+   cursor: pointer;
+   font-size: 16px;
+   font-weight: bold;
+   color: #fa0050;
 }
 
 .search-bar button.location-btn {
-	padding: 10px;
-	background-color: #ffffff;
-	color: #ffffff;
-	width: 40px;
-	border: none;
-	cursor: pointer;
-	font-weight: 800;
-	margin-right: 10px;
-	display: flex;
-	align-items: center;
-	border-radius: 5px;
+   padding: 10px;
+   background-color: #ffffff;
+   color: #ffffff;
+   width: 40px;
+   border: none;
+   cursor: pointer;
+   font-weight: 800;
+   margin-right: 10px;
+   display: flex;
+   align-items: center;
+   border-radius: 5px;
 }
 
 .location-btn img {
-	width: 20px;
+   width: 20px;
 }
 
 .dropdown {
-	display: none;
-	position: absolute;
-	top: 100%;
-	left: 49%;
-	transform: translateX(-50%);
-	width: calc(240px + 50px + 50px);
-	background-color: white;
-	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-	z-index: 1;
-	border: 1px solid #ddd;
-	margin-top: 10px;
+   display: none;
+   position: absolute;
+   top: 100%;
+   left: 49%;
+   transform: translateX(-50%);
+   width: calc(240px + 50px + 50px);
+   background-color: white;
+   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+   z-index: 1;
+   border: 1px solid #ddd;
+   margin-top: 10px;
 }
 
 .dropdown a {
-	padding: 12px 16px;
-	display: block;
-	text-decoration: none;
-	color: black;
-	font-size: 14px;
+   padding: 12px 16px;
+   display: block;
+   text-decoration: none;
+   color: black;
+   font-size: 14px;
 }
 
 .dropdown a:hover {
-	background-color: #ddd;
+   background-color: #ddd;
 }
 
 .search-bar:focus-within .dropdown {
-	display: block;
+   display: block;
 }
 
 .categories {
-	display: grid;
-	grid-template-columns: repeat(3, 1fr);
-	gap: 15px;
-	padding: 20px;
-	max-width: 1000px;
-	margin: 0 auto;
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+   gap: 15px;
+   padding: 20px;
+   max-width: 1000px;
+   margin: 0 auto;
 }
 
 .category {
-	border: 1px solid #ddd;
-	padding: 20px;
-	text-align: center;
-	text-decoration: none;
-	color: black;
-	transition: transform 0.3s, box-shadow 0.3s;
-	border-radius: 10px;
+   border: 1px solid #ddd;
+   padding: 20px;
+   text-align: center;
+   text-decoration: none;
+   color: black;
+   transition: transform 0.3s, box-shadow 0.3s;
+   border-radius: 10px;
+   position: relative;
+}
+.category-content {
+    position: relative; /* 자식 요소를 absolute로 설정하기 위한 relative 위치 설정 */
+}
+.category-content img {
+    width: 100%; /* 이미지를 100%의 너비로 설정 */
+    height: 100%; /* 이미지를 100%의 높이로 설정하여 비율을 유지 */
+    object-fit: cover; /* 이미지를 잘리지 않고 화면에 맞게 조절 */
+    object-position: center; /* 이미지를 가운데 정렬 */
 }
 
 .category p {
-	font-size: 16px;
-	font-weight: 800;
-	margin-bottom: 0;
+   font-size: 16px;
+   font-weight: 800;
+   margin-bottom: 0;
 }
 
 .category img {
-	width: 100%;
-	height: auto;
-	object-fit: cover;
-	transition: opacity 0.3s;
-	border-radius: 10px;
-	overflow: hidden;
-	position: relative;
+   width: 100%;
+   height: 250px;
+   object-fit: cover;
+   transition: opacity 0.3s;
+   border-radius: 10px;
+   overflow: hidden;
+   position: relative;
 }
-
+.category p {
+    position: absolute; /* 텍스트를 이미지 상단에 배치하기 위한 absolute 위치 설정 */
+    top: 10px; /* 이미지 상단과의 간격 조절 */
+    left: 15%; /* 이미지 가운데 정렬을 위한 위치 설정 */
+    transform: translateX(-50%); /* 가운데 정렬을 위한 transform 설정 */
+    font-size: 16px;
+    font-weight: 800;
+    margin: 0;
+    padding: 5px 10px; /* 텍스트 주변에 패딩 추가 */
+    border-radius: 5px; /* 텍스트 주변을 둥글게 만듦 */
+}
 .category:hover {
-	transform: translateY(-10px);
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   transform: translateY(-10px);
+   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .category:hover img {
-	opacity: 0.8;
+   opacity: 0.8;
 }
 
 
 .login-btn {
-	position: absolute;
-	right: 20px;
-	top: 50%;
-	transform: translateY(-50%);
-	background-color: rgb(255, 255, 255);
-	color: #fa0050;
-	padding: 10px 20px;
-	border: none;
-	cursor: pointer;
-	transition: background-color 0.3s;
+   position: absolute;
+   right: 20px;
+   top: 50%;
+   transform: translateY(-50%);
+   background-color: rgb(255, 255, 255);
+   color: #fa0050;
+   padding: 10px 20px;
+   border: none;
+   cursor: pointer;
+   transition: background-color 0.3s;
 }
 
 .login-btn:hover {
-	background-color: rgb(255, 255, 255);
-	color: #e84343;
+   background-color: rgb(255, 255, 255);
+   color: #e84343;
 }
 
-.category.all {
-	background-color: #fa0050;
-	color: white;
-	display: flex;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-weight: 800;
-	font-size: 20px;
+.categoryall {
+   background-color: #fa0050;
+   color: white;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   font-weight: 800;
+   font-size: 20px;
 }
 
-.category.all p {
-	font-weight: 800;
-	font-size: 20px;
-	margin: 0;
+.categoryall p {
+   font-weight: 800;
+   font-size: 20px;
+   margin: 0;
 }
 
-.category.all:hover img {
-	opacity: 1;
+.categoryall:hover img {
+   opacity: 1;
 }

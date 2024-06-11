@@ -20,4 +20,7 @@
 	<delete id="deleteUser" parameterType="string">
 		delete from jaccount where id = #{id}
 	</delete>
+	<insert id="test">
+		insert into jaccount values (jbasket_seq.nextval, '1234', '이름', '메일1', '010', '1')
+	</insert>
 </mapper>
