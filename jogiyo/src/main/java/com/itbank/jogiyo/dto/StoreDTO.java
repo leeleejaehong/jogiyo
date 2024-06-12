@@ -13,6 +13,10 @@ public class StoreDTO {
 	private double har;
 	private String img;
 	private int couponid;
+	private String postcode;
+	private String address;
+	private String detailaddress;
+	private String extraaddress;
 	public int getStoreid() {
 		return storeid;
 	}
@@ -72,6 +76,30 @@ public class StoreDTO {
 	}
 	public void setFile(MultipartFile file) {
 		this.file = file;
+	}
+	public String getPostcode() {
+		return postcode;
+	}
+	public void setPostcode(String postcode) {
+		this.postcode = postcode;
+	}
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
+	public String getDetailaddress() {
+		return detailaddress;
+	}
+	public void setDetailaddress(String detailaddress) {
+		this.detailaddress = detailaddress;
+	}
+	public String getExtraaddress() {
+		return extraaddress;
+	}
+	public void setExtraaddress(String extraaddress) {
+		this.extraaddress = extraaddress;
 	}
 
 	

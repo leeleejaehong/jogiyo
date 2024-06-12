@@ -23,4 +23,11 @@
 	<insert id="test">
 		insert into jaccount values (jbasket_seq.nextval, '1234', '이름', '메일1', '010', '1')
 	</insert>
+	<insert id="join_membership_ok" parameterType="loginDTO">
+		insert into jaccount values(#{id}, #{passwd}, #{name}, #{mail}, #{phone}, 3) 
+	</insert>
+	
+	<select id="checkId" resultType="int" parameterType="string">
+		select count(*) from jaccount where id=#{id}
+	</select>
 </mapper>

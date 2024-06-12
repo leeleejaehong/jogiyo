@@ -11,26 +11,26 @@
 		<div align="center">
 		<table>
 		<tr>
-    	  <th><a href="/store/selectStore.do">주문목록</a> </th>
-    	  <th><a href="/store/reviewStore.do">/리뷰관리</a></th> 
-    	  <th><a href="/store/storeMenu.do">/메뉴관리</a> </th>
-    	  <th><a href="/store/storeSales.do">/매출관리</a></th>
+    	  <th><a href="/store/selectStore.do?storeid=${storeid}">주문목록</a> </th>
+    	  <th><a href="/store/reviewStore.do?storeid=${storeid}">/리뷰관리</a></th> 
+    	  <th><a href="/store/storeMenu.do?storeid=${storeid}">/메뉴관리</a> </th>
+    	  <th><a href="/store/storeSales.do?storeid=${storeid}">/매출관리</a></th>
     	   </tr>	
     	   <tr>
     	  <td colspan = "4">
-    	
-    	  </td><tr>
-    	  <td colspan = "4">
-    	
-    	  </td><tr>
-    	  <td colspan = "4">
-    	 
-    	  </td>   
+    	storeid=${storeid}
+    	  </td></tr>
+    	  </table>
+    	  <h2>주문목록</h2>
+    	  <table width="80%">
     	  <tr>
-    	  <td colspan = "4">
-    	  여기에는 주문목록 나오게하기
-    	  </td>
-    	 </tr>
+    	  <th>고객id(phone/주소)</th>
+    	  <th>주문일자</th>
+    	  <th>주문메뉴</th>
+    	  <th>수량</th>
+    	  <th>총 가격</th>
+    	  <th>주문받기/주문취소</th>
+    	  </tr>
     	  </table>
     	</div>
 </body>

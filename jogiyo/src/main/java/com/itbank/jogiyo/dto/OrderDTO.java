@@ -1,5 +1,7 @@
 package com.itbank.jogiyo.dto;
 
+import java.sql.Date;
+
 public class OrderDTO {
 	private int orderid;
 	private String id;
@@ -9,20 +11,27 @@ public class OrderDTO {
 	private int storeid;
 	private int cateid;
 	private int menuid;
-	private String storename;
 	private int cnt;
+	private String storename;
+	private String menuname;
 	
-	public int getCnt() {
-		return cnt;
+	public String getMenuname() {
+		return menuname;
 	}
-	public void setCnt(int cnt) {
-		this.cnt = cnt;
+	public void setMenuname(String menuname) {
+		this.menuname = menuname;
 	}
 	public String getStorename() {
 		return storename;
 	}
 	public void setStorename(String storename) {
 		this.storename = storename;
+	}
+	public int getCnt() {
+		return cnt;
+	}
+	public void setCnt(int cnt) {
+		this.cnt = cnt;
 	}
 	public int getOrderid() {
 		return orderid;
@@ -36,6 +45,7 @@ public class OrderDTO {
 	public void setId(String id) {
 		this.id = id;
 	}
+	
 
 	public String getIndate() {
 		return indate;

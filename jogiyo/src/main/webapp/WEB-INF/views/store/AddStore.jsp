@@ -5,18 +5,40 @@
 <meta charset="UTF-8">
 <jsp:include page="../header.jsp"/>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script>
+	let ck=false;
+	function check(){
+		const jfrm = document.f;
+		let length= jfrm.length -1;
+		for(let i=0; i<length; i++){
+			if(jfrm[i].value == "" || jfrm[i].value ==null){
+				alert(jfrm[i].title + "를 입력해주세요.");
+				jfrm[i].focus();
+				return false;
+			}
+		}
+		return true;
+	}
+	</script>
+
+
+
+
+
 
 	<div align="center">
 	<table>
-	<form name="f" action="/store/AddStore.do" method="POST" enctype = "multipart/form-data">
+	<form name="f" action="/store/AddStore.do" method="POST" enctype = "multipart/form-data"
+		onsubmit ="return check()">
 	<tr>
 	<th>가게이름 :</th> 
-	<td><input type="text" name="storename" ></td>
+	<td><input type="text" name="storename" title="가게이름"></td>
 	</tr>
 	<tr>
 	<th>카테고리(int)</th>
 	<td>
-	<select name="cateid">
+	<select name="cateid" title="카테고리">
 	<option value="1">한식</option>
 	<option value="2">양식</option>
 	<option value="3">일식</option>
@@ -32,7 +54,7 @@
 	<th>
 	가게설명 :</th> 
 	<td>
-	<textarea rows="5" cols="30" name="storecontent"></textarea>
+	<textarea rows="5" cols="30" name="storecontent" title="가게설명"></textarea>
 	</td>
 	<tr>
 	<th>id</th>
@@ -43,11 +65,11 @@
 	<th>가게위치 (나중에 api로작업): </th>
 		<!-- db에 가게상세주소도 저장? -->
 	<td>
-<input type="text" id="postcode" placeholder="우편번호">
+<input type="text" name="postcode" id="postcode" placeholder="우편번호" title="우편번호">
 <input type="button" onclick="execDaumPostcode()" value="우편번호 찾기"><br>
-<input type="text" id="address"  placeholder="주소"><br>
-<input type="text" id="detailAddress" placeholder="상세주소">
-<input type="text" id="extraAddress" placeholder="참고항목">
+<input type="text" name="address" id="address"  placeholder="주소" title="주소"><br>
+<input type="text" name="detailaddress" id="detailAddress" placeholder="상세주소" title="상세주소">
+<input type="text" name ="extraaddress" id="extraAddress" placeholder="참고항목" title="참고항목">
 
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script>
@@ -91,7 +113,7 @@
                 }
 
                 // 우편번호와 주소 정보를 해당 필드에 넣는다.
-                document.getElementById('postcode').value = data.zonecode;
+                document.getElementById("postcode").value = data.zonecode;
                 document.getElementById("address").value = addr;
                 // 커서를 상세주소 필드로 이동한다.
                 document.getElementById("detailAddress").focus();
@@ -106,12 +128,12 @@
 	<tr>
 	<th>가게이미지(필수) : </th>
 	<td>
-	<input type="file" name="file">
+	<input type="file" name="file" title="가게사진">
 	</td>
 	</tr>
 	<tr>
 	<th>쿠폰(없으면 0)</th>
-	<td><input type ="text" name="couponid"></td>
+	<td><input type ="text" name="couponid" title="쿠폰"></td>
 	</tr>
 	<tr>
 	<td colspan="2" align="center">

@@ -9,20 +9,7 @@
 
 <meta charset="UTF-8">
  
- <script type="text/javascript" contentType="text/html;">
-	function goStore() {
-		
-		if (confirm("해당 가게페이지로 이동하시겠습니까?") == true){    //확인
-
-		    location.href ="/store/selectStore.do"
-
-		 }else{   //취소
-
-		     return false;
-
-		 }
-	} 
- </script>
+ 
 	<div align="center">
 	<table>
 	<tr>
@@ -36,13 +23,20 @@
 	<c:forEach var="dto" items="${getStore}">
 	<tr>
 	
-	<td><img src="${path}/${dto.img}" width="80" height="80"></td>
+	<td><img src="${pageContext.request.contextPath}/resources/img/${dto.img}" width="80" height="80"></td>
 	<td>${dto.storename}</td>
 	<td>${dto.cateid}</td>
-	<td>${dto.lat}+${dto.har}</td>
+	<td>${dto.address}<br>
+	${dto.detailaddress}
+	${dto.extraaddress}</td>
 	<td>${dto.id}</td>
-	<td><input type="button" value="이동하기" onclick="goStore()"></td>
 	
+	<form name ="f"  method="post"  action="/store/selectStore.do" onsubmit="return confirm('해당가게로 이동하시겠습니까?');">
+
+	<input type="hidden" name ="storename" value="${dto.storename}">
+	<input type="hidden" name = "storeid" value="${dto.storeid}">
+	<td><input type="submit" value="이동하기"></td>
+	</form>
 	</tr>
 	</c:forEach>
 	

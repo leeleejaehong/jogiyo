@@ -3,11 +3,9 @@
     
 <jsp:include page="../header.jsp"/>
 <div align="center">
-	<form action="/" method="post" enctype="multipart/form-data">
+	<form action="/customer/update.do" method="post" >
 	 	 <h1>My Page</h1>
     
-    
-    <!-- 사용자 정보 수정 폼 -->
          <label for="name">ID:</label>
         <input type="text" id="id" name="id" value="${customer.id}" readonly="readonly"><br>
         
@@ -24,8 +22,11 @@
         <input type="text" id="phone" name="phone" value="${customer.phone}"><br>
         
         <button type="submit">Update</button>
-    
-	 	
+        
+	</form>
+		
+	<form action="/customer/secession.do" method="post">
+		<button type="submit">회원탈퇴</button>
 	</form>
 </div>
 <jsp:include page="../footer.jsp"/>

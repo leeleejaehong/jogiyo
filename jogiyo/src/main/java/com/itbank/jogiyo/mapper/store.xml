@@ -6,12 +6,70 @@
  	<select id="listStore" resultType="storeDTO">
  		select * from jstore
  	</select>
+ 	
  	<insert id="addStore" parameterType="storeDTO">
 		insert into jstore values(jstore_seq.nextval,#{storename},#{cateid},#{storecontent},
-		#{id},#{lat},#{har},#{img},#{couponid})
-</insert>
+		#{id},#{img},#{couponid},#{address},#{detailaddress},#{extraaddress},#{postcode})
+	</insert>
+	
 	<select id="getStore" parameterType="string" resultType="storeDTO">
 	select * from jstore where id = #{id}  <!--내 가게리스트 보기 -->
 	</select>
+	
+	<select id="getOwner" parameterType="string" resultType="LoginDTO">
+	select *from jaccount where id = #{id}
+	</select>
+	
+	<update id="editOwner" parameterType="LoginDTO">
+	update jaccount set passwd=#{passwd}, name=#{name}, mail=#{mail}, phone=#{phone}, grade=#{grade} where id=#{id}	
+	</update>
+	
+	<delete id="deleteOwner" parameterType="string">
+	delete from jaccount where id = #{id}
+	</delete>
+	
+	<select id ="findStore" parameterType="string" resultType="storeDTO">
+	select * from jstore where storename= #{storename}
+	</select>
+	
+	<update id="updateStore" parameterType="storeDTO">
+	update jstore set storename=#{storename},cateid=#{cateid},storecontent=#{storecontent},img= #{img},postcode=#{postcode},address=#{address},detailaddress=#{detailaddress},extraaddress=#{extraaddress} where storeid=#{storeid} 
+	</update>
+	
+	<delete id="deleteStore" parameterType="string">
+	delete from jstore where storename=#{storename}
+	</delete>
+	
+	<select id="findcateid" parameterType="int" resultType="int">
+	select cateid from jstore where storeid=#{storeid}
+	</select>
+	
+	<insert id="addMenu" parameterType="menuDTO">
+	insert into jmenu values(jmenu_seq.nextval,#{storeid},#{jscateid},#{menuname},#{menucontent},#{img},#{price})
+	</insert>
+	
+	<select id="listMenu" parameterType="int" resultType="menuDTO">
+	select * from jmenu where storeid= #{storeid}
+	</select>
+	
+	<delete id="deleteMenu" parameterType="int" >
+	delete from jmenu where menuid=#{menuid}
+	</delete>
+	
+	<select id ="getMenu" parameterType="int" resultType="menuDTO">
+	select *from jmenu where menuid=#{menuid}
+	</select>
+	
+	<update id="editMenu" parameterType="menuDTO">
+	update jmenu 
+	<set>
+	<if test ="menuname!=null"> menuname=#{menuname}, </if>
+	<if test ="menucontent!=null">menucontent=#{menucontent},</if> 
+	<if test ="img!=null"> img=#{img},</if>
+	<if test ="price!=null"> price=#{price} </if>
+	</set>
+	where menuid=#{menuid}
+	</update>
+	
 	
  </mapper>

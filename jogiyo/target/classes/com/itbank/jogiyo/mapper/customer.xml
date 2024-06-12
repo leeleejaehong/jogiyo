@@ -3,11 +3,39 @@
  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  <mapper namespace="customer">
- 
  	<select id="cMypageList" parameterType="string" resultType="LoginDTO">
  		 SELECT id, passwd, name, mail, phone FROM jaccount WHERE id = #{id}
  	</select>
  	
+ 	<update id="updateCustomer" parameterType="LoginDTO">
+    	update jaccount set passwd = #{passwd}, mail = #{mail}, phone = #{phone} where id =#{id}
+	</update>
+ 	
+	<delete id="secessionCustomer" parameterType="String">
+		 delete from jaccount where id= #{id}
+	</delete>
 	
+	<select id ="pastOrderList" parameterType="String" resultType="OrderDTO">
+		SELECT A.id, TO_CHAR(A.indate, 'YYYY-MM-DD') AS indate, A.totprice, B.storename, j.MENUNAME 
+		FROM jorder A
+		JOIN jstore B ON A.storeid = B.storeid
+		JOIN JMENU j ON a.MENUID  = j.MENUID 
+		WHERE A.id = #{id}
+	</select>
+	
+	<select id ="customerCoupon" parameterType="String" resultType="CouponDTO">
+		select * from jcoupon A join jusercoupon U on A.couponid = U.couponid where U.id=#{id}
+	</select>
+	
+	<select id="viewStore" parameterType="int" resultType="storeDTO">
+		select * from jstore where storeid = #{storeid}
+	</select>
+	<select id="viewStoreInfo" resultType="viewstoreDTO" parameterType="int">
+		SELECT jm.MENUID, jm.storeid, jm.jscateid, 
+       jm.menuname, jm.menucontent, jm.img, jm.price, js.JSTORENAME,
+       (SELECT COUNT(*) FROM jmenu WHERE STOREID = jm.STOREID AND JSCATEID = jm.JSCATEID) AS CNT
+		FROM jmenu jm
+		JOIN JSTORECATE js ON jm.STOREID = js.STOREID AND jm.JSCATEID = js.JSCATEID AND jm.STOREID = #{storeid}
+		ORDER BY jscateid, menuid
+	</select>
  </mapper>
- 
