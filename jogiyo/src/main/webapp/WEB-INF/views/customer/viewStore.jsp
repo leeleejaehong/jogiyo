@@ -117,18 +117,18 @@
 
 	<div id="Menu" class="tabcontent">
 		<h3>메뉴 탭</h3>
-		<c:forEach items="${groupedData}" var="entry">
+		<c:forEach items="${menuMap}" var="map">
 			<div class="dropdown">
-				<button class="dropbtn active" onclick="toggleDropdown(this)">${entry.key}</button>
+				<button class="dropbtn active" onclick="toggleDropdown(this)">${map.key}</button>
 				<div class="dropdown-content">
-					<c:forEach items="${entry.value}" var="data">
+					<c:forEach items="${map.value}" var="menu">
 						<div class="menu-item">
-							<img src="${data.img}" alt="${data.menuname}">
+							<img src="${menu.img}" alt="${menu.menuname}">
 							<div class="menu-item-content">
-								<div class="menu-item-title">${data.menuname}</div>
-								<div class="menu-item-description">${data.menucontent}</div>
+								<div class="menu-item-title">${menu.menuname}</div>
+								<div class="menu-item-description">${menu.menucontent}</div>
 							</div>
-							<div class="menu-item-price">${data.price}원</div>
+							<div class="menu-item-price">${menu.price}원</div>
 						</div>
 					</c:forEach>
 				</div>

@@ -92,16 +92,16 @@ public class CustomerController {
 	@RequestMapping(value="/customer/viewStore.do", method = RequestMethod.POST)
 	public String viewStore(HttpServletRequest req, @RequestParam("storeid") int storeid) {
 		StoreDTO dto = customerMapper.viewStore(storeid);
-		List<ViewStoreDTO> dataList = customerMapper.viewStoreInfo(storeid);
-		Map<String, List<ViewStoreDTO>> groupedData = new HashMap<>();
-	    for (ViewStoreDTO data : dataList) {
-	        if (!groupedData.containsKey(data.getJstorename())) {
-	        	groupedData.put(data.getJstorename(), new ArrayList<>());
+		List<ViewStoreDTO> menuList = customerMapper.viewStoreInfo(storeid);
+		Map<String, List<ViewStoreDTO>> menuMap = new HashMap<>();
+	    for (ViewStoreDTO menu : menuList) {
+	        if (!menuMap.containsKey(menu.getJstorename())) {
+	        	menuMap.put(menu.getJstorename(), new ArrayList<>());
 	        }
-	        groupedData.get(data.getJstorename()).add(data);
+	        menuMap.get(menu.getJstorename()).add(menu);
 	    }
 		req.setAttribute("store", dto);
-		req.setAttribute("groupedData", groupedData);
+		req.setAttribute("menuMap", menuMap);
 		return "customer/viewStore";
 	}
 }

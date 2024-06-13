@@ -9,7 +9,7 @@ body {
 }
 
 .header {
-   font-family: "Gothic A1", sans-serif;
+    font-family: "Gothic A1", sans-serif;
     background-color: #fa0050;
     color: white;
     padding: 20px 0;
@@ -22,7 +22,6 @@ body {
     justify-content: space-between; /* 요소들을 양쪽 끝으로 정렬 */
     align-items: center; /*요소들을 수직 가운데로 정렬*/
 }
-
 .menu {
     list-style-type: none;
     margin: 0;

@@ -30,6 +30,7 @@
 	<select id="viewStore" parameterType="int" resultType="storeDTO">
 		select * from jstore where storeid = #{storeid}
 	</select>
+	<!-- 이재홍 작성 -->
 	<select id="viewStoreInfo" resultType="viewstoreDTO" parameterType="int">
 		SELECT jm.MENUID, jm.storeid, jm.jscateid, 
        jm.menuname, jm.menucontent, jm.img, jm.price, js.JSTORENAME,
