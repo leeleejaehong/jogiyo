@@ -126,14 +126,26 @@
 							<img src="${menu.img}" alt="${menu.menuname}">
 							<div class="menu-item-content">
 								<div class="menu-item-title">${menu.menuname}</div>
-								<div class="menu-item-description">${menu.menucontent}</div>
+								<span class='label'> <input type='checkbox'
+									id='dataInput' name='menu' value='${menu.menuid}' />
+									${menu.menuname}
+								</span>
 							</div>
+							<div class="menu-item-description">${menu.menucontent}</div>
 							<div class="menu-item-price">${menu.price}원</div>
 						</div>
 					</c:forEach>
 				</div>
 			</div>
 		</c:forEach>
+		<button onclick='CheckboxOrder()'>주문</button>
+		<div id="result"></div>
+
+		<form id="myForm" action="/customer/basketList.do" method="POST">
+			<input type="hidden" id="sub" name="sub">
+			<input type="hidden" id="sub2" name="sub2" value="${store.storename}">
+			<button onclick='basketList()'>주문서 전송</button>
+		</form>
 	</div>
 
 	<div id="Review" class="tabcontent">
@@ -168,5 +180,29 @@
 
 	// 탭이 로드될 때 첫 번째 탭을 열도록 설정
 	document.getElementById("defaultOpen").click();
+	//체크박스에 선택된 값 출력
+	   function CheckboxOrder()  {
+	        // 선택된 목록 가져오기
+	        const query = 'input[name="menu"]:checked';
+	        const selectedEls = 
+	            document.querySelectorAll(query);
+	        
+	        // 선택된 목록에서 value 찾기
+	        let result = '';
+	        selectedEls.forEach((el) => {
+	          result += el.value + ',';
+	        });
+	        
+	        // 출력
+	        document.getElementById('result').innerText
+	          = result;
+	      }
+
+	 
+	   function basketList() {
+	       var result = document.getElementById('result').innerText; // 가져올 데이터
+	       document.getElementById('sub').value = result;
+	       document.getElementById('myForm').submit();
+	   }
 </script>
 <jsp:include page="../footer.jsp" />

@@ -10,13 +10,20 @@
 	function dateList() {
 		let cal1 = $("#cal1").val();
 		let cal2 = $("#cal2").val();
+		var csrfToken = $("meta[name='_csrf']").attr("content");
+	    var csrfHeader = $("meta[name='_csrf_header']").attr("content");  
 		$.ajax({
 			url : "dateOrder.ajax",
 			type : "post",
 			data : {
 				"cal1" : cal1,
-				"cal2" : cal2
+				"cal2" : cal2,
+				"_csrf": csrfToken
 			},
+			beforeSend: function(xhr) {
+                // AJAX 요청 헤더에 CSRF 토큰 추가
+                xhr.setRequestHeader(csrfHeader, csrfToken);
+            },
 			success : function(res) {
 				$("#logNameChart").remove();
 				$("#logNameChart2").remove();
@@ -128,11 +135,11 @@
 		return color;
 	}
 </script>
-<div align="center" style="background-color: #fa0050; padding: 10px;">
-	<span style="color: white;">시작날짜 : </span><input type="text" name="cal1" id="cal1" style="margin-right: 10px;"> 
-	<span style="color: white;">종료날짜 : </span><input type="text" name="cal2" id="cal2" style="margin-right: 10px;"><br> 
-	<input type="button" name="searchBtn" id="searchBtn" value="검색" onclick="dateList()" style="background-color: white; color: #fa0050; border: none; padding: 5px 10px; margin-top: 10px; margin-right: 10px;"> 
-	<input type="button" name="canBtn" id="canBtn" value="취소" style="background-color: white; color: #fa0050; border: none; padding: 5px 10px; margin-top: 10px;">
+<div align="center" style="background-color: #DDD; padding: 10px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); margin-bottom: 20px;">
+	<span style="color: black;">시작날짜 : </span><input type="text" name="cal1" id="cal1" style="margin-right: 10px;"> 
+	<span style="color: black;">종료날짜 : </span><input type="text" name="cal2" id="cal2" style="margin-right: 10px;"><br> 
+	<input type="button" name="searchBtn" id="searchBtn" value="검색" onclick="dateList()" style="background-color: #fa0050; color: #white; border: none; padding: 5px 10px; margin-top: 10px; border-radius: 5px; margin-right: 10px;"> 
+	<input type="button" name="canBtn" id="canBtn" value="취소" style="background-color: #fa0050; color: #white; border: none; padding: 5px 10px; margin-top: 10px;border-radius: 5px; cursor: pointer;">
 </div>
 <div id="canvasDiv" style="display: flex; justify-content: center;">
 <%--     <canvas id="logNameChart" style="width: 600px; height: 600px;"></canvas>

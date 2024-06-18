@@ -22,6 +22,7 @@
 	</tr>
 	<c:forEach var="dto" items="${getStore}">
 	<form name ="f"  method="post"  action="/store/editStore.do" onsubmit="return confirm('해당가게를 수정하시겠습니까?');">
+	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	<tr>
 	<td><img src="${pageContext.request.contextPath}/resources/img/${dto.img}" width="80" height="80"></td>
 	<td>

@@ -3,6 +3,7 @@
 <!-- 메뉴추가페이지 -->
 <jsp:include page="../header.jsp"/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script>
 	let ck=false;
 	function check(){
@@ -26,13 +27,19 @@
 	<div align="center">
 		<h2>메뉴 추가페이지</h2>
  			<table>
- 			<form name="f" action ="/store/addMenuPro.do" method="post" enctype="multipart/form-data"
- 			 onsubmit="return check()">
+ 			<form name="f" action ="/store/addMenuPro.do" method="post" enctype="multipart/form-data" onsubmit="return check()">
+ 			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
  			<input type ="hidden" name="storeid" value="${storeid}">
  			<tr>
- 				<th> 가게 카테고리:</th>
- 					<td> <input type ="text" name ="jscateid" value="${cateid}" readonly="readonly"></td>
- 			</tr>
+ 			<th>가게 카테고리:</th>
+ 			<td>
+ 			 <select name="jscateid" title="카테고리">
+ 			 <c:forEach var="dto" items="${cateList}">
+ 			 <option value="${dto.jscateid}">${dto.jstorename}</option>
+ 			 </c:forEach>
+ 			 </select>
+ 			 </td>
+ 			 </tr>
 			<tr>
 				<th>메뉴이름:</th>
 					<td> <input type="text" name = "menuname" title="메뉴이름"></td>
@@ -40,7 +47,8 @@
 			<tr>
 				<th>
 				메뉴설명:</th>
-				<td><textarea name="menucontent" title="메뉴설명">메뉴설명을 적어주세요.</textarea></td>
+				<td><textarea name="menucontent" title="메뉴설명" placeholder="메뉴설명을 적어주세요."></textarea></td>
+				
 			</tr>
 			<tr>
 				<th>메뉴가격:</th>

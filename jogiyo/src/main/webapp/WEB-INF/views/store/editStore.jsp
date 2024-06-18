@@ -8,6 +8,7 @@
 	<h2>가게정보</h2>
 	<c:forEach var="dto" items="${findStore}">
 	<form name="f" action="/store/editStorePro.do" method="post" enctype="multipart/form-data" >
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 		<input type="hidden" name="storeid" value="${dto.storeid}">
 		<input type="hidden" name="img" value="${dto.img}">
 		<table>
@@ -112,6 +113,7 @@
 		</table>
 	</form>
 		<form name ="ff" action="/store/deleteStore.do">
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 		<input type="hidden" value="${dto.storename}" name="storename">
 		<input type ="submit" value="회원탈퇴">
 		</form>

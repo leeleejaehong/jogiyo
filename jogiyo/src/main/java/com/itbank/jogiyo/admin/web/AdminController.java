@@ -129,10 +129,5 @@ public class AdminController {
 		return "OK";
 	}
 	
-	@RequestMapping(value="admin/viewNotice.do", method = RequestMethod.POST)
-	public String viewNotice(HttpServletRequest req, @RequestParam("notiid") int notiid) {
-		NoticeDTO dto = adminmapper.viewNotice(notiid);
-		req.setAttribute("dto", dto);
-		return "admin/viewNotice";
-	}
+	
 }

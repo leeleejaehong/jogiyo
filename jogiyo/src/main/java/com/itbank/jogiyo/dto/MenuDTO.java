@@ -9,6 +9,8 @@ public class MenuDTO {
 	private String menucontent;
 	private String img;
 	private int price;
+	private String jstorename;
+	private int mqty;
 	public MultipartFile getFile() {
 		return file;
 	}
@@ -56,6 +58,18 @@ public class MenuDTO {
 	}
 	public void setPrice(int price) {
 		this.price = price;
+	}
+	public String getJstorename() {
+		return jstorename;
+	}
+	public void setJstorename(String jstorename) {
+		this.jstorename = jstorename;
+	}
+	public int getMqty() {
+		return mqty;
+	}
+	public void setMqty(int mqty) {
+		this.mqty = mqty;
 	}
 	
 

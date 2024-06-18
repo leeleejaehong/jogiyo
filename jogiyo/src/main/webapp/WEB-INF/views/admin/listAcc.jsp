@@ -37,10 +37,19 @@ function deleteUser(id) {
 }
 function accList(){
 	let sel = $("select").val();
+	var csrfToken = $("meta[name='_csrf']").attr("content");  // CSRF 토큰 값 가져오기
+    var csrfHeader = $("meta[name='_csrf_header']").attr("content");  // CSRF 헤더 이름 가져오기
 	$.ajax({
 		url : "listAcc.ajax",
 		type : "post",
-		data : {"sel" : sel},
+		data: {
+	            "sel": sel,
+	            "_csrf": csrfToken  // CSRF 토큰을 데이터에 추가
+	        },
+	        beforeSend: function(xhr) {
+                // AJAX 요청 헤더에 CSRF 토큰 추가
+                xhr.setRequestHeader(csrfHeader, csrfToken);
+            },
 		success : function(res) {
 			 // JSON 데이터를 파싱
             var data = JSON.parse(res);
@@ -68,8 +77,8 @@ function accList(){
 </script>
 <div align="center">
 	<select id="select">
-		<option value="2">점주</option>
-		<option value="3">이용객</option>
+		<option value="ROLE_2">점주</option>
+		<option value="ROLE_3">이용객</option>
 	</select>
 	<input type="button" name="searchBtn" id="searchBtn" value="검색" onclick="accList()">
 	<table id="accountTable">

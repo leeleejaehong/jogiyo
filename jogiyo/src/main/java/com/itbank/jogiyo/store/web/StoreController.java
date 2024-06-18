@@ -3,24 +3,35 @@ package com.itbank.jogiyo.store.web;
 import java.awt.Window;
 import java.awt.event.WindowStateListener;
 import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.itbank.jogiyo.dto.JstoreCateDTO;
 import com.itbank.jogiyo.dto.LoginDTO;
 import com.itbank.jogiyo.dto.MenuDTO;
+import com.itbank.jogiyo.dto.OrderDTO;
+import com.itbank.jogiyo.dto.OrderListDTO;
 import com.itbank.jogiyo.dto.StoreDTO;
 import com.itbank.jogiyo.login.service.LoginMapper;
 import com.itbank.jogiyo.store.service.StoreMapper;
@@ -41,6 +52,8 @@ public class StoreController {
 	}
 	@RequestMapping(value="/store/AddStore.do" , method = RequestMethod.GET)
 	public String AddStore(HttpServletRequest req) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		req.setAttribute("jId", authentication.getName());
 		return "store/AddStore";
 		
 	}
@@ -68,9 +81,8 @@ public class StoreController {
 	}
 	@RequestMapping("/store/ListStore.do")
 	public String ListStore(HttpServletRequest req) {	
-		HttpSession session = req.getSession();
-		LoginDTO dto =  (LoginDTO)session.getAttribute("jId") ;		
-		List<StoreDTO> slist = storemapper.getStore(dto.getId());
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		List<StoreDTO> slist = storemapper.getStore(authentication.getName());
 		req.setAttribute("getStore",slist);
 	
 		//이미지처리도해야됨
@@ -92,8 +104,13 @@ public class StoreController {
 		String storeid=req.getParameter("storeid");
 		req.setAttribute("storename", storename);
 		req.setAttribute("storeid", storeid);
+		
+		List<OrderListDTO>orderList=storemapper.orderList(Integer.parseInt(storeid));
+		req.setAttribute("orderList", orderList);
+	
 		return "store/selectStore";
 	}
+	
 	@RequestMapping("/store/reviewStore.do")
 	public String orderList(HttpServletRequest req) {
 		return "store/reviewStore";
@@ -106,24 +123,24 @@ public class StoreController {
 		req.setAttribute("mlist",mlist);
 		return "store/storeMenu";
 	}
+	
 	@RequestMapping("/store/storeSales.do")
 	public String storeSales(HttpServletRequest req) {
+		String storeid= req.getParameter("storeid");
+		req.setAttribute("storeid", storeid);
 		return "store/storeSales";
 	}
 	@RequestMapping("/store/ownerInfo.do")
 	public String ownerInfo(HttpServletRequest req) {
-		HttpSession Session = req.getSession();
-		LoginDTO dto = (LoginDTO)Session.getAttribute("jId");
-		LoginDTO owner = storemapper.getOwner(dto.getId());
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		LoginDTO owner = storemapper.getOwner(authentication.getName());
 		req.setAttribute("owner", owner);
 		return "store/ownerInfo";
 	}
 	@RequestMapping("/store/storeInfo.do")
 	public String storeInfo(HttpServletRequest req) {
-		
-		HttpSession session = req.getSession();
-		LoginDTO dto =  (LoginDTO)session.getAttribute("jId") ;		
-		List<StoreDTO> slist = storemapper.getStore(dto.getId());
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		List<StoreDTO> slist = storemapper.getStore(authentication.getName());
 		req.setAttribute("getStore",slist);
 		
 		//이미지처리도해야됨
@@ -132,9 +149,10 @@ public class StoreController {
 	@RequestMapping("/store/addMenu.do")
 	public String addMenu(HttpServletRequest req) {
 		String storeid=req.getParameter("storeid");
-		int cateid=storemapper.findcateid(Integer.parseInt(storeid));
-		req.setAttribute("cateid", cateid);
+		
 		req.setAttribute("storeid", storeid);
+		List<JstoreCateDTO>cateList = storemapper.getCateList(Integer.parseInt(storeid));
+		req.setAttribute("cateList", cateList);
 		return "store/addMenu";
 	}
 	@RequestMapping(value="/store/addMenuPro.do", method=RequestMethod.POST)
@@ -143,16 +161,18 @@ public class StoreController {
 		uploadFile = new UploadFile();
 		if(uploadFile.uploadFile(dto.getFile())) {
 			dto.setImg(uploadFile.getFullName());
+			dto.setMqty(1);
 		}
 		if(result.hasErrors()) {
 			System.out.println("메뉴dto구성중 오류발생");
 		}
+		System.out.println(dto.getJscateid()+","+ dto.getMenucontent()+","+dto.getStoreid()+","+ dto.getImg()+","+dto.getPrice()+","+dto.getMenuname());
 		int res = storemapper.addMenu(dto);
 		
 		if (res>0) {
 			req.setAttribute("url", "/store/storeMenu.do?storeid="+storeid);
 			req.setAttribute("msg","메뉴추가완료!");
-			req.setAttribute("storeid", storeid);
+			
 		}else {
 			req.setAttribute("url","/store/storeMenu.do");
 			req.setAttribute("msg", "메뉴추가실패!");
@@ -163,7 +183,10 @@ public class StoreController {
 	@RequestMapping("/store/editMenu.do")
 	public String editMenu(HttpServletRequest req) {
 		String menuid=req.getParameter("menuid");
+		String storeid=req.getParameter("storeid");
 		List<MenuDTO>getMenu=storemapper.getMenu(Integer.parseInt(menuid));
+		List<JstoreCateDTO>cateList = storemapper.getCateList(Integer.parseInt(storeid));
+		req.setAttribute("cateList", cateList);
 		req.setAttribute("getMenu", getMenu);
 		return "store/editMenu";
 	}
@@ -277,13 +300,11 @@ public class StoreController {
 	}
 	@RequestMapping("/store/deleteOwner.do")
 	public ModelAndView deleteOwner(HttpServletRequest req) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		ModelAndView mav = new ModelAndView();
-		HttpSession session = req.getSession();
-		LoginDTO dto =  (LoginDTO) session.getAttribute("jId");
-		String id = dto.getId();
-		int res = storemapper.deleteOwner(id);
+		int res = storemapper.deleteOwner(authentication.getName());
 		if(res>0) {
-			session.invalidate();
+			req.getSession().invalidate();
 			mav.addObject("msg","탈퇴가 완료되었습니다");
 			mav.addObject("url","/");
 			mav.setViewName("message");
@@ -304,4 +325,128 @@ public class StoreController {
 		}
 		return "message";
 	}
+	@RequestMapping("/store/addCate.do")
+	public String addCate(HttpServletRequest req) {
+		String storeid=req.getParameter("storeid");
+		req.setAttribute("storeid", storeid);
+		
+		
+		return "/store/addCate";
+	}
+	@RequestMapping("/store/addCateOk.do")
+	public String addCateOk(@RequestParam Map<String ,String> params, HttpServletRequest req) {
+		int res = storemapper.addCate(params);
+		String storeid= req.getParameter("storeid");
+		if(res>0) {
+			req.setAttribute("msg", "카테고리추가완료");
+			req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);	
+		}else {
+			req.setAttribute("msg", "카테고리추가실패");
+			req.setAttribute("url", "/store/selectStore.do");
+		}
+		return "message";
+	}
+	@ResponseBody
+	@RequestMapping(value="store/menuSales.ajax",method=RequestMethod.POST,produces="text/plain;charset=UTF-8")
+	public String menuSales(@ModelAttribute OrderListDTO dto , BindingResult results) {
+		if(results.hasErrors()) {
+			System.out.println("dto구성중 에러발생");
+		}
+		List<OrderListDTO>menuSList = storemapper.menuSales(dto);
+		
+		//System.out.println(menuSList);
+		//System.out.println(dto.getStoreid());
+		//System.out.println(dto.getDate1());
+		//System.out.println(dto.getDate2());
+		Gson gson = new Gson();
+		JsonArray jarray = new JsonArray();
+		Iterator <OrderListDTO>it = menuSList.iterator();
+		while(it.hasNext()) {
+			OrderListDTO odto = it.next();
+			JsonObject jObject = new JsonObject();
+			int menu_totprice = odto.getMenu_totprice();
+			String menuname = odto.getMenuname();
+			jObject.addProperty("menu_totprice",menu_totprice);
+			jObject.addProperty("menuname", menuname);
+			jarray.add(jObject);
+		}
+		String json = gson.toJson(jarray);
+		return json;
+	}
+	@RequestMapping("/store/storeSales2.do")
+	public String storeSales2(HttpServletRequest req) {
+		String storeid= req.getParameter("storeid");
+		req.setAttribute("storeid", storeid);
+		return "store/storeSales2";
+	}
+	@ResponseBody
+	@RequestMapping(value="store/indateSales.ajax",method=RequestMethod.POST,produces="text/plain;charset=UTF-8")
+	public String indateSales(@ModelAttribute OrderListDTO dto , BindingResult results) {
+		if(results.hasErrors()) {
+			System.out.println("dto구성중 에러발생");
+		}
+		List<OrderListDTO>indateList = storemapper.indateSales(dto);
+		
+		
+		Gson gson = new Gson();
+		JsonArray jarray = new JsonArray();
+		Iterator <OrderListDTO>it = indateList.iterator();
+		while(it.hasNext()) {
+			OrderListDTO odto = it.next();
+			JsonObject jObject = new JsonObject();
+			String daily1= odto.getDaily();
+			int hcount = daily1.length() - daily1.replace("-", "").length();
+			if(hcount == 2) {
+				String daily=odto.getDaily();
+				int daily_total=odto.getDaily_total();
+				jObject.addProperty("daily",daily);
+				jObject.addProperty("daily_total",daily_total);
+				System.out.println(daily);
+				System.out.println(daily_total);
+			}else if(hcount==1){
+				String month=odto.getDaily();
+				int monthly_total=odto.getDaily_total();
+				jObject.addProperty("month", month);
+				jObject.addProperty("monthly_total",monthly_total);
+				System.out.println(month);
+				System.out.println(monthly_total);
+			}
+			
+			jarray.add(jObject);
+		}
+		String json = gson.toJson(jarray);
+		return json;
+	}
+	@RequestMapping("/store/stopMenu.do")
+	public String stopMenu(HttpServletRequest req) {
+		String menuid=req.getParameter("menuid");
+		String storeid=req.getParameter("storeid");
+		int res=storemapper.stopMenu(Integer.parseInt(menuid));
+		if(res>0) {
+			req.setAttribute("msg", "품절처리완료");
+			req.setAttribute("url", "/store/storeMenu.do?storeid="+storeid);	
+		}else {
+			req.setAttribute("msg", "품절처리실패");
+			req.setAttribute("url", "/store/storeMenu.do");
+		}
+		return "message";
+	}
+	@RequestMapping("/store/startMenu.do")
+	public String startMenu(HttpServletRequest req) {
+		String menuid=req.getParameter("menuid");
+		String storeid=req.getParameter("storeid");
+		int res=storemapper.startMenu(Integer.parseInt(menuid));
+		if(res>0) {
+			req.setAttribute("msg", "품절취소완료");
+			req.setAttribute("url", "/store/storeMenu.do?storeid="+storeid);	
+		}else {
+			req.setAttribute("msg", "품절취소실패");
+			req.setAttribute("url", "/store/storeMenu.do");
+		}
+		return "message";
+	}
 }
+
+	
+	
+	

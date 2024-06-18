@@ -39,4 +39,24 @@
 		JOIN JSTORECATE js ON jm.STOREID = js.STOREID AND jm.JSCATEID = js.JSCATEID AND jm.STOREID = #{storeid}
 		ORDER BY jscateid, menuid
 	</select>
+	<select id="storeList" parameterType="String" resultType="StoreDTO">
+         select * from jstore 
+   </select>
+   
+   <select id="cateList" parameterType="String" resultType="StoreDTO">
+         select * from jcate
+   </select>
+    <select id="cateStoreList" parameterType="int" resultType="viewcatestoreDTO">
+         SELECT storeid, storename, js.cateid, 
+   STORECONTENT, ID, js.IMG, COUPONID, 
+   ADDRESS, DETAILADDRESS, 
+   EXTRAADDRESS, POSTCODE, jc.CATENAME  
+   FROM jstore js, jcate jc WHERE js.CATEID = jc.CATEID AND js.cateID = #{cateid}
+   </select>
+   <select id="basketList" resultType="MenuDTO" parameterType="list">
+        SELECT * FROM jmenu WHERE menuid IN
+        <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
  </mapper>

@@ -12,4 +12,10 @@
  	<select id="viewNotice" resultType="noticeDTO" parameterType="int">
  		select * from jnoti where notiid = #{notiid}
  	</select>
+	<delete id="deleteNotice" parameterType="int"> 
+		delete from jnoti where notiid = #{notiid} 
+	</delete>
+	<update id="editNotice" parameterType="noticeDTO"> 
+		update jnoti set subject = #{subject}, content = #{content} where notiid = #{notiid} 
+	</update>
  </mapper>

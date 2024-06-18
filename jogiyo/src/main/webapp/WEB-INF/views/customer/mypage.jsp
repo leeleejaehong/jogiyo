@@ -4,6 +4,7 @@
 <jsp:include page="../header.jsp"/>
 <div align="center">
 	<form action="/customer/update.do" method="post" >
+	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	 	 <h1>My Page</h1>
     
          <label for="name">ID:</label>

@@ -59,30 +59,52 @@
     text-align: left;
     }
     tr:hover {
-    background-color: white;
+    background-color: #white;
 }
 </style>
+<script type="text/javascript">
+function check() {
+if(mynotice.subject.value == ""){
+    alert("제목을 입력하셔야합니다.");
+    mynotice.subject.focus();
+    return false;
+    }
+         
+ if(mynotice.content.value.length == 0){
+    alert("내용을 입력하셔야합니다.");
+    mynotice.content.focus();
+    return false;
+    }
+ 
+ str = "지금까지 작성한 것들은 : /n";
+ str += mynotice.subject.value + "/n";
+ str += mynotice.content.value + "/n";
+ mynotice.submit();
+ 
+}
+ 
+</script>
 <div class="container">
-<h4>게시판 글쓰기</h4> 
-    <form action="/admin/insertNotice.do" method="post">
+<h4><span style="font-weight: bold; font-family: 'Gothic A1', sans-serif;">게시판 글쓰기</span></h4> 
+    <form action="/admin/insertNotice.do" method="post" name="mynotice" onsubmit="return check();"> 
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
         <table class="form-table">
             <tr>
-                
-                <td><input type="text" name="subject" placeholder="제목을 입력해 주세요"></td>
+                <td><input type="text" name="subject" placeholder="제목을 입력하세요"></td>
             </tr>
             <tr>
-                
                 <td><textarea name="content" rows="10" cols="50" placeholder="내용을 입력하세요"></textarea></td>
             </tr>
             <tr>
                 <td colspan="2" align="center">
-                    <button type="submit" style="color:white;">등록</button>
-                    <button type="reset" style="color:white;">삭제</button>
+                    <button onclick="check()" value="입력되었습니다" type="button">등록</button>
                 </td>
             </tr>
+         
         </table>
     </form>
- 
+ <tr>
+ </tr>
     <a href="/admin/listNotice.do">공지사항 목록 보기</a>
 </div>
 <jsp:include page="../footer.jsp"/>

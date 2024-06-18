@@ -17,6 +17,14 @@ public class StoreDTO {
 	private String address;
 	private String detailaddress;
 	private String extraaddress;
+	private String catename;
+
+	public String getCatename() {
+		return catename;
+	}
+	public void setCatename(String catename) {
+		this.catename = catename;
+	}
 	public int getStoreid() {
 		return storeid;
 	}

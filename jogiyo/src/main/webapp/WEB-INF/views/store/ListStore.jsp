@@ -32,7 +32,7 @@
 	<td>${dto.id}</td>
 	
 	<form name ="f"  method="post"  action="/store/selectStore.do" onsubmit="return confirm('해당가게로 이동하시겠습니까?');">
-
+	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	<input type="hidden" name ="storename" value="${dto.storename}">
 	<input type="hidden" name = "storeid" value="${dto.storeid}">
 	<td><input type="submit" value="이동하기"></td>

@@ -64,36 +64,47 @@
     <div class="order-table-container">
         <div class="order-header">
             <h2>Cart</h2>
-            
+          
         </div>
         <table class="order-table">
             <thead>
                 <tr>
+                    <th>주문내역${storename}</th>
                     <th></th>
-                    <th>Date</th>
-                    <th>Order Details</th>
-                    <th>Total</th>
-                    <th>Actions</th>
-                    <th>Actions</th>
+                    
                 </tr>
             </thead>
             <tbody>
-               
-                <c:forEach items="${porder}" var="order">
-                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+               <tr>
+	                    
+                    <td>
+                <c:forEach items="${blist}" var="list">
+	                   <p>${list.menuname} 
+                    		<button onclick="deleteOrder()">삭제</button>
+                    	
+                    </p> 
+                </c:forEach>
+                    
+	                    </td>
                     <td class="actions">
                         <button onclick="order()">주문</button>
                     </td>
-                    <td class="actions">
-                    	<button onclick="deleteOrder()">삭제</button>
+                   <td class="actions">
+                        <button onclick="">메뉴추가</button>
                     </td>
                 </tr>
                 
-                     </c:forEach>
+                   
+
+              
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+   const selectedNames = JSON.parse(localStorage.getItem('selectedNames'));
+   const resultElement = document.getElementById('result');
+   resultElement.innerText = selectedNames.join('\n');
+});
+</script>
                  
             </tbody>
         </table>
@@ -107,6 +118,9 @@
         function deleteOrder() {
             alert('삭제 기능을 구현하세요.');
         }
+        
+       
+        
     </script>
 
    

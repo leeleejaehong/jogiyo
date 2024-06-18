@@ -50,7 +50,5 @@ public class AdminMapper {
 		return sqlSession.delete("login.deleteUser", id);
 	}
 	
-	public NoticeDTO viewNotice(int notiid) {
-		return sqlSession.selectOne("notice.viewNotice", notiid);
-	}
+
 }

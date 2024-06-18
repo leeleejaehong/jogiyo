@@ -17,6 +17,16 @@ public class AdminMapper3 {
 		int res = sqlSession.insert("notice.insertNotice", dto);
 		return res;
 	}
-	
+	public int deleteNotice(int notiid) {
+		int res = sqlSession.delete("notice.deleteNotice", notiid);
+		return res;
+	}
+	public NoticeDTO viewNotice(int notiid) {
+		return sqlSession.selectOne("notice.viewNotice", notiid);
+	}
+	public int editNotice(NoticeDTO dto) {
+		int res = sqlSession.update("notice.editNotice", dto);
+		return res;
+	}
 
 }

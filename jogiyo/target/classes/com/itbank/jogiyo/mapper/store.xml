@@ -41,15 +41,19 @@
 	</delete>
 	
 	<select id="findcateid" parameterType="int" resultType="int">
-	select cateid from jstore where storeid=#{storeid}
+	select jscateid from jstorecate where storeid=#{storeid}
 	</select>
 	
 	<insert id="addMenu" parameterType="menuDTO">
-	insert into jmenu values(jmenu_seq.nextval,#{storeid},#{jscateid},#{menuname},#{menucontent},#{img},#{price})
+	insert into jmenu values(jmenu_seq.nextval,#{storeid},#{jscateid},#{menuname},#{menucontent},#{img},#{price},#{mqty})
 	</insert>
 	
-	<select id="listMenu" parameterType="int" resultType="menuDTO">
-	select * from jmenu where storeid= #{storeid}
+	<select id="listMenu" parameterType="int" resultType="menuDTO"> 
+			SELECT *
+ 				from jmenu j1
+ 				JOIN jstorecate j2
+ 			on j1.jscateid = j2.jscateid
+ 			where j1.storeid=#{storeid}
 	</select>
 	
 	<delete id="deleteMenu" parameterType="int" >
@@ -57,7 +61,11 @@
 	</delete>
 	
 	<select id ="getMenu" parameterType="int" resultType="menuDTO">
-	select *from jmenu where menuid=#{menuid}
+			SELECT *
+ 				from jmenu j1
+ 			JOIN jstorecate j2
+ 				on j1.jscateid = j2.jscateid
+ 			where j1.menuid=#{menuid}
 	</select>
 	
 	<update id="editMenu" parameterType="menuDTO">
@@ -69,6 +77,19 @@
 	<if test ="price!=null"> price=#{price} </if>
 	</set>
 	where menuid=#{menuid}
+	</update>
+	<insert id="addCate" parameterType="java.util.Map">
+	insert into jstorecate values(jstorecate_seq.nextval,#{storeid},#{jstorename})
+	</insert>
+	
+	<select id="getCateList" resultType="jstorecateDTO" parameterType="int">
+		select jstorename,jscateid from jstorecate where storeid=#{storeid}
+	</select>
+	<update id="stopMenu"  parameterType="int">
+	update jmenu set mqty=0 where menuid=#{menuid}
+	</update>
+	<update id="startMenu"  parameterType="int">
+	update jmenu set mqty=1 where menuid=#{menuid}
 	</update>
 	
 	

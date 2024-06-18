@@ -2,6 +2,7 @@
     pageEncoding="UTF-8"%>
 <jsp:include page="../header.jsp"/>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/table.css">
 <script type="text/javascript">
 function viewNotice(id) {
@@ -15,22 +16,30 @@ function viewNotice(id) {
     idInput.value = id;
     form.appendChild(idInput);
 
+    var csrfToken = $("meta[name='_csrf']").attr("content");
+    
+    var idInput2 = document.createElement('input');
+    idInput2.type = 'hidden';
+    idInput2.name = '_csrf';
+    idInput2.value = csrfToken;
+    form.appendChild(idInput2);
+    
     document.body.appendChild(form);
     form.submit();
 }
 </script>
 <div align="center" style="margin-top: 60px">
-<table style="background-color: #white; border: 0px solid #FFFFFF;">
+<div style="width:100%; height:400px; overflow-y: scroll; overflow-x; hidden;">
+<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" /> 
+<table style="background-color: #white; border: 1px solid #FFFFFF;">
    <tr>
-     <th style="background-color: #DDD; width: 30%;font-size: 20px; text-align: center; border-: none;">Total</th>
+     <th style="background-color: #DDD; width: 30%;font-size: 20px; text-align: center; border-right: none;">Total</th>
      <th style="background-color: #DDD; width: 5%;font-size: 20px; text-align: center; border-right: none;">Date</th>
-     <th style="background-color: #DDD; width: 3%;font-size: 20px; text-align: center; border-right: none;">Delete</th>  
    </tr>
    <c:forEach items="${list}" var="dto">
       <tr>
          <td><a onclick="viewNotice(${dto.notiid})" href="#">${dto.subject}</a></td>
          <td>${dto.indate}</td>
-         <td><button onclick="deleteNotice(${dto.notiid})">삭제</button></td>
       </tr>
    </c:forEach>
 </table>

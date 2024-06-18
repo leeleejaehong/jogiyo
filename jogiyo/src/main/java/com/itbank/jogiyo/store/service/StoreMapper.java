@@ -1,5 +1,6 @@
 package com.itbank.jogiyo.store.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -7,8 +8,11 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.itbank.jogiyo.dto.JstoreCateDTO;
 import com.itbank.jogiyo.dto.LoginDTO;
 import com.itbank.jogiyo.dto.MenuDTO;
+import com.itbank.jogiyo.dto.OrderDTO;
+import com.itbank.jogiyo.dto.OrderListDTO;
 import com.itbank.jogiyo.dto.StoreDTO;
 
 @Service
@@ -48,10 +52,7 @@ public class StoreMapper {
 	public int deleteStore(String storename) {
 		return sqlSession.delete("store.deleteStore", storename);
 	}
-	public int findcateid(int storeid) {
-		int cateid= sqlSession.selectOne("store.findcateid",storeid);
-		return cateid;
-	}
+	
 	public int addMenu(MenuDTO dto) {
 		return sqlSession.insert("store.addMenu",dto);
 	}
@@ -68,5 +69,34 @@ public class StoreMapper {
 	}
 	public int editMenu(MenuDTO dto) {
 		return sqlSession.update("store.editMenu",dto);
+	}
+	public int addCate(Map<String,String> params) {
+		return sqlSession.insert("store.addCate", params);
+	}
+	public List<JstoreCateDTO> getCateList(int storeid){
+		List<JstoreCateDTO>list = sqlSession.selectList("store.getCateList",storeid);
+		return list;
+	}
+	public List<OrderListDTO> orderList(int storeid){
+		List<OrderListDTO>olist = sqlSession.selectList("order.orderList",storeid);
+		return olist;
+	}
+	public List<OrderListDTO> menuSales(OrderListDTO dto){
+		//Map<String,String>params= new HashMap<>();
+		//params.put("date1",date1);
+		//params.put("date2,", date2);
+		//params.put("storeid", storeid);
+		List<OrderListDTO>mslist = sqlSession.selectList("order.menuSales",dto);
+		return mslist;
+	}
+	public List<OrderListDTO> indateSales(OrderListDTO dto){
+	List<OrderListDTO>indateList=sqlSession.selectList("order.indateSales",dto);
+	return indateList;
+	}
+	public int stopMenu(int menuid) {
+		return sqlSession.update("store.stopMenu",menuid);
+	}
+	public int startMenu(int menuid) {
+		return sqlSession.update("store.startMenu",menuid);
 	}
 }
