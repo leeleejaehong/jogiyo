@@ -59,4 +59,8 @@ public class LoginMapper {
 		LoginDTO pw_find = sqlSession.selectOne("login.pw_find", params);
 		return pw_find;
 	}
+	public int updateCustomer(LoginDTO dto) {
+		dto.setPasswd(bcryptPasswordEncoder.encode(dto.getPasswd()));
+		return sqlSession.update("customer.updateCustomer", dto);
+	}
 }

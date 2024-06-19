@@ -46,7 +46,7 @@
    <select id="cateList" parameterType="String" resultType="StoreDTO">
          select * from jcate
    </select>
-    <select id="cateStoreList" parameterType="int" resultType="viewcatestoreDTO">
+<select id="cateStoreList" parameterType="String" resultType="storeDTO">
          SELECT storeid, storename, js.cateid, 
    STORECONTENT, ID, js.IMG, COUPONID, 
    ADDRESS, DETAILADDRESS, 
@@ -59,4 +59,5 @@
             #{id}
         </foreach>
     </select>
+    
  </mapper>

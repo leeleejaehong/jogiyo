@@ -2,6 +2,7 @@ package com.itbank.jogiyo.customer.web;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -16,8 +17,12 @@ import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.itbank.jogiyo.customer.service.CustomerMapper;
 import com.itbank.jogiyo.dto.CategoryDTO;
 import com.itbank.jogiyo.dto.CouponDTO;
@@ -119,18 +124,6 @@ public class CustomerController {
 
 	}
 
-	@RequestMapping(value = "/customer/cateList.do", method = RequestMethod.POST)
-	public String jogiyoCateList(HttpServletRequest req, @RequestParam("cateid") int cateid) {
-		List<ViewCateStoreDTO> catelist = customerMapper.cateStoreList(cateid);
-		List<CategoryDTO> list2 = customerMapper.cateList();
-		if (catelist == null) {
-			catelist = new ArrayList<>();
-		}
-		req.setAttribute("cateStoreList", catelist);
-		req.setAttribute("cateList", list2);
-		return "customer/jogiyoCateList";
-	}
-
 	@RequestMapping(value = "/customer/basketList.do", method = RequestMethod.POST)
 	public String OrderBasketList(HttpServletRequest req, @RequestParam("sub") String menuid,
 			@RequestParam("sub2") String storename) {
@@ -141,4 +134,40 @@ public class CustomerController {
 		return "customer/basket";
 	}
 
+	@ResponseBody
+	@RequestMapping(value = "customer/listCate.ajax", produces = "text/plain;charset=UTF-8", method = RequestMethod.POST)
+	public String listAccount(HttpServletRequest req, @RequestParam("sel") String sel) {
+		List<StoreDTO> catelist = customerMapper.cateStoreList(sel);
+		List<CategoryDTO> list2 = customerMapper.cateList();
+		if (catelist == null) {
+			catelist = new ArrayList<>();
+		}
+		Gson gson = new Gson();
+		JsonArray jArray = new JsonArray();
+		Iterator<StoreDTO> it = catelist.iterator();
+		while (it.hasNext()) {
+			StoreDTO dto = it.next();
+			JsonObject object = new JsonObject();
+			object.addProperty("storeid", dto.getStoreid());
+			object.addProperty("storename", dto.getStorename());
+			object.addProperty("cateid", dto.getCateid());
+			object.addProperty("storecontent", dto.getStorecontent());
+			object.addProperty("id", dto.getId());
+			object.addProperty("img", dto.getImg());
+			object.addProperty("couponid", dto.getCouponid());
+			object.addProperty("address", dto.getAddress());
+			// object.addProperty("file", dto.getFile());
+			object.addProperty("detailaddress", dto.getDetailaddress());
+			object.addProperty("extraaddress", dto.getExtraaddress());
+			object.addProperty("postcode", dto.getPostcode());
+			object.addProperty("catename", dto.getCatename());
+			object.addProperty("lat", dto.getLat());
+			object.addProperty("har", dto.getHar());
+			jArray.add(object);
+		}
+		String json = gson.toJson(jArray);
+		req.setAttribute("cateList", list2);
+		System.out.println(json);
+		return json;
+	}
 }

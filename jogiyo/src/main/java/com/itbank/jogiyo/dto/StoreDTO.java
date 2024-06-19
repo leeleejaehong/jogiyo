@@ -18,6 +18,7 @@ public class StoreDTO {
 	private String detailaddress;
 	private String extraaddress;
 	private String catename;
+	private int run;
 
 	public String getCatename() {
 		return catename;
@@ -108,6 +109,12 @@ public class StoreDTO {
 	}
 	public void setExtraaddress(String extraaddress) {
 		this.extraaddress = extraaddress;
+	}
+	public int getRun() {
+		return run;
+	}
+	public void setRun(int run) {
+		this.run = run;
 	}
 
 	

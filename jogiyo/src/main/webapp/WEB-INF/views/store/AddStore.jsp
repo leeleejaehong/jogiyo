@@ -31,15 +31,9 @@
                 <th>카테고리(int)</th>
                 <td>
                     <select name="cateid" title="카테고리">
-                        <option value="1">한식</option>
-                        <option value="2">양식</option>
-                        <option value="3">일식</option>
-                        <option value="4">중식</option>
-                        <option value="5">치킨</option>
-                        <option value="6">햄버거</option>
-                        <option value="7">피자</option>
-                        <option value="8">디저트</option>
-                        <option value="9">전체</option>
+                    <c:forEach items="${clist}" var="cate">
+                        <option value="${cate.cateid}">${cate.catename}</option>
+                    </c:forEach>
                     </select>
                 </td>
             </tr>

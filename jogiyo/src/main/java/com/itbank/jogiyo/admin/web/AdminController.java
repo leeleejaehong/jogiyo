@@ -61,9 +61,6 @@ public class AdminController {
 	@RequestMapping(value="admin/dateOrder.ajax", produces="text/plain;charset=UTF-8", method = RequestMethod.POST)
 	public String dateOrder(@RequestParam("cal1") String cal1, @RequestParam("cal2") String cal2) {
 		List<OrderDTO> list = adminmapper.dateOrder(cal1, cal2);
-		System.out.println(cal1);
-		System.out.println(cal2);
-		System.out.println("리스트숫자"+list.size());
 		Gson gson = new Gson();
 		JsonArray jArray = new JsonArray();
 				
@@ -103,9 +100,9 @@ public class AdminController {
 			object.addProperty("Mail", dto.getMail());
 			object.addProperty("Phone", dto.getPhone());
 			String grade = "관리자";
-			if(dto.getGrade().equals("2")) {
+			if(dto.getGrade().equals("ROLE_2")) {
 				grade = "점주";
-			}else if(dto.getGrade().equals("3")) {
+			}else if(dto.getGrade().equals("ROLE_3")) {
 				grade = "사용자";
 			}
 			object.addProperty("Grade", grade);

@@ -3,6 +3,7 @@ package com.itbank.jogiyo.store.web;
 import java.awt.Window;
 import java.awt.event.WindowStateListener;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -27,6 +28,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.itbank.jogiyo.customer.service.CustomerMapper;
+import com.itbank.jogiyo.dto.CategoryDTO;
 import com.itbank.jogiyo.dto.JstoreCateDTO;
 import com.itbank.jogiyo.dto.LoginDTO;
 import com.itbank.jogiyo.dto.MenuDTO;
@@ -34,6 +37,7 @@ import com.itbank.jogiyo.dto.OrderDTO;
 import com.itbank.jogiyo.dto.OrderListDTO;
 import com.itbank.jogiyo.dto.StoreDTO;
 import com.itbank.jogiyo.login.service.LoginMapper;
+import com.itbank.jogiyo.properties.PropertyReader;
 import com.itbank.jogiyo.store.service.StoreMapper;
 import com.itbank.jogiyo.util.UploadFile;
 
@@ -41,6 +45,8 @@ import com.itbank.jogiyo.util.UploadFile;
 public class StoreController {
 	@Autowired
 	private StoreMapper storemapper;
+	@Autowired
+	private CustomerMapper customerMapper;
 	private UploadFile uploadFile; 
 	private LoginMapper loginmapper;
 	
@@ -54,6 +60,8 @@ public class StoreController {
 	public String AddStore(HttpServletRequest req) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		req.setAttribute("jId", authentication.getName());
+		List<CategoryDTO> clist = storemapper.getAllCate();
+		req.setAttribute("clist", clist);
 		return "store/AddStore";
 		
 	}
@@ -63,6 +71,7 @@ public class StoreController {
 		uploadFile = new UploadFile();
 		if(uploadFile.uploadFile(dto.getFile())) {
 			dto.setImg(uploadFile.getFullName());
+			dto.setRun(1);
 		}
 		System.out.println(dto.getPostcode()+","+dto.getAddress()+","+dto.getDetailaddress()+","+dto.getExtraaddress());
 		int res = storemapper.addStore(dto);
@@ -95,7 +104,10 @@ public class StoreController {
 	}
 	@RequestMapping("/store/test.do")
 		public String test(HttpServletRequest req) {
+		PropertyReader reader = new PropertyReader();
+		String key = reader.getProperty("kakao_key");
 		req.setAttribute("address", "서울 종로구 삼일대로 394");
+		req.setAttribute("key", key);
 		return "store/kakaomaptest";
 	}
 	@RequestMapping("/store/selectStore.do")
@@ -114,6 +126,12 @@ public class StoreController {
 	@RequestMapping("/store/reviewStore.do")
 	public String orderList(HttpServletRequest req) {
 		return "store/reviewStore";
+	}
+	@RequestMapping("/store/stopStore.do")
+	public String stopStore(HttpServletRequest req) {
+	String storeid =req.getParameter("storeid");
+	req.setAttribute("storeid",storeid);
+	return "store/stopStore";
 	}
 	@RequestMapping("/store/storeMenu.do")
 	public String storeMenu(HttpServletRequest req) {
@@ -258,8 +276,8 @@ public class StoreController {
 			e.printStackTrace();
 		}
 		if (result.hasErrors()) {
-			
 			dto.setCouponid(0);
+			dto.setRun(1);
 		}
 		
 		//System.out.println(dto.getStorecontent()+","+dto.getCateid()+","+dto.getStorename()+","+
@@ -445,6 +463,7 @@ public class StoreController {
 		}
 		return "message";
 	}
+	
 }
 
 	

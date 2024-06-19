@@ -9,7 +9,7 @@
  	
  	<insert id="addStore" parameterType="storeDTO">
 		insert into jstore values(jstore_seq.nextval,#{storename},#{cateid},#{storecontent},
-		#{id},#{img},#{couponid},#{address},#{detailaddress},#{extraaddress},#{postcode})
+		#{id},#{img},#{couponid},#{address},#{detailaddress},#{extraaddress},#{postcode},#{run})
 	</insert>
 	
 	<select id="getStore" parameterType="string" resultType="storeDTO">
@@ -91,6 +91,8 @@
 	<update id="startMenu"  parameterType="int">
 	update jmenu set mqty=1 where menuid=#{menuid}
 	</update>
-	
+	<select id="getAllCate" resultType="categoryDTO">
+		select * from jcate
+	</select>
 	
  </mapper>

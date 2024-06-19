@@ -65,8 +65,8 @@ public class CustomerMapper {
 		return sqlSession.selectList("customer.cateList");
 	}
 	
-	public List<ViewCateStoreDTO> cateStoreList(int cateid){
-	       return sqlSession.selectList("customer.cateStoreList", cateid);
+	public List<StoreDTO> cateStoreList(String sel){
+	       return sqlSession.selectList("customer.cateStoreList", sel);
 	}
 	public List<MenuDTO> basketList(String menuid){
 	       String str = menuid;

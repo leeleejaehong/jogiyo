@@ -8,6 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.itbank.jogiyo.dto.CategoryDTO;
 import com.itbank.jogiyo.dto.JstoreCateDTO;
 import com.itbank.jogiyo.dto.LoginDTO;
 import com.itbank.jogiyo.dto.MenuDTO;
@@ -98,5 +99,9 @@ public class StoreMapper {
 	}
 	public int startMenu(int menuid) {
 		return sqlSession.update("store.startMenu",menuid);
+	}
+	
+	public List<CategoryDTO> getAllCate(){
+		return sqlSession.selectList("store.getAllCate");
 	}
 }
