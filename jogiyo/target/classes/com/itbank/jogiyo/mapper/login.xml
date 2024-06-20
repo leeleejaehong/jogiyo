@@ -37,4 +37,8 @@
 	<select id="pw_find" resultType="LoginDTO" parameterType="java.util.Map">
 		select * from jaccount where name = #{name} and id = #{id} and phone = #{phone}
 	</select>
+	
+	<select id="isPass" resultType="String" parameterType="String">
+		select passwd from jaccount where id = #{id}
+	</select>
 </mapper>

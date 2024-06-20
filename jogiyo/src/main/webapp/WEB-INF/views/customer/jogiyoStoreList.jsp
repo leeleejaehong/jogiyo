@@ -147,13 +147,29 @@
         </div>
         
         <div class="listings" id="storeList" >
-   
-    </div>
-    <a onclick="viewStore(${store.storeid})" href="#"></a>
+            <c:if test="${not empty storeList}" >
+            <c:forEach items="${storeList}" var="store">
+                  <div class="listing">
+                        <img src="${pageContext.request.contextPath}/resources/img/${store.img}" width="80" height="80">
+                        <div class="details">
+                            <h2><a onclick="viewStore(${store.storeid})" href="#"> ${store.storename} </a></h2>
+                            <div class="rating">4.8 ★</div>
+                            <div class="reviews">리뷰 3537 | 사장님댓글 2694</div>
+                            <div class="min_order">가게설명 | ${store.storecontent}</div>
+                            <div class="discount">쿠폰 | ${store.couponid}</div>
+                            <div class="time">22-37분</div>
+                        </div>
+                    </div>
+      
+            </c:forEach>
+            </c:if>
+       </div>
+          <a onclick="viewStore(${store.storeid})" href="#"></a>
     </div>
    
     
      <script type="text/javascript">
+     var contextPath = "${pageContext.request.contextPath}";
   // 선택한 역할에 따라 계정 목록을 가져와서 표시하는 함수
      function cateList(){
         let sel = $("select").val();  // 드롭다운에서 선택한 역할 값을 가져옴
@@ -180,8 +196,19 @@
                  
                  // 데이터 각 항목을 테이블에 추가
                  $.each(data, function(index, item) {
-                    var div ="가게 : " + item.storename + "<td width='15%'><button onclick='viewStore(\"" + item.storeid + "\")'>"+item.storename+"</button></td></tr>";
-                       
+                    var div =
+                       "<div class='listing'>" +
+                        "<img src='" + contextPath + "/resources/img/" + item.img + "' width='80' height='80'>" +
+                        "<div class='details'>" +
+                            "<h2><a onclick='viewStore(" + item.storeid + ")' href='#'>" + item.storename + "</a></h2>" +
+                            "<div class='rating'>4.8 ★</div>" +
+                            "<div class='reviews'>리뷰 3537 | 사장님댓글 2694</div>" +
+                            "<div class='min_order'>가게설명 | " + item.storecontent + "</div>" +
+                            "<div class='discount'>쿠폰 | " + item.couponid + "</div>" +
+                            "<div class='time'>22-37분</div>" +
+                        "</div>" +
+                      "</div>";
+   
                      $("#storeList").append(div);
                  
                  });

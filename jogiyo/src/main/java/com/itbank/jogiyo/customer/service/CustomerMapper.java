@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.itbank.jogiyo.dto.BasketDTO;
 import com.itbank.jogiyo.dto.CategoryDTO;
 import com.itbank.jogiyo.dto.CouponDTO;
 import com.itbank.jogiyo.dto.LoginDTO;
@@ -79,4 +80,7 @@ public class CustomerMapper {
 	          // MyBatis 쿼리에 List<Integer>를 전달하여 결과 반환
 	          return sqlSession.selectList("customer.basketList", menuIds);
 	      }
+	public List<BasketDTO> basket(String id){
+	       return sqlSession.selectList("customer.basket", id);
+	   }
 }

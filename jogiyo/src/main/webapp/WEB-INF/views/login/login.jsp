@@ -1,38 +1,126 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+    pageEncoding="UTF-8"%> 
 <jsp:include page="../header.jsp"/>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/table.css">
-<div align="center" style="margin-top: 90px;">
-<h4><span style="font-weight: bold; font-family: 'Gothic A1', sans-serif;">죠기요 로그인</span></h4>
-<div align="center" style="margin-top: 20px;">
-    <form action="/login/loginOk.do" method="post" style="margin-bottom: 20px; ">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-        <div style="margin-bottom: 20px; width:70%;">
-            <label for="id"></label>
-            <input type="text" name="id" placeholder="아이디 입력(필수)"> 
-        </div>
-        <div style="margin-bottom: 20px;">
-            <label for="passwd"></label>
-            <input type="password" name="passwd" placeholder="비밀번호 입력(필수)">
-        </div> <button type="submit" style="background-color: #DDD; color: white; border: none; padding: 7px 150px; cursor: pointer; border-radius: 5px;">로그인</button>
-    </form>
-    
-    <div style="display: flex; justify-content: space-around; margin-bottom: 60px;">
-        <form action="/login/join_membership.do" method="post">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            <button type="submit" style="background-color: #fa0050; color: white; border: none; padding: 7px 20px; cursor: pointer; border-radius: 5px;">회원가입</button>
-        </form>
-        
-        <form action="/login/id_find.do" method="post">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            <button type="submit" style="background-color: #fa0050; color: white; border: none; padding: 7px 20px; cursor: pointer; border-radius: 5px;">아이디 찾기</button>
-        </form>
-        
-        <form action="/login/pw_find.do" method="post">
-        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-            <button type="submit" style="background-color: #fa0050; color: white; border: none; padding: 7px 20px; cursor: pointer; border-radius: 5px;">비밀번호 찾기</button>
+<style>
+    /* 기본 스타일 */
+    .form-container {
+        margin: 0 auto;
+        border-collapse: collapse;
+        width: 30%;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 8px 16px rgba(1, 1, 1, 0.2);
+        background-color: #f9f9f9;
+        padding: 20px;
+    }
+    /*테이블 세로 길이 줄이는 겁니당  */
+    .form-container td {
+        padding: 1px;
+    }
+
+    .form-container input[type="text"],
+    .form-container input[type="password"] {
+        width: calc(100% - 20px);
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ccc;
+        display: block;
+        margin: 10px auto;
+        font-size: 14px;
+    }
+
+    .form-container button {
+        background-color: #fa0050;
+        color: white;
+        border: none;
+        padding: 12px;
+        cursor: pointer;
+        border-radius: 5px;
+        width: calc(100% - 20px);
+        display: block;
+        margin: 10px auto;
+        font-size: 16px;
+    }
+
+    .form-container .actions form {
+        display: inline;
+    }
+
+    .form-container .actions button {
+        background-color: #fa0050;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 5px;
+        margin: 5px 0;
+    }
+
+    .form-container a {
+        color: #fa0050;
+        text-decoration: none;
+        font-size: 14px;
+    }
+
+    .form-container a:hover {
+        text-decoration: underline;
+    }
+
+    /* 반응형 스타일 */
+    @media (max-width: 768px) {
+        .form-container {
+            width: 80%;
+        }
+        .form-container input[type="text"],
+        .form-container input[type="password"],
+        .form-container button {
+            width: 100%;
+            margin: 10px 0;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .form-container {
+            width: 100%;
+        }
+    }
+</style>
+
+<div align="center" style="margin-top: 80px;">
+    <h1><span style="font-weight: bold; color:#fa0050; font-family: 'Gothic A1', sans-serif;">죠기요</span></h1>
+    <div align="center" style="margin-top: 40px;">
+        <form action="/login/loginOk.do" method="post" class="form-container">
+            <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+            <table>
+                <tr>
+                    <td style="text-align: center;"margin-top: 40px;">
+                        <label for="id" style="display:none;">아이디</label>
+                        <input type="text" name="id" placeholder="아이디 입력(필수)" required style="margin-top: 30px; margin-bottom: 0px;">
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">
+                        <label for="passwd" style="display:none;">비밀번호</label>
+                        <input type="password" name="passwd" placeholder="비밀번호 입력(필수)" required>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">
+                        <button type="submit" >로그인</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="text-align: center;">
+                        <a href="/login/join_membership.do">회원가입</a> |
+                        <a href="/login/id_find.do">아이디 찾기</a> |
+                        <a href="/login/pw_find.do">비밀번호 찾기</a>
+                    </td>
+                </tr>
+            </table>
         </form>
     </div>
+    <div align="center" style="margin-bottom: 200px; border-radius: 8px;">
+    </div>
+    <jsp:include page="../footer.jsp"/>
 </div>
 
-<jsp:include page="../footer.jsp"/>

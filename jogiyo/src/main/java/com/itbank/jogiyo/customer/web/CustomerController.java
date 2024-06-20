@@ -14,6 +14,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +25,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.itbank.jogiyo.customer.service.CustomerMapper;
+import com.itbank.jogiyo.dto.BasketDTO;
 import com.itbank.jogiyo.dto.CategoryDTO;
 import com.itbank.jogiyo.dto.CouponDTO;
 import com.itbank.jogiyo.dto.LoginDTO;
@@ -32,12 +34,15 @@ import com.itbank.jogiyo.dto.OrderDTO;
 import com.itbank.jogiyo.dto.StoreDTO;
 import com.itbank.jogiyo.dto.ViewCateStoreDTO;
 import com.itbank.jogiyo.dto.ViewStoreDTO;
+import com.itbank.jogiyo.login.service.LoginMapper;
 import com.itbank.jogiyo.util.UploadFile;
 
 @Controller
 public class CustomerController {
 	@Autowired
 	private CustomerMapper customerMapper;
+	@Autowired
+	private LoginMapper loginMapper;
 	private UploadFile uploadFile;
 
 	@RequestMapping("/customer/mypage.do")
@@ -49,6 +54,11 @@ public class CustomerController {
 	}
 
 	@RequestMapping(value = "/customer/update.do", method = RequestMethod.POST)
+	public String updateCustomer(HttpServletRequest req, LoginDTO dto) {
+		req.setAttribute("customer", dto);
+		return "customer/updateCustomer";
+	}
+	@RequestMapping(value = "/customer/updateOk.do", method = RequestMethod.POST)
 	public ModelAndView updateCustomerOk(HttpServletRequest req, LoginDTO dto) {
 		ModelAndView mav = new ModelAndView();
 		int res = customerMapper.updateCustomer(dto);
@@ -77,9 +87,12 @@ public class CustomerController {
 	}
 
 	@RequestMapping("/customer/basket.do")
-	public String BasketList(HttpServletRequest req) {
-		return "customer/basket";
-	}
+	   public String BasketList(HttpServletRequest req) {
+	      Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+	      List<BasketDTO> list = customerMapper.basket(authentication.getName());
+	      req.setAttribute("basket",list);
+	      return "customer/basket";
+	   }
 
 	@RequestMapping("/customer/pastOrder.do")
 	public String listPastOrder(HttpServletRequest req) {
@@ -170,4 +183,31 @@ public class CustomerController {
 		System.out.println(json);
 		return json;
 	}
+	@ResponseBody
+	@RequestMapping(value="customer/checkPasswd.ajax", method = RequestMethod.POST)
+	public String ChekcPass(@RequestParam("id") String id, @RequestParam("passwd") String passwd) {
+		LoginDTO dto = new LoginDTO();
+		dto.setId(id);
+		dto.setPasswd(passwd);
+		if(loginMapper.isPass(dto)) {
+			return "ok";
+		}else {
+			return "nok";
+		}
+	}
+	@ResponseBody
+	@RequestMapping(value="customer/insertBasket.ajax", method = RequestMethod.POST, consumes = "application/json")
+	 public String insertBasket(@RequestBody MenuDTO[] menus) {
+        
+        for (MenuDTO menu : menus) {
+            int menuid = menu.getMenuid();
+            int price = menu.getPrice();
+            int quantity = menu.getMqty();
+            
+            // 처리 로직 작성
+            System.out.println("Menu ID: " + menuid + ", Price: " + price + ", Quantity: " + quantity);
+        }
+        
+        return "Success";
+    }
 }

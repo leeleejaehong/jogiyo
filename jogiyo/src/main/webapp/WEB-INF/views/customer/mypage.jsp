@@ -7,11 +7,8 @@
 	<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 	 	 <h1>My Page</h1>
     
-         <label for="name">ID:</label>
+         <label for="id">ID:</label>
         <input type="text" id="id" name="id" value="${customer.id}" readonly="readonly"><br>
-        
-        <label for="name">PASSWD:</label>
-        <input type="password" id="passwd" name="passwd" value="${customer.passwd}" ><br>
         
         <label for="name">Name:</label>
         <input type="text" id="name" name="name" value="${customer.name}"><br>
@@ -22,7 +19,7 @@
         <label for="phone">Phone:</label>
         <input type="text" id="phone" name="phone" value="${customer.phone}"><br>
         
-        <button type="submit">Update</button>
+        <button type="submit">회원정보수정</button>
         
 	</form>
 		

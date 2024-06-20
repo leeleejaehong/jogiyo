@@ -2,6 +2,9 @@
 	pageEncoding="UTF-8"%>
 <jsp:include page="../header.jsp" />
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<link rel="stylesheet"
+	href="${pageContext.request.contextPath}/resources/css/star.css">
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <style>
 .tab {
 	overflow: hidden;
@@ -102,6 +105,70 @@
 	display: block;
 }
 </style>
+<script>
+
+	function openTab(evt, tabName) {
+		var i, tabcontent, tablinks;
+		tabcontent = document.getElementsByClassName("tabcontent");
+		for (i = 0; i < tabcontent.length; i++) {
+			tabcontent[i].style.display = "none";
+		}
+		tablinks = document.getElementsByClassName("tablinks");
+		for (i = 0; i < tablinks.length; i++) {
+			tablinks[i].className = tablinks[i].className
+					.replace(" active", "");
+		}
+		document.getElementById(tabName).style.display = "block";
+		evt.currentTarget.className += " active";
+	}
+
+	function toggleDropdown(button) {
+		button.classList.toggle("active");
+	}
+
+
+	function insertBasket() {
+	    // 선택된 목록 가져오기
+	    const query = 'input[name="menu"]:checked';
+	    const selectedEls = document.querySelectorAll(query);
+	    
+	    // 선택된 목록에서 데이터 추출
+	    let result = [];
+	    selectedEls.forEach((el) => {
+	        let menuid = el.value;
+	        let price = el.closest('.menu-item').querySelector('.menu-item-price').innerText.trim();
+	        let quantity = el.closest('.menu-item').querySelector('select').value;
+	        result.push({ menuid: menuid, price: price, mqty: quantity });
+	    });
+	    
+	    // 서버로 데이터 전송
+	    var csrfToken = $("meta[name='_csrf']").attr("content");
+	    var csrfHeader = $("meta[name='_csrf_header']").attr("content");
+	    $.ajax({
+	        url: "insertBasket.ajax",
+	        type: "POST",
+	        contentType: "application/json", // JSON 형식으로 데이터 전송
+	        data: JSON.stringify(result), // 배열을 직접 보냅니다
+	        beforeSend: function(xhr) {
+	            xhr.setRequestHeader(csrfHeader, csrfToken);
+	        },
+	        success: function(res) {
+	            // 성공 시 처리
+	            console.log(res)
+	        },
+	        error: function(err) {
+	            console.error("Error:", err);
+	        }
+	    });
+	}
+
+	 
+	   function basketList() {
+	       var result = document.getElementById('result').innerText; // 가져올 데이터
+	       document.getElementById('sub').value = result;
+	       document.getElementById('myForm').submit();
+	   }
+</script>
 <div align="center">
 	<span>${store.storename}</span>
 	<hr>
@@ -132,13 +199,22 @@
 								</span>
 							</div>
 							<div class="menu-item-description">${menu.menucontent}</div>
-							<div class="menu-item-price">${menu.price}원</div>
+							<div class="menu-item-price">${menu.price}</div>원
+							<div class="menu-item-qty">
+								<select>
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+								</select>
+							</div>
 						</div>
 					</c:forEach>
 				</div>
 			</div>
 		</c:forEach>
-		<button onclick='CheckboxOrder()'>주문</button>
+		<button onclick='insertBasket()'>장바구니담기</button>
 		<div id="result"></div>
 
 		<form id="myForm" action="/customer/basketList.do" method="POST">
@@ -150,8 +226,31 @@
 	</div>
 
 	<div id="Review" class="tabcontent">
-		<h3>리뷰 탭</h3>
-		<p>여기에 리뷰 내용이 들어갑니다.</p>
+		<form method="post" action="custmer/insertReview.do">
+		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+		<input type="hidden" name="storeid" value="${store.storeid}">
+		<ul id="main">
+			<li>
+				<ul class="row">
+					<li>별점</li>		
+					<li>
+					<fieldset>
+				        <input type="radio" name="grade" value="5" id="rate1"><label for="rate1">⭐</label>
+				        <input type="radio" name="grade" value="4" id="rate2"><label for="rate2">⭐</label>
+				        <input type="radio" name="grade" value="3" id="rate3"><label for="rate3">⭐</label>
+				        <input type="radio" name="grade" value="2" id="rate4"><label for="rate4">⭐</label>
+				        <input type="radio" name="grade" value="1" id="rate5"><label for="rate5">⭐</label>
+				    </fieldset>
+    				</li>		
+				</ul>
+			</li>
+			<li>
+				<h3>리뷰 탭</h3>
+				리뷰내용 :<input type="text" placeholder="리뷰내용을 써주세요" name="revcontent">
+				<input type="submit" value="작성">
+			</li>
+			</ul>
+		</form>
 	</div>
 
 	<div id="Info" class="tabcontent">
@@ -160,50 +259,7 @@
 	</div>
 </div>
 <script>
-	function openTab(evt, tabName) {
-		var i, tabcontent, tablinks;
-		tabcontent = document.getElementsByClassName("tabcontent");
-		for (i = 0; i < tabcontent.length; i++) {
-			tabcontent[i].style.display = "none";
-		}
-		tablinks = document.getElementsByClassName("tablinks");
-		for (i = 0; i < tablinks.length; i++) {
-			tablinks[i].className = tablinks[i].className
-					.replace(" active", "");
-		}
-		document.getElementById(tabName).style.display = "block";
-		evt.currentTarget.className += " active";
-	}
-
-	function toggleDropdown(button) {
-		button.classList.toggle("active");
-	}
-
-	// 탭이 로드될 때 첫 번째 탭을 열도록 설정
-	document.getElementById("defaultOpen").click();
-	//체크박스에 선택된 값 출력
-	   function CheckboxOrder()  {
-	        // 선택된 목록 가져오기
-	        const query = 'input[name="menu"]:checked';
-	        const selectedEls = 
-	            document.querySelectorAll(query);
-	        
-	        // 선택된 목록에서 value 찾기
-	        let result = '';
-	        selectedEls.forEach((el) => {
-	          result += el.value + ',';
-	        });
-	        
-	        // 출력
-	        document.getElementById('result').innerText
-	          = result;
-	      }
-
-	 
-	   function basketList() {
-	       var result = document.getElementById('result').innerText; // 가져올 데이터
-	       document.getElementById('sub').value = result;
-	       document.getElementById('myForm').submit();
-	   }
+//탭이 로드될 때 첫 번째 탭을 열도록 설정
+document.getElementById("defaultOpen").click();
 </script>
 <jsp:include page="../footer.jsp" />

@@ -28,7 +28,17 @@ public class LoginMapper {
 	}
 	
 	public boolean isPassword(LoginDTO dto) {
+		dto.setPasswd(bcryptPasswordEncoder.encode(dto.getPasswd()));
 		return sqlSession.selectOne("login.isPassword", dto);
+	}
+	
+	public boolean isPass(LoginDTO dto) {
+		String pass = sqlSession.selectOne("login.isPass", dto.getId());
+		if(bcryptPasswordEncoder.matches(dto.getPasswd(), pass)) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 	
 	public LoginDTO getAccount(String id) {
