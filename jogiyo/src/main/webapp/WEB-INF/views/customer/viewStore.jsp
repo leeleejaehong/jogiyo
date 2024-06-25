@@ -138,7 +138,7 @@
 	        let menuid = el.value;
 	        let price = el.closest('.menu-item').querySelector('.menu-item-price').innerText.trim();
 	        let quantity = el.closest('.menu-item').querySelector('select').value;
-	        result.push({ menuid: menuid, price: price, mqty: quantity });
+	        result.push({ menuid: menuid, totprice: price, qty: quantity });
 	    });
 	    
 	    // 서버로 데이터 전송
@@ -147,25 +147,45 @@
 	    $.ajax({
 	        url: "insertBasket.ajax",
 	        type: "POST",
-	        contentType: "application/json", // JSON 형식으로 데이터 전송
-	        data: JSON.stringify(result), // 배열을 직접 보냅니다
+	        contentType: "application/json; charset=UTF-8", 
+	        data: JSON.stringify(result), 
 	        beforeSend: function(xhr) {
 	            xhr.setRequestHeader(csrfHeader, csrfToken);
 	        },
 	        success: function(res) {
-	            // 성공 시 처리
-	            console.log(res)
+	        	console.log(res);
+	        	if(confirm(res)){
+	        		location.href="${pageContext.request.contextPath}/customer/basket.do"
+	        	}else {
+	                cancelSelection();
+	            }
 	        },
 	        error: function(err) {
 	            console.error("Error:", err);
 	        }
 	    });
 	}
+	function cancelSelection() {
+	    const query = 'input[name="menu"]:checked';
+	    const selectedEls = document.querySelectorAll(query);
+	    
+	    selectedEls.forEach((el) => {
+	        el.checked = false;
+	        
+	        let select = el.closest('.menu-item').querySelector('select');
+	        select.value = '1'; 
+	    });
+	}
 
 	 
 	   function basketList() {
-	       var result = document.getElementById('result').innerText; // 가져올 데이터
-	       document.getElementById('sub').value = result;
+		   const query = 'input[name="menu"]:checked';
+		   const selectedEls = document.querySelectorAll(query);
+		   var menuid = '';
+		   selectedEls.forEach((el) => {
+		        menuid += el.value + ',';
+		   }); 
+	       document.getElementById('sub').value = menuid;
 	       document.getElementById('myForm').submit();
 	   }
 </script>
@@ -226,32 +246,52 @@
 	</div>
 
 	<div id="Review" class="tabcontent">
-		<form method="post" action="custmer/insertReview.do">
-		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-		<input type="hidden" name="storeid" value="${store.storeid}">
-		<ul id="main">
-			<li>
-				<ul class="row">
-					<li>별점</li>		
-					<li>
-					<fieldset>
-				        <input type="radio" name="grade" value="5" id="rate1"><label for="rate1">⭐</label>
-				        <input type="radio" name="grade" value="4" id="rate2"><label for="rate2">⭐</label>
-				        <input type="radio" name="grade" value="3" id="rate3"><label for="rate3">⭐</label>
-				        <input type="radio" name="grade" value="2" id="rate4"><label for="rate4">⭐</label>
-				        <input type="radio" name="grade" value="1" id="rate5"><label for="rate5">⭐</label>
+    <form method="post" action="customer/insertReview.do">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+        <input type="hidden" name="storeid" value="${store.storeid}">
+        <ul id="main">
+            <li>
+                <ul class="row">
+                    <li>별점</li>
+                    <li>
+                        <fieldset>
+                            <input type="radio" name="grade" value="5" id="rate5"><label for="rate5">⭐</label>
+                            <input type="radio" name="grade" value="4" id="rate4"><label for="rate4">⭐</label>
+                            <input type="radio" name="grade" value="3" id="rate3"><label for="rate3">⭐</label>
+                            <input type="radio" name="grade" value="2" id="rate2"><label for="rate2">⭐</label>
+                            <input type="radio" name="grade" value="1" id="rate1"><label for="rate1">⭐</label>
+                        </fieldset>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <h3>리뷰 탭</h3>
+                리뷰내용 : <textarea placeholder="리뷰내용을 써주세요" name="revcontent"></textarea>
+                <input type="submit" value="작성">
+            </li>
+             <c:forEach items="${review}" var="re">
+                <li class="review-item">
+                    <div class="review-content">
+                        <h2>${re.revcotent}</h2>
+                        <c:if test="${not empty re.reply}">
+                            <p class="reply">ㄴ${re.reply}</p>
+                        </c:if>
+                    </div>
+                    <div class="star-rating">
+				    <fieldset>
+				        <input type="radio" id="star${re.grade}-5" disabled ${re.grade ge 5 ? 'checked' : ''}><label for="star${re.grade}-5"></label>
+				        <input type="radio" id="star${re.grade}-4" disabled ${re.grade ge 4 ? 'checked' : ''}><label for="star${re.grade}-4"></label>
+				        <input type="radio" id="star${re.grade}-3" disabled ${re.grade ge 3 ? 'checked' : ''}><label for="star${re.grade}-3"></label>
+				        <input type="radio" id="star${re.grade}-2" disabled ${re.grade ge 2 ? 'checked' : ''}><label for="star${re.grade}-2"></label>
+				        <input type="radio" id="star${re.grade}-1" disabled ${re.grade ge 1 ? 'checked' : ''}><label for="star${re.grade}-1"></label>
 				    </fieldset>
-    				</li>		
-				</ul>
-			</li>
-			<li>
-				<h3>리뷰 탭</h3>
-				리뷰내용 :<input type="text" placeholder="리뷰내용을 써주세요" name="revcontent">
-				<input type="submit" value="작성">
-			</li>
-			</ul>
-		</form>
-	</div>
+				    <p>${re.grade}</p>
+				</div>
+                </li>
+            </c:forEach>
+        </ul>
+    </form>
+</div>
 
 	<div id="Info" class="tabcontent">
 		<h3>${store.storecontent}</h3>

@@ -4,7 +4,7 @@
  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
  <mapper namespace="customer">
  	<select id="cMypageList" parameterType="string" resultType="LoginDTO">
- 		 SELECT id, passwd, name, mail, phone FROM jaccount WHERE id = #{id}
+ 		 select id, passwd, name, mail, phone from jaccount where id = #{id}
  	</select>
  	
  	<update id="updateCustomer" parameterType="LoginDTO">
@@ -16,15 +16,15 @@
 	</delete>
 	
 	<select id ="pastOrderList" parameterType="String" resultType="OrderDTO">
-		SELECT A.id, TO_CHAR(A.indate, 'YYYY-MM-DD') AS indate, A.totprice, B.storename, j.MENUNAME 
-		FROM jorder A
-		JOIN jstore B ON A.storeid = B.storeid
-		JOIN JMENU j ON a.MENUID  = j.MENUID 
-		WHERE A.id = #{id}
+		select a.id, to_char(a.indate, 'yyyy-mm-dd') as indate, a.totprice, b.storename, j.menuname 
+		from jorder a
+		join jstore b on a.storeid = b.storeid
+		join jmenu j on a.menuid  = j.menuid 
+		where a.id = #{id}
 	</select>
 	
 	<select id ="customerCoupon" parameterType="String" resultType="CouponDTO">
-		select * from jcoupon A join jusercoupon U on A.couponid = U.couponid where U.id=#{id}
+		select * from jcoupon a join jusercoupon u on a.couponid = u.couponid where u.id=#{id}
 	</select>
 	
 	<select id="viewStore" parameterType="int" resultType="storeDTO">
@@ -32,12 +32,12 @@
 	</select>
 	<!-- 이재홍 작성 -->
 	<select id="viewStoreInfo" resultType="viewstoreDTO" parameterType="int">
-		SELECT jm.MENUID, jm.storeid, jm.jscateid, 
-       jm.menuname, jm.menucontent, jm.img, jm.price, js.JSTORENAME,
-       (SELECT COUNT(*) FROM jmenu WHERE STOREID = jm.STOREID AND JSCATEID = jm.JSCATEID) AS CNT
-		FROM jmenu jm
-		JOIN JSTORECATE js ON jm.STOREID = js.STOREID AND jm.JSCATEID = js.JSCATEID AND jm.STOREID = #{storeid}
-		ORDER BY jscateid, menuid
+		select jm.menuid, jm.storeid, jm.jscateid, 
+       jm.menuname, jm.menucontent, jm.img, jm.price, js.jstorename,
+       (select count(*) from jmenu where storeid = jm.storeid and jscateid = jm.jscateid) as cnt
+		from jmenu jm
+		join jstorecate js on jm.storeid = js.storeid and jm.jscateid = js.jscateid and jm.storeid = #{storeid}
+		order by jscateid, menuid
 	</select>
 	<select id="storeList" parameterType="String" resultType="StoreDTO">
          select * from jstore 
@@ -47,19 +47,27 @@
          select * from jcate
    </select>
 <select id="cateStoreList" parameterType="String" resultType="storeDTO">
-         SELECT storeid, storename, js.cateid, 
-   STORECONTENT, ID, js.IMG, COUPONID, 
-   ADDRESS, DETAILADDRESS, 
-   EXTRAADDRESS, POSTCODE, jc.CATENAME  
-   FROM jstore js, jcate jc WHERE js.CATEID = jc.CATEID AND js.cateID = #{cateid}
+         select storeid, storename, js.cateid, 
+   storecontent, id, js.img, couponid, 
+   address, detailaddress, 
+   extraaddress, postcode, jc.catename  
+   from jstore js, jcate jc where js.cateid = jc.cateid and js.cateid = #{cateid}
    </select>
    <select id="basketList" resultType="MenuDTO" parameterType="list">
-        SELECT * FROM jmenu WHERE menuid IN
+        select * from jmenu where menuid in
         <foreach item="id" index="index" collection="list" open="(" separator="," close=")">
             #{id}
         </foreach>
     </select>
     <select id="basket" parameterType="String" resultType="BasketDTO">
        select * from jbasket join jmenu on jbasket.menuid = jmenu.menuid where id =#{id}
+    </select>
+    
+    <insert id="insertBasket" parameterType="BasketDTO">
+    	INSERT INTO JBASKET VALUES (JBASKET_SEQ.NEXTVAL, #{id}, #{qty}, #{totprice}, #{menuid})
+    </insert>
+    
+    <select id="listReview" resultType="reviewDTO">
+    	select * from jreview
     </select>
  </mapper>

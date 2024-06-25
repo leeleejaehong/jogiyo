@@ -14,6 +14,7 @@ import com.itbank.jogiyo.dto.CouponDTO;
 import com.itbank.jogiyo.dto.LoginDTO;
 import com.itbank.jogiyo.dto.MenuDTO;
 import com.itbank.jogiyo.dto.OrderDTO;
+import com.itbank.jogiyo.dto.ReviewDTO;
 import com.itbank.jogiyo.dto.StoreDTO;
 import com.itbank.jogiyo.dto.ViewCateStoreDTO;
 import com.itbank.jogiyo.dto.ViewStoreDTO;
@@ -83,4 +84,11 @@ public class CustomerMapper {
 	public List<BasketDTO> basket(String id){
 	       return sqlSession.selectList("customer.basket", id);
 	   }
+	
+	public int insertBasket(BasketDTO dto) {
+		return sqlSession.insert("customer.insertBasket", dto);
+	}
+	public List<ReviewDTO> listReview() {
+		return sqlSession.selectList("customer.listReview");
+	}
 }

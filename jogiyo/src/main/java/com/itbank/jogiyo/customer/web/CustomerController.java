@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -31,6 +32,7 @@ import com.itbank.jogiyo.dto.CouponDTO;
 import com.itbank.jogiyo.dto.LoginDTO;
 import com.itbank.jogiyo.dto.MenuDTO;
 import com.itbank.jogiyo.dto.OrderDTO;
+import com.itbank.jogiyo.dto.ReviewDTO;
 import com.itbank.jogiyo.dto.StoreDTO;
 import com.itbank.jogiyo.dto.ViewCateStoreDTO;
 import com.itbank.jogiyo.dto.ViewStoreDTO;
@@ -122,6 +124,8 @@ public class CustomerController {
 			}
 			menuMap.get(menu.getJstorename()).add(menu);
 		}
+		List<ReviewDTO> review = customerMapper.listReview();
+		req.setAttribute("review", review);
 		req.setAttribute("store", dto);
 		req.setAttribute("menuMap", menuMap);
 		return "customer/viewStore";
@@ -140,9 +144,9 @@ public class CustomerController {
 	@RequestMapping(value = "/customer/basketList.do", method = RequestMethod.POST)
 	public String OrderBasketList(HttpServletRequest req, @RequestParam("sub") String menuid,
 			@RequestParam("sub2") String storename) {
-		System.out.println(storename);
 		List<MenuDTO> list = customerMapper.basketList(menuid);
-		req.setAttribute("blist", list);
+		System.out.println(list.size());
+		req.setAttribute("basket", list);
 		req.setAttribute("storename", storename);
 		return "customer/basket";
 	}
@@ -184,7 +188,7 @@ public class CustomerController {
 		return json;
 	}
 	@ResponseBody
-	@RequestMapping(value="customer/checkPasswd.ajax", method = RequestMethod.POST)
+	@RequestMapping(value="customer/checkPasswd.ajax",produces = "text/plain;charset=UTF-8", method = RequestMethod.POST)
 	public String ChekcPass(@RequestParam("id") String id, @RequestParam("passwd") String passwd) {
 		LoginDTO dto = new LoginDTO();
 		dto.setId(id);
@@ -196,18 +200,89 @@ public class CustomerController {
 		}
 	}
 	@ResponseBody
-	@RequestMapping(value="customer/insertBasket.ajax", method = RequestMethod.POST, consumes = "application/json")
-	 public String insertBasket(@RequestBody MenuDTO[] menus) {
-        
-        for (MenuDTO menu : menus) {
-            int menuid = menu.getMenuid();
-            int price = menu.getPrice();
-            int quantity = menu.getMqty();
-            
-            // 처리 로직 작성
-            System.out.println("Menu ID: " + menuid + ", Price: " + price + ", Quantity: " + quantity);
+	@RequestMapping(value="customer/insertBasket.ajax", method = RequestMethod.POST, consumes = "application/json",produces = "text/plain;charset=UTF-8")
+	 public ResponseEntity<String> insertBasket(@RequestBody BasketDTO[] baksets) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		int res = 0 ;
+        for (BasketDTO basket : baksets) {
+            basket.setId(authentication.getName());
+            basket.setTotprice(basket.getTotprice()*basket.getQty());
+            res += customerMapper.insertBasket(basket);
         }
-        
-        return "Success";
+        String msg = "장바구니에 물품을 " + res + "개 만큼 담았습니다. \n장바구니 페이지로 이동하시겠습니까?";
+        return ResponseEntity.ok(msg);
     }
+	   
+//  @ResponseBody
+//  @RequestMapping(value = "/customer/kakaopay.ajax", method = RequestMethod.POST)
+//  public KakaoPayReadyDTO KakaoPay(@RequestParam Map<String,Object> params) {
+//      System.out.println("Received params: " + params);
+//        KakaoPayReadyDTO res = customerMapper.kakaoPay(params);
+//     
+//  
+//     return res;
+//  }
+//  @ResponseBody
+//   @RequestMapping(value = "/api/kakaopay", method = RequestMethod.POST)
+//   public String kakaoPay(@RequestBody Map<String, Object> params) {
+//       String url = "https://open-api.kakaopay.com/v1/payment/ready";
+//
+//       HttpHeaders headers = new HttpHeaders();
+//       headers.set("Content-Type", "application/json");
+//       headers.set("Authorization", "KakaoAK SECRET_KEY_DEV9021211DB0E046ECE7E5FC9701CB1D019AE6B");
+//
+//       HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(params, headers);
+//       RestTemplate restTemplate = new RestTemplate();
+//       ResponseEntity<String> response = restTemplate.exchange(url, HttpMethod.POST, requestEntity, String.class);
+//
+//       return response.getBody();
+//   }
+  
+//  @ResponseBody
+//   @RequestMapping(value = "/api/kakaopay", method = RequestMethod.POST)
+//  public ResponseEntity<?> kakaoPay(@RequestBody Map<String, Object> data) {
+//     
+//       try {
+//           RestTemplate restTemplate = new RestTemplate();
+//           HttpHeaders headers = new HttpHeaders();
+//           headers.setContentType(MediaType.APPLICATION_JSON);
+//           headers.set("Authorization",  "SECRET_KEY DEV9021211DB0E046ECE7E5FC9701CB1D019AE6B"); // Admin 키 입력
+//           
+//           Map<String, Object> params = new HashMap<>();
+//           params.put("cid", "TC0ONETIME");
+//           params.put("partner_order_id", "partner_order_id");
+//           params.put("partner_user_id", "partner_user_id");
+//           params.put("item_name", data.get("item_name"));
+//           params.put("quantity", data.get("quantity"));
+//           params.put("total_amount", data.get("total_amount"));
+//           params.put("vat_amount", data.get("tax_free_amount"));
+//           params.put("tax_free_amount", "0");
+//           params.put("approval_url", "http://localhost:7080/kakaoPaySuccess");
+//           params.put("cancel_url", "http://localhost:7080/kakaoPayCancel");
+//           params.put("fail_url", "http://localhost:7080/kakaoPaySuccessFail");
+//           HttpEntity<Map<String, Object>> entity = new HttpEntity<>(params, headers);
+//           ResponseEntity<Map> response = restTemplate.exchange(
+//               "https://open-api.kakaopay.com/online/v1/payment/ready",
+//               HttpMethod.POST,
+//               entity,
+//               Map.class
+//           );
+//
+//           return ResponseEntity.ok(response.getBody());
+//       } catch (Exception e) {
+//           e.printStackTrace();
+//           return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("카카오페이 요청 실패");
+//       }
+//   }
+//
+//  @GetMapping("/kakaoPaySuccess")
+//   public String kakaoPaySuccess(@RequestParam("pg_token") String pg_token, Model model) {
+//     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//     List<BasketDTO> list = customerMapper.basket(authentication.getName());
+//     //List<OrderDTO> order = customerMapper.addOrder(); 
+//     
+//       return "redirect:/customer/basket.do";
+//   }
+//  
+//  
 }

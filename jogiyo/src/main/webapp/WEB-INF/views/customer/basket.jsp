@@ -4,8 +4,13 @@
     
 <jsp:include page="../header.jsp"/>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+
+<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     
+   
  <style>
         body {
             font-family: Arial, sans-serif;
@@ -132,7 +137,7 @@
                <caption>표 내용 부분</caption>
                <tbody>
                   <c:forEach items="${basket}" var="ba">
-                     <tr>
+                     <tr class="basketTable">
                         <td class="td_width_1"></td>
                         <td class="td_width_2">${ba.img}</td>
                         <td class="td_width_3">${ba.menuname}</td>
@@ -160,11 +165,32 @@
          </div>
          
          
-         
+        <table class="order-table">
+            
+            <tbody>
+               <tr>
+                       
+                    <td>
+                <c:forEach items="${blist}" var="list">
+                      <p>${list.menuname} 
+                          <button onclick="deleteOrder()">삭제</button>
+                       
+                    </p> 
+                </c:forEach>
                     
                        </td>
-                    <td class="actions">
-                        <button onclick="order()">주문</button>
+    
+ 
+       
+        
+            
+            <tbody>
+               <tr>
+                       
+                    
+                    <td >
+                          <button id="kaobtn"  onclick="Pay()" style="background:#fee500; color:#000; border-radius:12px; padding: 10px 20px;">카카오페이</button>
+
                     </td>
                    <td class="actions">
                         <button onclick="">메뉴추가</button>
@@ -175,19 +201,13 @@
 
               
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-   const selectedNames = JSON.parse(localStorage.getItem('selectedNames'));
-   const resultElement = document.getElementById('result');
-   resultElement.innerText = selectedNames.join('\n');
-});
-</script>
+
                  
             </tbody>
         </table>
-    </div>
+   
       <script>
-      
+
         function order() {
             alert('주문 기능을 구현하세요.');
         }
@@ -196,8 +216,100 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('삭제 기능을 구현하세요.');
         }
         
-       
+        function Pay() {
+           
+            var items = [];
+             var totalAmount = 0;
+             $('.basketTable').each(function() {
+                 var menuname = $(this).find('.td_width_3').text().trim();
+                 var quantity = parseInt($(this).find('.quantity_input').val());
+                 var price = parseInt($(this).find('.price_td .red_color').text().replace(/[^0-9]/g, ''));
+            console.log(price);
+                 if (menuname && quantity && price) {
+                     items.push(menuname);
+                     
+                     totalAmount += price * quantity;
+                 }
+             });
+             
+             console.log(totalAmount);
+             console.log(items);
+             
+             IMP.init('imp46547018');
+             IMP.request_pay({ 
+                 pg: 'kakaopay.TC0ONETIME',
+                 pay_method: 'card', 
+                 merchant_uid: 'id' + new Date().getTime(),
+                 name: items.join(', '),   //상품이름
+                 amount: totalAmount,
+                 buyer_name: '하하' ,     //구매자 이름(id)
+               
+             }, function (rsp) {
+                 if (rsp.success) {
+                    
+                 } else {
+                    alert('결제에 실패하였습니다: ' + rsp.error_msg);
+                 }
+             });
+           }
         
+        /*  $(document).ready(function() {
+       
+        $('#kaobtn').click(function() {
+           var csrfToken = $("meta[name='_csrf']").attr("content");
+           var csrfHeader = $("meta[name='_csrf_header']").attr("content");  
+           var items = [];
+            var totalAmount = 0;
+            var totalQuantity = 0;
+
+            $('.basketTable').each(function() {
+                var menuname = $(this).find('.td_width_3').text().trim();
+                var quantity = parseInt($(this).find('.quantity_input').val());
+                var price = parseInt($(this).find('.price_td .red_color').text().replace(/[^0-9]/g, ''));
+
+                if (menuname && quantity && price) {
+                    items.push(menuname);
+                    totalQuantity += quantity;
+                    totalAmount += price * quantity;
+                }
+            });
+            $.ajax({
+                type: 'POST',
+                url: '/api/kakaopay',
+                contentType: 'application/json',
+                
+                
+                data: JSON.stringify({
+                     item_name: items.join(', '),
+                      quantity: totalQuantity,
+                      total_amount: totalAmount,
+                    "_csrf": csrfToken
+                }),
+                
+                beforeSend: function(xhr) {
+                    // AJAX 요청 헤더에 CSRF 토큰 추가
+                    xhr.setRequestHeader(csrfHeader, csrfToken);
+                },
+                
+                success: function(res) {
+                    if (res.next_redirect_pc_url) {
+                        location.href = res.next_redirect_pc_url;
+                    } else {
+                        console.error("응답에 next_redirect_pc_url이 없습니다.");
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error("AJAX 요청 실패:", status, error);
+                    console.log(xhr.responseText);  // 서버 응답 메시지 출력
+                }
+            });
+        });
+    });
+   
+     */
+
+        
+      
     </script>
 
    
@@ -205,4 +317,3 @@ document.addEventListener('DOMContentLoaded', function() {
 </html>
 
 <jsp:include page="../footer.jsp"/>
-
