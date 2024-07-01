@@ -6,21 +6,30 @@ import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.itbank.jogiyo.dto.CategoryDTO;
+import com.itbank.jogiyo.dto.CouponDTO;
 import com.itbank.jogiyo.dto.JstoreCateDTO;
 import com.itbank.jogiyo.dto.LoginDTO;
 import com.itbank.jogiyo.dto.MenuDTO;
 import com.itbank.jogiyo.dto.OrderDTO;
 import com.itbank.jogiyo.dto.OrderListDTO;
+import com.itbank.jogiyo.dto.ReviewDTO;
+import com.itbank.jogiyo.dto.StopStoreDTO;
 import com.itbank.jogiyo.dto.StoreDTO;
+
 
 @Service
 public class StoreMapper {
 
 	@Autowired
 	private SqlSession sqlSession;
+	private final PasswordEncoder bcryptPasswordEncoder;
+	public StoreMapper(PasswordEncoder bcryptPasswordEncoder) {
+		this.bcryptPasswordEncoder = bcryptPasswordEncoder;
+	}
 	
 	public List<StoreDTO> listStore(){
 		List<StoreDTO> list = sqlSession.selectList("store.listStore");
@@ -38,13 +47,14 @@ public class StoreMapper {
 		return owner;
 	}
 	public int updateOwner(LoginDTO dto) {
+		dto.setPasswd(bcryptPasswordEncoder.encode(dto.getPasswd()));
 		return sqlSession.update("store.editOwner", dto);	
 	}
 	public int deleteOwner(String id) {
 		return sqlSession.delete("store.deleteOwner", id);
 	}
-	public List<StoreDTO> findStore(String storename){
-		List<StoreDTO>list = sqlSession.selectList("store.findStore" , storename);
+	public List<StoreDTO> findStore(int storeid){
+		List<StoreDTO>list = sqlSession.selectList("store.findStore" , storeid);
 		return list;
 	}
 	public int updateStore(StoreDTO dto) {
@@ -103,5 +113,36 @@ public class StoreMapper {
 	
 	public List<CategoryDTO> getAllCate(){
 		return sqlSession.selectList("store.getAllCate");
+	}
+	public int stopStore(StopStoreDTO dto) {
+		return sqlSession.update("store.stopStore",dto);
+	}
+	public int stopStore2(int storeid) {
+		return sqlSession.update("store.stopStore2",storeid);
+	}
+	public int run(int storeid) {
+		return sqlSession.selectOne("store.run",storeid);
+	}
+	public int runStore(int storeid) {
+		return sqlSession.update("store.runStore",storeid);
+	}
+	public int addCoupon(CouponDTO dto) {
+		return sqlSession.insert("store.addCoupon",dto);
+	}
+	public List<ReviewDTO>getReview( Map<String, Object> params){
+		return sqlSession.selectList("store.getReview", params);
+	}
+	public int addReview(ReviewDTO dto) {
+		return sqlSession.update("store.addReview",dto);
+	}
+	public String getReview2(int reviewid) {
+		String reply=sqlSession.selectOne("store.getReview2",reviewid);
+		return reply;
+	}
+	public int deleteReview(int reviewid) {
+		return sqlSession.update("store.deleteReview", reviewid);
+	}
+	public int getReviewCount(int storeid) {
+		return sqlSession.selectOne("store.getReviewCount", storeid);
 	}
 }

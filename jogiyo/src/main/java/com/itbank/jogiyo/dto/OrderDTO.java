@@ -14,7 +14,14 @@ public class OrderDTO {
 	private int cnt;
 	private String storename;
 	private String menuname;
+	private String address;
 	
+	public String getAddress() {
+		return address;
+	}
+	public void setAddress(String address) {
+		this.address = address;
+	}
 	public String getMenuname() {
 		return menuname;
 	}

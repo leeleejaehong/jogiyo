@@ -19,7 +19,14 @@ public class StoreDTO {
 	private String extraaddress;
 	private String catename;
 	private int run;
+	private String stopdate;
 
+	public String getStopdate() {
+		return stopdate;
+	}
+	public void setStopdate(String stopdate) {
+		this.stopdate = stopdate;
+	}
 	public String getCatename() {
 		return catename;
 	}

@@ -49,6 +49,10 @@ public class AdminMapper {
 	public int deleteUser(String id) {
 		return sqlSession.delete("login.deleteUser", id);
 	}
-	
-
+	public NoticeDTO indexNotice() {
+		return sqlSession.selectOne("notice.indexNotice");
+	}
+	public boolean countNotice() {
+		return sqlSession.selectOne("notice.countNotice");
+	}
 }

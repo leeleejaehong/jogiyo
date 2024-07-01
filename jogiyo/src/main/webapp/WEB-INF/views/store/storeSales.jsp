@@ -7,6 +7,7 @@
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/storeSales.css">
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <script type ="text/javascript">
 
@@ -101,6 +102,19 @@
 			}		
 		})
 	}
+	 function cancelChart() {
+	        // 차트를 포함하는 div 요소를 선택
+	        var canvasDiv = document.getElementById('canvasDiv');
+
+	        // 차트 요소 삭제
+	        var logNameChart = document.getElementById('logNameChart');
+	        if (logNameChart) {
+	            logNameChart.remove();
+	        }
+
+	        // 새로운 빈 canvas 요소 추가
+	        canvasDiv.innerHTML = '<canvas id="logNameChart" style="  width: 500px; display: flex;  box-sizing: border-box;  height: 500px;"></canvas>';
+	    }
 	function colorize() {
 		var r = Math.floor(Math.random()*200);
 		var g = Math.floor(Math.random()*200);
@@ -110,17 +124,41 @@
 	}
 	
 </script>
+<div class="sales-container2">
 
+	
 <div align="center" style="background-color: #fa0050; padding: 10px;">
 	<span style="color: white;">시작날짜 : </span><input type="text" name="date1" id="date1" style="margin-right: 10px;"> 
 	<span style="color: white;">종료날짜 : </span><input type="text" name="date2" id="date2" style="margin-right: 10px;"><br> 
 		<input type="hidden" name="storeid" id="storeid" value="${storeid}">
 	<input type="button" name="searchBtn" id="searchBtn" value="검색" onclick="menuSales()" style="background-color: white; color: #fa0050; border: none; padding: 5px 10px; margin-top: 10px; margin-right: 10px;"> 
-	<input type="button" name="canBtn" id="canBtn" value="취소" style="background-color: white; color: #fa0050; border: none; padding: 5px 10px; margin-top: 10px;">
+	<input type="button" name="canBtn" id="canBtn" value="취소" style="background-color: white; color: #fa0050; border: none; padding: 5px 10px; margin-top: 10px;" onclick="cancelChart()">
 </div>
- <div id="canvasDiv" style="display: flex; justify-content: center;">
+<div class="content">
+<div class="toolbar">
+<ul>
+            <strong><li>현재가게:${storename}</li></strong>
+            <li><a href="/store/selectStore.do?storeid=${storeid}&storename=${storename}">주문목록</a></li>
+            <li><a href="/store/reviewStore.do?storeid=${storeid}&storename=${storename}">리뷰관리</a></li>
+            <li><a href="/store/storeMenu.do?storeid=${storeid}&storename=${storename}">메뉴관리</a></li>
+            <li><a href="/store/storeSales2.do?storeid=${storeid}&storename=${storename}">매출관리(기간별)</a></li>
+            <li><a href="/store/storeSales.do?storeid=${storeid}&storename=${storename}">매출관리(메뉴별)</a></li>
+            <li><a href="/store/addCate.do?storeid=${storeid}&storename=${storename}">카테고리추가</a></li>
+            <li><a href="/store/stopStore.do?storeid=${storeid}&storename=${storename}">가게일시정지</a></li>
+            <li><a href="/store/addCoupon.do?storeid=${storeid}&storename=${storename}">쿠폰추가하기</a></li>
+        </ul>
+</div>
+ <div id="canvasDiv" style="display: flex; justify-content: center;margin-left: 547px; ">
+
+	 
+	</div>
+
+ 
+ 
 <!--<canvas id="logNameChart" style="width:400px;height:400px;"></canvas>-->
 
+
+</div>
 </div>
 <script>
 	$(document).ready(function() {
@@ -153,3 +191,4 @@
 </script>
 </body>
 </html>
+<jsp:include page="../footer.jsp"/>

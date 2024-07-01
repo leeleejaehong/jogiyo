@@ -90,9 +90,8 @@
 			<li><a
 				href="${pageContext.request.contextPath}/customer/mypage.do">내정보
 					보기</a></li>
-			<li><a
-				href="${pageContext.request.contextPath}/customer/storeList.do">전체가게리스트
-			</a></li>
+			<li><a href="${pageContext.request.contextPath}/customer/notice.do">공지사항 보기</a></li>		
+			<li><a href="${pageContext.request.contextPath}/customer/listDelivery.do">배달현황 보기</a></li>
 		</ul>
 		<sec:authorize access="isAuthenticated()">
 			<sec:authentication property="principal.authorities"
@@ -134,6 +133,10 @@
 			</div>
 		</div>
 	</div>
+	  <div class="fixedBtn_wrap topBtn">
+      <a href="${pageContext.request.contextPath}/customer/storeList.do" class="btn_fixedTicketing">주문하기</a>
+      <a href="#" id="btn_gotoTop"><img src="https://img.cgv.co.kr/R2014/images/common/btn/gotoTop.png" alt="최상단으로 이동" /></a>
+    </div>
 	<script>
 		function clearSearch() {
 			document.getElementById('search-input').value = '';

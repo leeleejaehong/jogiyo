@@ -1,9 +1,14 @@
 package com.itbank.jogiyo.store.web;
-
 import java.awt.Window;
 import java.awt.event.WindowStateListener;
 import java.io.PrintStream;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -30,11 +35,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.itbank.jogiyo.customer.service.CustomerMapper;
 import com.itbank.jogiyo.dto.CategoryDTO;
+import com.itbank.jogiyo.dto.CouponDTO;
 import com.itbank.jogiyo.dto.JstoreCateDTO;
 import com.itbank.jogiyo.dto.LoginDTO;
 import com.itbank.jogiyo.dto.MenuDTO;
 import com.itbank.jogiyo.dto.OrderDTO;
 import com.itbank.jogiyo.dto.OrderListDTO;
+import com.itbank.jogiyo.dto.ReviewDTO;
+import com.itbank.jogiyo.dto.StopStoreDTO;
 import com.itbank.jogiyo.dto.StoreDTO;
 import com.itbank.jogiyo.login.service.LoginMapper;
 import com.itbank.jogiyo.properties.PropertyReader;
@@ -49,6 +57,8 @@ public class StoreController {
 	private CustomerMapper customerMapper;
 	private UploadFile uploadFile; 
 	private LoginMapper loginmapper;
+	
+	
 	
 	@RequestMapping("/store/store.do")
 	public String listStore(HttpServletRequest req) {
@@ -65,6 +75,7 @@ public class StoreController {
 		return "store/AddStore";
 		
 	}
+	
 	@RequestMapping(value ="/store/AddStore.do", method = RequestMethod.POST)
 	public ModelAndView AddStoreOk(HttpServletRequest req , StoreDTO dto) {
 		ModelAndView mav = new ModelAndView();
@@ -72,6 +83,7 @@ public class StoreController {
 		if(uploadFile.uploadFile(dto.getFile())) {
 			dto.setImg(uploadFile.getFullName());
 			dto.setRun(1);
+		
 		}
 		System.out.println(dto.getPostcode()+","+dto.getAddress()+","+dto.getDetailaddress()+","+dto.getExtraaddress());
 		int res = storemapper.addStore(dto);
@@ -118,21 +130,121 @@ public class StoreController {
 		req.setAttribute("storeid", storeid);
 		
 		List<OrderListDTO>orderList=storemapper.orderList(Integer.parseInt(storeid));
-		req.setAttribute("orderList", orderList);
+		int run=storemapper.run(Integer.parseInt(storeid));
+		if(run == 0) {
+			req.setAttribute("run","[영업중지중]");
+			req.setAttribute("orderList", orderList);
+			req.setAttribute("storename", storename);
+		}else if(run == 1) {
+			req.setAttribute("run", "[영업중]");
+			req.setAttribute("orderList", orderList);
+			req.setAttribute("storename", storename);
+		}
+		
 	
 		return "store/selectStore";
 	}
-	
+	@RequestMapping("/store/reviewStore.do")
+	public ModelAndView reviewStore(@RequestParam("storeid") String storeid,
+	                                @RequestParam(value = "page", defaultValue = "1") int page) {
+	    int itemsPerPage = 5; // 한 페이지에 보여질 리뷰 수
+	    int startIndex = (page - 1) * itemsPerPage; // 시작 인덱스 수정
+	    int endIndex = page * itemsPerPage; // 끝 인덱스 수정
+
+	    // 파라미터 설정
+	    Map<String, Object> params = new HashMap<>();
+	    params.put("storeid", storeid);
+	    params.put("startIndex", startIndex);
+	    params.put("endIndex", endIndex);
+
+	   
+	    List<ReviewDTO> rList = storemapper.getReview(params);
+
+	  
+	    int totalCount = storemapper.getReviewCount(Integer.parseInt(storeid));
+	    int pageCount = (int) Math.ceil((double) totalCount / itemsPerPage); // 전체 페이지 수 계산
+
+	   
+	    ModelAndView mav = new ModelAndView("store/reviewStore");
+	    mav.addObject("rList", rList);
+	    mav.addObject("currentPage", page);
+	    mav.addObject("pageCount", pageCount); 
+
+	    return mav;
+	}
+	/*
 	@RequestMapping("/store/reviewStore.do")
 	public String orderList(HttpServletRequest req) {
+		String storeid=req.getParameter("storeid");
+		List<ReviewDTO>rList = storemapper.getReview(Integer.parseInt(storeid));
+		req.setAttribute("rList",rList);
 		return "store/reviewStore";
 	}
+	*/
 	@RequestMapping("/store/stopStore.do")
 	public String stopStore(HttpServletRequest req) {
 	String storeid =req.getParameter("storeid");
+	String storename=req.getParameter("storename");
 	req.setAttribute("storeid",storeid);
+	req.setAttribute("storename", storename);
 	return "store/stopStore";
 	}
+	@RequestMapping(value="/store/stopStorePro.do", method=RequestMethod.POST)
+	public String stopStorePro(	HttpServletRequest req,@ModelAttribute StopStoreDTO dto, BindingResult results) {
+		
+		String storeid =req.getParameter("storeid");
+		String selectDatetime = req.getParameter("selectDatetime");
+		System.out.println(selectDatetime);
+		if(results.hasErrors()) {
+			System.out.println("dto구성중 에러발생");
+		}
+
+		int res= storemapper.stopStore(dto);
+		if (res>0) {
+			req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);
+			req.setAttribute("msg","일시정지성공");
+		}else {
+			req.setAttribute("url","/store/selectStore.do?storeid="+storeid);
+			req.setAttribute("msg", "일시정지실패");
+			
+		}
+		
+		return "message";
+		
+	}
+	@RequestMapping("/store/instacestopStore.do")
+	public String instancestopStoreMenu(HttpServletRequest req) {
+		String storeid = req.getParameter("storeid");
+		int res= storemapper.stopStore2(Integer.parseInt(storeid));
+		if (res>0) {
+			req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);
+			req.setAttribute("msg","일시정지성공");
+			
+		}else {
+			req.setAttribute("url","/store/selectStore.do?storeid="+storeid);
+			req.setAttribute("msg", "일시정지실패");
+			
+		}
+		
+		return "message";
+	}
+	@RequestMapping("/store/runStore.do")
+		public String runStoreMenu(HttpServletRequest req) {
+			String storeid = req.getParameter("storeid");
+			int res= storemapper.runStore(Integer.parseInt(storeid));
+			if (res>0) {
+				req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);
+				req.setAttribute("msg","영업시작성공");
+				
+				
+			}else {
+				req.setAttribute("url","/store/selectStore.do?storeid="+storeid);
+				req.setAttribute("msg", "영업시작실패");
+				
+			}
+			
+			return "message";
+		}
 	@RequestMapping("/store/storeMenu.do")
 	public String storeMenu(HttpServletRequest req) {
 		String storeid=req.getParameter("storeid");
@@ -145,7 +257,9 @@ public class StoreController {
 	@RequestMapping("/store/storeSales.do")
 	public String storeSales(HttpServletRequest req) {
 		String storeid= req.getParameter("storeid");
+		String storename=req.getParameter("storename");
 		req.setAttribute("storeid", storeid);
+		req.setAttribute("storename", storename);
 		return "store/storeSales";
 	}
 	@RequestMapping("/store/ownerInfo.do")
@@ -167,10 +281,11 @@ public class StoreController {
 	@RequestMapping("/store/addMenu.do")
 	public String addMenu(HttpServletRequest req) {
 		String storeid=req.getParameter("storeid");
-		
+		String storename=req.getParameter("storename");
 		req.setAttribute("storeid", storeid);
 		List<JstoreCateDTO>cateList = storemapper.getCateList(Integer.parseInt(storeid));
 		req.setAttribute("cateList", cateList);
+		req.setAttribute("storename", storename);
 		return "store/addMenu";
 	}
 	@RequestMapping(value="/store/addMenuPro.do", method=RequestMethod.POST)
@@ -257,8 +372,8 @@ public class StoreController {
 	}
 	@RequestMapping("/store/editStore.do")
 	public String editStore(HttpServletRequest req) {
-		String storename=req.getParameter("storename");
-		List <StoreDTO>list=storemapper.findStore(storename);
+		String storeid=req.getParameter("storeid");
+		List <StoreDTO>list=storemapper.findStore(Integer.parseInt(storeid));
 		req.setAttribute("findStore",list);
 		return "store/editStore";
 	}
@@ -302,7 +417,6 @@ public class StoreController {
 		if(result.hasErrors()) {
 			dto.setGrade("미정");
 		}
-			
 		int res=storemapper.updateOwner(dto);
 		ModelAndView mav = new ModelAndView();
 		if(res>0) {
@@ -394,7 +508,9 @@ public class StoreController {
 	@RequestMapping("/store/storeSales2.do")
 	public String storeSales2(HttpServletRequest req) {
 		String storeid= req.getParameter("storeid");
+		String storename= req.getParameter("storename");
 		req.setAttribute("storeid", storeid);
+		req.setAttribute("storename", storename);
 		return "store/storeSales2";
 	}
 	@ResponseBody
@@ -456,14 +572,91 @@ public class StoreController {
 		int res=storemapper.startMenu(Integer.parseInt(menuid));
 		if(res>0) {
 			req.setAttribute("msg", "품절취소완료");
-			req.setAttribute("url", "/store/storeMenu.do?storeid="+storeid);	
+			req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);	
 		}else {
 			req.setAttribute("msg", "품절취소실패");
-			req.setAttribute("url", "/store/storeMenu.do");
+			req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);
 		}
 		return "message";
 	}
 	
+	
+	@RequestMapping("/store/addCoupon.do")
+	public String addCoupon(HttpServletRequest req) {
+		String storeid=req.getParameter("storeid");
+		String storename=req.getParameter("storename");
+		req.setAttribute("storeid",storeid);
+		req.setAttribute("storename", storename);
+		
+		return "/store/addCoupon";
+	}
+	@RequestMapping("store/addCouponOk.do")
+	public String addCouponOk(@ModelAttribute CouponDTO dto, BindingResult Results,HttpServletRequest req) {
+		int storeid= dto.getStoreid();
+		if(Results.hasErrors()) {
+			System.out.println("쿠폰dto 생성시 오류");
+		}
+		int res = storemapper.addCoupon(dto);
+		if(res>0) {
+			req.setAttribute("msg", "쿠폰등록완료!");
+			req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);
+		}else {
+			req.setAttribute("msg", "쿠폰등록실패!");
+			req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);
+		}
+		return "message";
+	}
+	
+	
+	@RequestMapping("/store/addReviewOk.do")
+	public String addReviewOk(HttpServletRequest req,@ModelAttribute ReviewDTO dto , BindingResult results) {
+		if(results.hasErrors()) {
+			System.out.println("리뷰dto구성중에러발생");
+		}
+		String reviewid = req.getParameter("reviewid");
+		String storeid=req.getParameter("storeid");
+		int res = storemapper.addReview(dto);
+		if(res>0) {
+			req.setAttribute("url", "/store/reviewStore.do?storeid="+storeid);
+			req.setAttribute("msg", "답글등록성공!");
+		}else {
+			req.setAttribute("url", "/store/reviewStore.do?storeid="+storeid);
+			req.setAttribute("msg", "답글등록실패!");
+		}
+		return "message";
+	}
+	
+	@RequestMapping("/store/editReviewOk.do")
+	public String editReviewOk(HttpServletRequest req,@ModelAttribute ReviewDTO dto , BindingResult results) {
+		if(results.hasErrors()) {
+			System.out.println("리뷰dto구성중에러발생");
+		}
+		String reviewid = req.getParameter("reviewid");
+		String storeid=req.getParameter("storeid");
+		int res = storemapper.addReview(dto);
+		if(res>0) {
+			req.setAttribute("url", "/store/reviewStore.do?storeid="+storeid);
+			req.setAttribute("msg", "답글수정성공!");
+		}else {
+			req.setAttribute("url", "/store/reviewStore.do?storeid="+storeid);
+			req.setAttribute("msg", "답글수정실패!");
+		}
+		return "message";
+	}
+	@RequestMapping("/store/deleteReview.do")
+	public String deleteReview(HttpServletRequest req){
+	String reviewid=req.getParameter("reviewid");
+	String storeid=req.getParameter("storeid");
+	int res = storemapper.deleteReview(Integer.parseInt(reviewid));
+	if(res>0) {
+		req.setAttribute("msg", "답글삭제성공");
+		req.setAttribute("url", "/store/reviewStore.do?storeid="+storeid);
+	}else {
+		req.setAttribute("msg", "답글삭제실패");
+		req.setAttribute("url", "/store/reviewStore.do?storeid="+storeid);
+	}
+	return "message";
+	}
 }
 
 	

@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%> 
 <jsp:include page="../header.jsp"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/login.css">
 <style>
     /* 기본 스타일 */
     .form-container {
@@ -95,13 +96,13 @@
                 <tr>
                     <td style="text-align: center;"margin-top: 40px;">
                         <label for="id" style="display:none;">아이디</label>
-                        <input type="text" name="id" placeholder="아이디 입력(필수)" required style="margin-top: 30px; margin-bottom: 0px;">
+                        <input type="text" name="id" placeholder="아이디 입력(필수)" required style="margin-top: 30px; margin-bottom: 3px;">
                     </td>
                 </tr>
                 <tr>
                     <td style="text-align: center;">
                         <label for="passwd" style="display:none;">비밀번호</label>
-                        <input type="password" name="passwd" placeholder="비밀번호 입력(필수)" required>
+                        <input type="password" name="passwd" placeholder="비밀번호 입력(필수)" required style="margin-bottom: 3px;">
                     </td>
                 </tr>
                 <tr>
@@ -111,9 +112,17 @@
                 </tr>
                 <tr>
                     <td style="text-align: center;">
-                        <a href="/login/join_membership.do">회원가입</a> |
-                        <a href="/login/id_find.do">아이디 찾기</a> |
-                        <a href="/login/pw_find.do">비밀번호 찾기</a>
+                        <a href="/login/join_membership.do"
+                        onclick="alert('카카오 로그인을 먼저 해주세요')">회원가입</a> |
+                        
+                        <a href="/login/id_find.do"
+                        onclick="alert('카카오 로그인을 먼저 해주세요')">아이디 찾기</a> |
+                        
+                        <a href="/login/pw_find.do"
+                        onclick="alert('카카오 로그인을 먼저 해주세요')">비밀번호 찾기</a> |
+                        
+                        <a href="/login/owner_membership.do"
+                        onclick="alert('카카오 로그인을 먼저 해주세요')">점주 회원가입</a>
                     </td>
                 </tr>
             </table>

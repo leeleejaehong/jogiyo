@@ -13,6 +13,13 @@ public class OrderListDTO {
 	private int daily_total;
 	private String month;
 	private int monthly_total;
+	private int run;
+	public int getRun() {
+		return run;
+	}
+	public void setRun(int run) {
+		this.run = run;
+	}
 	public String getDate1() {
 		return date1;
 	}

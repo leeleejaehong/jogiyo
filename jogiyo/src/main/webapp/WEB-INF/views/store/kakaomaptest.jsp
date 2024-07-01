@@ -15,7 +15,8 @@
 
   </script>
  <body>
-<div id="map" style="width:100%;height:350px;"></div>
+ <div align="center">
+<div id="map" style="width:350px;height:350px;"></div>
 
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=${key}&libraries=services"></script>
 <script>
@@ -66,7 +67,10 @@
     });
   });
 </script>
+</div>
 </body>
+
+</div>
 
  
  

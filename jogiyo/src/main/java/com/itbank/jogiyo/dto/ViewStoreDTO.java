@@ -9,7 +9,10 @@ public class ViewStoreDTO {
 	private String img;
 	private String price;
 	private String jstorename;
+	private int mqty;
 	private int cnt;
+	// 윤장호 mqty추가
+
 	public int getMenuid() {
 		return menuid;
 	}
@@ -63,5 +66,12 @@ public class ViewStoreDTO {
 	}
 	public void setCnt(int cnt) {
 		this.cnt = cnt;
+	}
+	
+	public int getMqty() {
+		return mqty;
+	}
+	public void setMqty(int mqty) {
+		this.mqty = mqty;
 	}
 }

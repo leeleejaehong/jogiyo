@@ -87,6 +87,7 @@ function viewStore(id) {
 			<li><a
 				href="${pageContext.request.contextPath}/customer/mypage.do">내정보
 					보기</a></li>
+			<li><a href="${pageContext.request.contextPath}/customer/notice.do">공지사항 보기</a></li>	
 		</ul>
 		<a href="#" onclick="viewStore(1)">가게보기테스트버튼</a>
 		<div class="login">

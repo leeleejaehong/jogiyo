@@ -16,4 +16,8 @@ public class Scheduler {
 		System.out.println("스케줄러 실행");
         sqlSession.insert("login.test");
     }
+	@Scheduled(cron = "0 0/1 * * * ?")
+	public void updateDelivery() {
+		sqlSession.update("delivery.deliveryStatus");
+	}
 }

@@ -1,0 +1,147 @@
+@charset "UTF-8";
+
+body {
+	font-family: Arial, sans-serif;
+	background-color: #f5f5f5;
+	margin: 0;
+	padding: 20px;
+}
+
+.order-table-container {
+	background-color: #ffffff;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	max-width: 20%;
+	margin: auto;
+}
+
+.order-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+}
+
+.order-table th, .order-table td {
+	padding: 12px;
+	text-align: left;
+	border-bottom: 1px solid #dddddd;
+	text-align: center;
+}
+
+.order-table th {
+	background-color: #f2f2f2;
+}
+
+.actions button {
+	padding: 8px 10px;
+	background-color: #fa006c;
+	color: white;
+	border: none;
+	border-radius: 4px;
+	cursor: pointer;
+	width: 90px;
+}
+
+.actions button:disabled {
+	background-color: #cccccc;
+}
+
+.order-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.order-header h2 {
+	margin: 0;
+	font-size: 20px;
+}
+
+.order-header span {
+	font-size: 14px;
+	color: #fa006c;
+}
+
+table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.table_text_align_center {
+	text-align: center;
+}
+
+caption {
+	visibility: hidden;
+	width: 0;
+	height: 0;
+	font-size: 0;
+	line-height: 0;
+	overflow: hidden;
+}
+
+th {
+	text-align: center;
+	color: #333;
+	border-bottom: 1px solid #e7e7e7;
+	background: #f4f9fd;
+	padding: 2px 0;
+}
+
+.td_width_1 {
+	text-align: center;
+	width: 5%;
+}
+
+.td_width_2 {
+	text-align: center;
+	width: 10%;
+}
+
+.td_width_3 {
+	text-align: center;
+	width: 25%;
+}
+
+.td_width_4 {
+	text-align: center;
+	width: 15%;
+}
+.address-inputs {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.address-inputs input[type="text"] {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    width: calc(100% - 22px);
+}
+
+.address-inputs input[type="button"] {
+    background-color: #fa006c;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    width: auto;
+    align-self: flex-start;
+}
+
+.address-inputs input[type="button"]:hover {
+    background-color: #d50050;
+}
+#kaobtn {
+    background: #fee500;
+    color: #000;
+    border-radius: 12px;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    width: 120px;
+}

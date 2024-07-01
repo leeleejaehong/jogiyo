@@ -3,6 +3,7 @@
 <!-- 메뉴추가페이지 -->
 <jsp:include page="../header.jsp"/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/addMenu.css">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <script>
 	let ck=false;
@@ -23,13 +24,31 @@
 
 
 
-<html>
-	<div align="center">
-		<h2>메뉴 추가페이지</h2>
- 			<table>
+
+	<div class="add">
+		
+		<div class="content2">
+		<div class="toolbar">
+<ul>
+            <strong><li>현재가게:${storename}</li></strong>
+            <li><a href="/store/selectStore.do?storeid=${storeid}&storename=${storename}">주문목록</a></li>
+            <li><a href="/store/reviewStore.do?storeid=${storeid}&storename=${storename}">리뷰관리</a></li>
+            <li><a href="/store/storeMenu.do?storeid=${storeid}&storename=${storename}">메뉴관리</a></li>
+            <li><a href="/store/storeSales2.do?storeid=${storeid}&storename=${storename}">매출관리(기간별)</a></li>
+            <li><a href="/store/storeSales.do?storeid=${storeid}&storename=${storename}">매출관리(메뉴별)</a></li>
+            <li><a href="/store/addCate.do?storeid=${storeid}&storename=${storename}">카테고리추가</a></li>
+            <li><a href="/store/stopStore.do?storeid=${storeid}&storename=${storename}">가게일시정지</a></li>
+            <li><a href="/store/addCoupon.do?storeid=${storeid}&storename=${storename}">쿠폰추가하기</a></li>
+        </ul>
+</div>
+<div class="addMenu">
+<h2>메뉴 추가페이지</h2>
+ 			
+ 		
  			<form name="f" action ="/store/addMenuPro.do" method="post" enctype="multipart/form-data" onsubmit="return check()">
  			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
  			<input type ="hidden" name="storeid" value="${storeid}">
+ 			<table>
  			<tr>
  			<th>가게 카테고리:</th>
  			<td>
@@ -63,8 +82,11 @@
 				<input type="submit" value="추가하기">
 				<input type="reset" value="취소하기"></td>
 			</tr>
+			</table>
 			</form>
- 		</table>
+ 		</div>
+ 		</div>
 		</body>
 	</div>
 </html>
+<jsp:include page="../footer.jsp"/>

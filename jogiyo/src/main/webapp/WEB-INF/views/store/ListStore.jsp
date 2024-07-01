@@ -1,15 +1,34 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
-<!-- ListStroe.jsp -->
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <jsp:include page="../header.jsp"/>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/storeInfo.css">
 
-<meta charset="UTF-8">
+<div class="listings">
+    <c:forEach var="dto" items="${getStore}">
+        <div class="listing">
+            <img src="${pageContext.request.contextPath}/resources/img/${dto.img}" alt="가게이미지">
+            <div class="details">
+                <h2>${dto.storename}</h2>
+                <div class="min_order">가게카테고리: ${dto.catename}</div>
+                <div class="min_order">가게위치: ${dto.address} | ${dto.detailaddress} | ${dto.extraaddress}</div>
+                <div class="min_order">가게 주인id: ${dto.id}</div>
+                <form class="modify-form" name="f" method="post" action="/store/selectStore.do" onsubmit="return confirm('해당 가게로 이동하시겠습니까?');">
+                    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+                     <input type="hidden" name="storeid" value="${dto.storeid}">
+                     <input type="hidden" name ="storename" value="${dto.storename}">
+                    <input type="submit" value="이동하기">
+                </form>
+            </div>
+        </div>
+    </c:forEach>
+</div>
+
+<jsp:include page="../footer.jsp"/>
  
- 
+ <!--  
 	<div align="center">
 	<table>
 	<tr>
@@ -25,7 +44,7 @@
 	
 	<td><img src="${pageContext.request.contextPath}/resources/img/${dto.img}" width="80" height="80"></td>
 	<td>${dto.storename}</td>
-	<td>${dto.cateid}</td>
+	<td>${dto.catename}</td>
 	<td>${dto.address}<br>
 	${dto.detailaddress}
 	${dto.extraaddress}</td>
@@ -44,3 +63,4 @@
 	</div>
 
 </html>
+-->

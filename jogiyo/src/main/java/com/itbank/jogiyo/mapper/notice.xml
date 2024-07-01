@@ -18,4 +18,18 @@
 	<update id="editNotice" parameterType="noticeDTO"> 
 		update jnoti set subject = #{subject}, content = #{content} where notiid = #{notiid} 
 	</update>
+	<select id="indexNotice" resultType="noticeDTO">
+		select *
+		from jnoti
+		order by to_date(indate, 'yyyy-mm-dd hh24:mi:ss') desc
+		fetch first 1 row only
+	</select>
+	<select id="countNotice" resultType="boolean">
+			select case
+	         when count(*) > 1 then 1
+	         when count(*) = 0 then 0
+	         else count(*)
+	       end as result
+			from jnoti
+	</select>
  </mapper>

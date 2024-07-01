@@ -2,6 +2,7 @@
 <jsp:include page="../header.jsp" />
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/addStore.css">
 <script>
     let ck = false;
     function check() {
@@ -18,58 +19,50 @@
     }
     
 </script>
-
-<div align="center">
+<div class="my-page-container" >
+<h2>가게 추가</h2>
     <form name="f" action="/store/AddStore.do" method="POST" enctype="multipart/form-data" onsubmit="return check()">
         <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-        <table>
-            <tr>
-                <th>가게이름 :</th>
-                <td><input type="text" name="storename" title="가게이름"></td>
-            </tr>
-            <tr>
-                <th>카테고리(int)</th>
-                <td>
-                    <select name="cateid" title="카테고리">
+        
+            
+                <label for="storename" class="my-page-label">가게이름:</label>
+               <input type="text" name="storename" title="가게이름" class="my-page-input">
+           
+           
+                <label for="cateid" class="my-page-label">카테고리:</label>
+               
+                    <select name="cateid" title="카테고리" class="select">
                     <c:forEach items="${clist}" var="cate">
                         <option value="${cate.cateid}">${cate.catename}</option>
                     </c:forEach>
                     </select>
-                </td>
-            </tr>
-            <tr>
-                <th>가게설명 :</th>
-                <td><textarea rows="5" cols="30" name="storecontent" title="가게설명"></textarea></td>
-            </tr>
-            <tr>
-                <th>id</th>
-                <td><input type="text" name="id" value="${jId}" readonly></td>
-            </tr>
-            <tr>
-                <th>가게위치 (나중에 api로작업):</th>
-                <td>
-                    <input type="text" name="postcode" id="postcode" placeholder="우편번호" title="우편번호">
-                    <input type="button" onclick="execDaumPostcode()" value="우편번호 찾기"><br>
-                    <input type="text" name="address" id="address" placeholder="주소" title="주소"><br>
-                    <input type="text" name="detailaddress" id="detailAddress" placeholder="상세주소" title="상세주소">
-                    <input type="text" name="extraaddress" id="extraAddress" placeholder="참고항목" title="참고항목">
-                </td>
-            </tr>
-            <tr>
-                <th>가게이미지(필수) :</th>
-                <td><input type="file" name="file" title="가게사진"></td>
-            </tr>
-            <tr>
-                <th>쿠폰(없으면 0)</th>
-                <td><input type="text" name="couponid" title="쿠폰"></td>
-            </tr>
-            <tr>
-                <td colspan="2" align="center">
-                    <input type="submit" value="확인">
-                    <input type="reset" value="취소">
-                </td>
-            </tr>
-        </table>
+
+              <label for="cateid" class="my-page-label"> 가게설명 :</label>
+                <textarea rows="5" cols="30" name="storecontent" title="가게설명"></textarea>
+           
+            
+              <label for="id" class="my-page-label"> ID :</label>
+                <input type="text" name="id" value="${jId}" readonly class="my-page-input">
+            
+                 <label for="address" class="my-page-label"> 가게위치 :</label>
+               
+                    <input type="text" name="postcode" id="postcode" placeholder="우편번호" title="우편번호" class="my-page-input">
+                    <input type="button" onclick="execDaumPostcode()" value="우편번호 찾기" class="my-page-button">
+                    <input type="text" name="address" id="address" placeholder="주소" title="주소" class="my-page-input"><br>
+                    <input type="text" name="detailaddress" id="detailAddress" placeholder="상세주소" title="상세주소" class="my-page-input">
+                    <input type="text" name="extraaddress" id="extraAddress" placeholder="참고항목" title="참고항목" class="my-page-input">
+         
+             <label for="file" class="my-page-label"> 가게사진 :</label>
+                <input type="file" name="file" title="가게사진" class="my-page-input">
+          
+                 <label for="couponid" class="my-page-label"> 쿠폰 (없으면0을 입력해주세요):</label>
+                <input type="text" name="couponid" title="쿠폰" class="my-page-input">
+            
+               
+                    <input type="submit" value="확인" class="my-page-button">
+                    <input type="reset" value="취소" class="my-page-button">
+                
+        
     </form>
 </div>
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>

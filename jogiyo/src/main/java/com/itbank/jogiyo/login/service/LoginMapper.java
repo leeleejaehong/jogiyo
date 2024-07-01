@@ -57,6 +57,17 @@ public class LoginMapper {
 		return res;
 	}
 	
+	public LoginDTO owner_membership(LoginDTO dto) {
+		LoginDTO owner_membership = sqlSession.selectOne("login.owner_membership", dto);
+		return owner_membership;
+	}
+	
+	public int owner_membership_ok(LoginDTO dto) {
+		dto.setPasswd(bcryptPasswordEncoder.encode(dto.getPasswd()));
+		int res = sqlSession.insert("login.owner_membership_ok", dto);
+		return res;
+	}
+	
 	public int checkId(String id) {
 		return sqlSession.selectOne("checkId", id);
 	}
@@ -69,8 +80,15 @@ public class LoginMapper {
 		LoginDTO pw_find = sqlSession.selectOne("login.pw_find", params);
 		return pw_find;
 	}
+	
+	public LoginDTO pw_find_two(Map<String, String> params) {
+		LoginDTO pw_find_two = sqlSession.selectOne("login.pw_find_two", params);
+		return pw_find_two;
+	}
+	
 	public int updateCustomer(LoginDTO dto) {
 		dto.setPasswd(bcryptPasswordEncoder.encode(dto.getPasswd()));
 		return sqlSession.update("customer.updateCustomer", dto);
 	}
+
 }

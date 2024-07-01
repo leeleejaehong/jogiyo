@@ -10,9 +10,15 @@ public class BasketDTO {
 	private String menuname;
 	private String img;
 	private int price;
+	private String jscateid;
 	
 	
-	
+	public String getJscateid() {
+		return jscateid;
+	}
+	public void setJscateid(String jscateid) {
+		this.jscateid = jscateid;
+	}
 	public String getMenuname() {
 		return menuname;
 	}

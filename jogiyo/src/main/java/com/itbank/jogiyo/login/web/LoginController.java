@@ -27,6 +27,7 @@ public class LoginController {
 	public String login(HttpServletRequest req) {
 		return "login/login";
 	}
+	
 
 	@RequestMapping("/login/loginSuccess.do")
 	public String loginSuccess(HttpServletRequest req) {
@@ -43,12 +44,16 @@ public class LoginController {
 	}
 	
 	@RequestMapping("/login/join_membership.do")
-	public String join_membership() {
-		
-		return "/login/join_membership";
-	}
+	   public String join_membership(HttpServletRequest req) {
+	      int random = (int)(Math.random() * 10000);
+	      req.setAttribute("random", random);
+	      return "/login/join_membership";
+	   }
+	
 	@RequestMapping("/login/id_find.do")
 	public String id_find(HttpServletRequest req, LoginDTO dto) {
+		 int random = (int)(Math.random() * 10000);
+	      req.setAttribute("random", random);
 		return "login/id_find";
 	}
 
@@ -76,21 +81,25 @@ public class LoginController {
         return "message";
     }
 
-	@RequestMapping("/login/id_find_ff.do")
-    public String id_find_ff(HttpServletRequest req) {
-		String id = req.getParameter("id");
-		req.setAttribute("id", id);
-		return "/login/id_find_result";
-	}
-	
 
 	
 	@RequestMapping("/login/pw_find.do")
 	public String pw_find(HttpServletRequest req, LoginDTO dto) {
 		List<LoginDTO> find = loginmapper.listaccount();
 		req.setAttribute("find", find);
+		 int random = (int)(Math.random() * 10000);
+	      req.setAttribute("random", random);
+	    
 		return "/login/pw_find";
 	}
+	
+	@RequestMapping("/login/pw_find_two.do") // 아이디 찾기 페이지에서 비밀번호 찾기 넘어가는 곳
+	public String pw_find(HttpServletRequest req) {
+		String id= req.getParameter("id");
+		req.setAttribute("id", id);
+		return "/login/pw_find_two";
+	}
+	
 	
 	@RequestMapping("/login/pw_find_ok.do")
 	public String pw_find_result(@RequestParam Map<String, String> params,
@@ -116,6 +125,41 @@ public class LoginController {
 		return "message";
 	}
 	
+	@RequestMapping("/login/id_find_ff.do")
+	 public String id_find_ff(HttpServletRequest req) {
+		String id = req.getParameter("id");
+		req.setAttribute("id", id);
+		return "/login/id_find_result";
+	}
+	
+	
+	
+	@RequestMapping("/login/pw_find_ok_two.do") // 두번째 비밀번호 찾기 페이지
+	public String pw_find_result2(@RequestParam Map<String, String> params,
+			HttpServletRequest req) {
+		String phone1 = params.get("phone1");
+		String phone2 = params.get("phone3");
+		String phone3 = params.get("phone3");
+		String phone = phone1 + "-" + phone2 + "-" + phone3;
+		
+		params.put("phone" ,phone);
+		String name = params.get("name");
+		String id = params.get("id");
+		
+		LoginDTO pfind = loginmapper.pw_find_two(params);
+		if (pfind != null) {
+		String pw = pfind.getPasswd();
+		req.setAttribute("msg", "비밀번호를 찾았습니다!");
+		req.setAttribute("url", "/login/pw_find_result.do?pw="+pw);
+		}else {
+		req.setAttribute("msg", "입력하신 정보와 일치하는 비밀번호가 없습니다.");
+		req.setAttribute("url", "login.do");
+		}
+		return "message";
+		}
+	
+	
+	
 	@RequestMapping("/login/pw_find_result.do")
 	public String pw_ff(HttpServletRequest req) {
 		String pw = req.getParameter("pw");
@@ -123,10 +167,38 @@ public class LoginController {
 		return "/login/pw_find_result";
 	}
 	
+	@RequestMapping("/login/pw_find_result_two.do") // 비밀번호 찾기 결과 두번째페이지
+	public String pw_ff2(HttpServletRequest req) {
+		String pw = req.getParameter("pw");
+		req.setAttribute("pw", pw);
+		return "/login/pw_find_result_two";
+	}
+	
 	@RequestMapping(value = "/login/join_membership_ok.do", method=RequestMethod.POST)
 	public String joinMember(HttpServletRequest req, LoginDTO dto) {
 		dto.setPhone(req.getParameter("phone1")+"-"+req.getParameter("phone2")+"-"+req.getParameter("phone3"));
 		int res = loginmapper.join_membership_ok(dto);
+		if (res>0) {
+			req.setAttribute("msg","회원가입이 되셨습니다.");
+			req.setAttribute("url", "login.do");
+		}else {
+			req.setAttribute("msg", "회원가입이 실패하셨습니다.");
+			req.setAttribute("url", "login.do");
+		}
+		return "message";
+	}
+	
+	@RequestMapping("/login/owner_membership.do")
+	   public String owner_membership(HttpServletRequest req) {
+	      int random = (int)(Math.random() * 10000);
+	      req.setAttribute("random", random);
+	      return "/login/owner_membership";
+	   }
+	
+	@RequestMapping(value = "/login/owner_membership_ok.do", method=RequestMethod.POST)
+	public String owner_membership_ok(HttpServletRequest req, LoginDTO dto) {
+		dto.setPhone(req.getParameter("phone1")+"-"+req.getParameter("phone2")+"-"+req.getParameter("phone3"));
+		int res = loginmapper.owner_membership_ok(dto);
 		if (res>0) {
 			req.setAttribute("msg","회원가입이 되셨습니다.");
 			req.setAttribute("url", "login.do");

@@ -8,12 +8,15 @@
  	</select>
  	
  	<insert id="addStore" parameterType="storeDTO">
-		insert into jstore values(jstore_seq.nextval,#{storename},#{cateid},#{storecontent},
+		INSERT INTO JSTORE (storeid,STORENAME,CATEID,STORECONTENT,ID,IMG,COUPONID,ADDRESS,DETAILADDRESS,EXTRAADDRESS,POSTCODE,RUN)
+		values(jstore_seq.nextval,#{storename},#{cateid},#{storecontent},
 		#{id},#{img},#{couponid},#{address},#{detailaddress},#{extraaddress},#{postcode},#{run})
 	</insert>
 	
 	<select id="getStore" parameterType="string" resultType="storeDTO">
-	select * from jstore where id = #{id}  <!--내 가게리스트 보기 -->
+	 SELECT *FROM jstore j1
+ 	JOIN jcate j2 ON j2.cateid = j1.cateid
+	 WHERE id=#{id}  <!--내 가게리스트 보기 -->
 	</select>
 	
 	<select id="getOwner" parameterType="string" resultType="LoginDTO">
@@ -28,8 +31,8 @@
 	delete from jaccount where id = #{id}
 	</delete>
 	
-	<select id ="findStore" parameterType="string" resultType="storeDTO">
-	select * from jstore where storename= #{storename}
+	<select id ="findStore" parameterType="int" resultType="storeDTO">
+	select * from jstore where storeid= #{storeid}
 	</select>
 	
 	<update id="updateStore" parameterType="storeDTO">
@@ -94,5 +97,54 @@
 	<select id="getAllCate" resultType="categoryDTO">
 		select * from jcate
 	</select>
+	<update id="stopStore" parameterType="StopStoreDTO">
+	update jstore set run=0 , stopdate = TO_DATE(#{selectDatetime},'YYYY-MM-DD') where storeid=#{storeid}
+	</update>
+	<select id="run" resultType="int">
+	select run from jstore where storeid=#{storeid}
+	</select>
+	<update id="runStore" parameterType="int">
+	update jstore set run=1 , stopdate=null where storeid=#{storeid}
+	</update>
+	<update id ="stopStore2" parameterType="int">
+	update jstore set run=0, stopdate=SYSDATE + 1 where storeid=#{storeid}
+	</update>
+	
+	<update id="autorunStore">
+	UPDATE jstore SET run=1 ,stopdate=null WHERE stopdate IS NOT NULL AND stopdate &lt; SYSDATE
+	</update>
+	<insert id="addCoupon" parameterType="CouponDTO">
+	insert into jcoupon values(jcoupon_seq.nextval, #{couname},#{coucontent},#{storeid})
+	</insert>
+	<select id="getReview" parameterType="map" resultType="reviewDTO">
+    <![CDATA[
+    SELECT * FROM (
+        SELECT ROWNUM AS rnum, R.* FROM (
+            SELECT * FROM jreview WHERE storeid = #{storeid} ORDER BY reviewdate DESC
+        ) R
+        WHERE ROWNUM <= #{endIndex}
+    ) WHERE rnum > #{startIndex}
+    ]]>
+    <!--  <select id="getReview" parameterType="int" resultType="reviewDTO">
+	select * from jreview where storeid=#{storeid}
+	</select>-->
+</select>
+	<!--  <select id="getReview" parameterType="int" resultType="reviewDTO">
+	select * from jreview where storeid=#{storeid}
+	</select>-->
+	<update id="addReview" parameterType="reviewDTO">
+	update jreview set reply=#{reply} where reviewid=#{reviewid}
+	</update>
+	<select id="getReview2" parameterType="int" resultType="String">
+	select reply from jreview where reviewid=#{reviewid}
+	</select>
+	<update id="deleteReview" parameterType="int">
+	update jreview set reply=null where reviewid=#{reviewid}
+	</update>
+	<select id="getReviewCount" parameterType="int" resultType="int">
+    SELECT COUNT(*) AS TOTAL_COUNT
+    FROM JREVIEW
+    WHERE STOREID = #{storeid}
+</select>
 	
  </mapper>

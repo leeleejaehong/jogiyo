@@ -16,12 +16,12 @@
 	</delete>
 	
 	<select id ="pastOrderList" parameterType="String" resultType="OrderDTO">
-		select a.id, to_char(a.indate, 'yyyy-mm-dd') as indate, a.totprice, b.storename, j.menuname 
-		from jorder a
-		join jstore b on a.storeid = b.storeid
-		join jmenu j on a.menuid  = j.menuid 
-		where a.id = #{id}
-	</select>
+      select a.id, orderid, to_char(a.indate, 'yyyy-mm-dd') as indate, a.totprice, b.storename, j.menuname, b.storeid 
+      from jorder a
+      join jstore b on a.storeid = b.storeid
+      join jmenu j on a.menuid  = j.menuid 
+      where a.id = #{id}
+   </select>
 	
 	<select id ="customerCoupon" parameterType="String" resultType="CouponDTO">
 		select * from jcoupon a join jusercoupon u on a.couponid = u.couponid where u.id=#{id}
@@ -32,18 +32,20 @@
 	</select>
 	<!-- 이재홍 작성 -->
 	<select id="viewStoreInfo" resultType="viewstoreDTO" parameterType="int">
-		select jm.menuid, jm.storeid, jm.jscateid, 
+		select jm.menuid, jm.storeid, jm.jscateid,jm.mqty,
        jm.menuname, jm.menucontent, jm.img, jm.price, js.jstorename,
        (select count(*) from jmenu where storeid = jm.storeid and jscateid = jm.jscateid) as cnt
 		from jmenu jm
 		join jstorecate js on jm.storeid = js.storeid and jm.jscateid = js.jscateid and jm.storeid = #{storeid}
 		order by jscateid, menuid
 	</select>
-	<select id="storeList" parameterType="String" resultType="StoreDTO">
+	<select id="storeList" resultType="StoreDTO">
          select * from jstore 
    </select>
-   
-   <select id="cateList" parameterType="String" resultType="StoreDTO">
+   <select id="storeListByCate" parameterType="String" resultType="storeDTO">
+   		select * from jstore where cateid = #{cateid}
+   </select>
+   <select id="cateList" resultType="StoreDTO">
          select * from jcate
    </select>
 <select id="cateStoreList" parameterType="String" resultType="storeDTO">
@@ -67,7 +69,34 @@
     	INSERT INTO JBASKET VALUES (JBASKET_SEQ.NEXTVAL, #{id}, #{qty}, #{totprice}, #{menuid})
     </insert>
     
-    <select id="listReview" resultType="reviewDTO">
-    	select * from jreview
+    <select id="listReview" resultType="reviewDTO" parameterType="int">
+    	select * from jreview where storeid = #{storeid}
     </select>
+       <insert id="insertReview" parameterType="reviewDTO">
+        insert into jreview (reviewid, storeid, revcotent, reply, grade, img, reviewdate, id) values (jreview_seq.nextval, #{storeid}, #{revcotent}, null, #{grade}, #{img}, sysdate, #{id}) 
+   </insert>
+    <insert id="addOrder">
+    INSERT INTO jorder (orderid, id, indate, qty, totprice, storeid, menuid)
+    SELECT jorder_seq.nextval, id, sysdate, qty, totprice, #{storeid}, menuid 
+    FROM JBASKET
+    WHERE menuid = #{menuid} AND id = #{id}
+	</insert>
+    
+     <delete id="basketDelete" parameterType="String">
+       delete from jbasket where basketid= #{basketid}
+   </delete>
+   <delete id="orderDelete" parameterType="String">
+       delete from jorder where orderid= #{orderid}
+   </delete>
+   <insert id="directOrder" parameterType="java.util.List">
+  INSERT INTO JORDER (orderid, id, indate, qty, totprice, storeid, menuid)
+  SELECT JORDER_SEQ.NEXTVAL, T.* FROM
+  (
+    <foreach collection="list" item="item" separator="UNION ALL">
+      SELECT #{item.id} as id, SYSDATE as indate, #{item.qty} as qty, 
+             #{item.totprice} as totprice, #{item.storeid} as storeid, #{item.menuid} as menuid
+      FROM DUAL
+    </foreach>
+  ) T
+</insert>
  </mapper>

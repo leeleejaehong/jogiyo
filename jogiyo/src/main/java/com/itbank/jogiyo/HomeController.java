@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import com.itbank.jogiyo.admin.service.AdminMapper;
 import com.itbank.jogiyo.dto.CategoryDTO;
+import com.itbank.jogiyo.dto.NoticeDTO;
 import com.itbank.jogiyo.properties.PropertyReader;
 
 
@@ -34,11 +35,19 @@ public class HomeController {
 	public String home(Locale locale, HttpServletRequest req) {
 		logger.info("Welcome home! The client locale is {}.", locale);
 		List<CategoryDTO> list = adminmapper.listCate();
+		boolean result = adminmapper.countNotice();
 		PropertyReader reader = new PropertyReader();
 		String fileDir = reader.getProperty("file_dir");
+		req.setAttribute("result", result);
 		req.setAttribute("cateList", list);
 		req.setAttribute("fileDir", fileDir);
 		return "main";
+	}
+	@RequestMapping("indexNotice.do")
+	public String indexNotice(HttpServletRequest req) {
+		NoticeDTO dto = adminmapper.indexNotice();
+		req.setAttribute("dto", dto);
+		return "viewNotice";
 	}
 	
 }
