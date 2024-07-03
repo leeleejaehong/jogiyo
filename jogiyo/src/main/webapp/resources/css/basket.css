@@ -6,13 +6,16 @@ body {
 	margin: 0;
 	padding: 20px;
 }
-
+.content_totalCount_section{
+	width: 50%;
+	margin: auto;
+}
 .order-table-container {
 	background-color: #ffffff;
 	padding: 20px;
-	border-radius: 8px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	max-width: 20%;
+/* 	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+	max-width: 50%;
 	margin: auto;
 }
 

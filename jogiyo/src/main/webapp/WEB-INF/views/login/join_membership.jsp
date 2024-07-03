@@ -3,129 +3,7 @@
 <!-- 회원가입 페이지 -->
 <jsp:include page="../header.jsp" />
 
-<style>
-    /* 기본 스타일 */
-    .form-container {
-        margin: 0 auto;
-        border-collapse: collapse;
-        width: 25%;
-        border: 1px solid #ddd;
-        border-radius: 8px;
-        box-shadow: 0 8px 16px rgba(1, 1, 1, 0.2);
-        background-color: #f9f9f9;
-        padding-left: 20px;
-    	padding-right: 20px;
-        padding-top: 35px;
-   		padding-bottom: 60px;
-    }
-    
-   .form-row {
-    display: flex;
-    align-items: center; /* 세로 중앙 정렬 */
-}
-    
-    /*테이블 세로 길이 줄임  */
-    .form-container td {
-        padding: 1px;
-    }
-
-    .form-container input[type="text"]
-    .form-container input[type="password"] {
-        width: calc(110% - 20px);
-        padding: 8px;
-        border-radius: 5px;
-        border: 1px solid #ccc;
-        display: block;
-        margin: 10px auto;
-        font-size: 14px;
-    }
-
-    .form-container button { /* 인증번호, 취소, 인증번호 전송 버튼  */
-        background-color: #fa0050;
-        color: white;
-        border: none;
-        padding-top: 4px; /* 위쪽 padding 설정 */
-   		padding-bottom: 4px; /* 아래쪽 padding 설정 */
-   		padding-left: 5px; /* 왼쪽 padding 설정 */
-    	padding-right: 5px; /* 오른쪽 padding 설정 */
-        cursor: pointer;
-        border-radius: 5px;
-        width: calc(80% - 10px); /* 버튼 넓이 */
-        display: block;
-        margin: 10px auto;
-        font-size: 16px;
-    }
-    
-    table {
-    border-spacing: 3px; /* 테이블 셀 사이의 간격을 설정함 */
-	}
-
-	table, tr, td {
-	    padding: 7px; /* 테이블과 각 행, 셀의 내부 여백을 설정하여 간격을  줌 */
-	}
-    
-  	.form-container input[type="submit"]{	/* 확인 submit */
-  		background-color: #fa0050;
-        color: white;
-        border: none;
-        padding-top: 4px; /* 위쪽 padding 설정 */
-   		padding-bottom: 4px; /* 아래쪽 padding 설정 */
-   		padding-left: 2px; /* 왼쪽 padding 설정 */
-    	padding-right: 2px; /* 오른쪽 padding 설정 */
-        cursor: pointer;
-        border-radius: 5px;
-        width: calc(130% - 10px); /* 버튼 넓이 */
-        display: block;
-        margin: 10px auto;
-        font-size: 16px;
-  	}
-    
-
-    .form-container .actions form {
-        display: inline;
-    }
-
-    .form-container .actions button {
-        background-color: #fa0050;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        cursor: pointer;
-        border-radius: 5px;
-        margin: 5px 0;
-    }
-
-    .form-container a {
-        color: #fa0050;
-        text-decoration: none;
-        font-size: 14px;
-    }
-
-    .form-container a:hover {
-        text-decoration: underline;
-    }
-
-    /* 반응형 스타일 */
-    @media (max-width: 768px) {
-        .form-container {
-            width: 80%;
-        }
-        .form-container input[type="text"],
-        .form-container input[type="password"],
-        .form-container button {
-            width: 100%;
-            margin: 10px 0;
-        }
-    }
-
-    @media (max-width: 480px) {
-        .form-container {
-            width: 100%;
-        }
-    } 
-</style>
-
-
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/joinMemberShip.css">
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script type="text/javascript">
@@ -173,16 +51,16 @@
          alert("아이디 중복확인을 먼저 해주세요.")
          return false;
       }
-
-      /* const jfrm = document.f1;
-      let length = jfrm.length - 2;
+      /* text 입력 안할 시 title에 대한 알림창이 나옴 */
+     const jfrm = document.f1;
+      let length = jfrm.length - 4; // length에 버튼 값까지 포함  인증번호전송, 중복확인, 취소, 확인 까지 포함이라서 -4를 함
       for (let i = 0; i < length; i++) {
          if (jfrm[i].value == "" || jfrm[i].value == null) {
             alert(jfrm[i].title + "을 입력해 주세요");
             jfrm[i].focus();
             return false;
          }
-      } */
+      }
       return true;
    }
    </script>
@@ -319,62 +197,82 @@
 
 </script> 
 
+<div align="center" style="margin-top: 60px;">
 <div align="center" style="margin-top: 20px;""margin-bottom: 20px;">
 <h1><span style="font-weight: bold; color:#fa0050; font-family: 'Gothic A1', sans-serif;">회원가입</span></h1>
 </div>
 <form name="f1" method="post" onsubmit="return check()"
-   action="/login/join_membership_ok.do">
+	action="/login/join_membership_ok.do" class="form-container">
    <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+     <div align="center" style="margin-top: -5px;""margin-bottom: 30px;" "border-radius: 8px;">
    
 
-      <tr>
-         <td>이름</td>
-         <td><input type="text" name="name" id="name" disabled>
-         </td>
-      </tr>
-      <tr>
-         <td>아이디</td>
-         <td><input type="text" name="id" id="jid" title="아이디" disabled>
-            <input type="button" value="중복확인" onclick="idCheck()"></td>
-      </tr>
-      <tr>
+      	<table>
+      	<tr class="form-row">
+         <td>이름</td><td><input type="text" name="name" id="name" disabled></td>
+       	</tr>
+      	</table>
+      	
+      	<table>
+      	<tr class="form-row">
+         <td>아이디</td><td><input type="text" name="id" id="jid" title="아이디" disabled></td>
+       	 <td><input type="button" value="중복확인" id="dupli" style="margin-left: 20px;" onclick="idCheck()"></td>
+      	</tr>
+      	</table>
+      	
+      <table>
+      <tr class="form-row">
          <td>비밀번호</td>
-         <td><input type="password" name="passwd" id="pw" title="비밀번호" disabled>
-         </td>
+         <td><input type="password" name="passwd" id="pw" title="비밀번호" disabled></td>
       </tr>
-      <tr>
+      </table>
+      
+      <table>
+      <tr class="form-row">
          <td>이메일</td>
-         <td><input type="text" name="mail" id="mail" title="이메일" disabled>
-         </td>
+         <td><input type="text" name="mail" id="mail" title="이메일" disabled></td>
       </tr>
-      <tr>
-         <td>인증번호</td>
-         <td><input type="text" name="code" id="code" placeholder="(필수)인증번호 입력">
-         <button type="button" onclick="out()">인증번호 확인</button>
-          <p id="message"></p>
-         </td>
-      </tr>
-   
-      <tr>
+      </table>
+  	 
+   	  <table>
+      <tr class="form-row">
          <td>전화번호</td>
-         <td>
-         <input type="text" title="전화번호" name="phone1" id="p1"size="3" maxlength="3" disabled> -
-         <input type="text"title="전화번호" name="phone2" id="p2" size="3" maxlength="4" disabled> -
-         <input type="text" title="전화번호" name="phone3" id="p3" size="3"maxlength="4" disabled>
-         </td>
+         <td><input type="text" title="전화번호" name="phone1" id="p1" size="3" maxlength="3" disabled></td>
+         <td>-</td> 
+         <td><input type="text" title="전화번호" name="phone2" id="p2" size="3" maxlength="4" disabled></td>
+         <td>-</td> 
+         <td><input type="text" title="전화번호" name="phone3" id="p3" size="3" maxlength="4" disabled></td>
       </tr>
+      </table>
+      
+      <table>
+      <tr class="form-row">
+         <td>인증번호</td>
+         <td><input type="text" name="code" id="code" placeholder="(필수)인증번호 입력"></td>
+         <td><button type="button" onclick="out()">인증번호 확인</button></td>
+          <p id="message"></p>
+      </tr>
+   	  </table>
+        
+      <table>
       <tr>
-         <td>
-         <input type="submit" value="확인" id="ok" disabled>
-            <button type="button"
-               onclick="alert('로그인 페이지로 이동합니다.');
-            window.location.href='login.do';">취소</button>
-              <a href="https://kauth.kakao.com/oauth/authorize?client_id=
-				faae190fd5bb60c910724b6781aeda60&redirect_uri=http://localhost:7080/
-				login/join_membership.do&response_type=code&scope=talk_message">카카오 로그인</a>
-            <button type="button" onclick="sendToMe()">인증번호 전송</button>
-          
-         </td>
+         <td><input type="submit" value="확인" id="ok" disabled></td>
+         <td><button type="button" style="width: 50px;" onclick="alert('로그인 페이지로 이동합니다.');
+            window.location.href='login.do';">취소</button></td>
+         <td><button type="button" onclick="sendToMe()">인증번호 전송</button></td>
       </tr>
+      </table> 
+      
+      <tr>
+     	<td><a href="https://kauth.kakao.com/oauth/authorize?client_id=
+			faae190fd5bb60c910724b6781aeda60&redirect_uri=http://localhost:7080/
+			login/join_membership.do&response_type=code&scope=talk_message">
+			<img src="${pageContext.request.contextPath}/resources/img/kakao_login_medium_narrow.png"
+						alt="카카오 로그인"></a></td>
+	  </tr>
+	  </div>
+      </div>
+      <div align="center" style="margin-bottom: 110px; border-radius: 8px;">
+      </div>
 </form>
 <jsp:include page="../footer.jsp" />

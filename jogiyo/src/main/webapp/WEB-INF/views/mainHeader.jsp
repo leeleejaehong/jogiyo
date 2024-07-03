@@ -85,6 +85,8 @@
 						<li><a
 							href="${pageContext.request.contextPath}/admin/listAcc.do">사용자
 								관리</a></li>
+						<li><a
+							href="${pageContext.request.contextPath}/admin/ownerList.do">점주 회원가입 목록</a></li>
 					</ul></li>
 			</sec:authorize>
 			<li><a

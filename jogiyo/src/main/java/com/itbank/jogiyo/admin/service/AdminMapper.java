@@ -55,4 +55,14 @@ public class AdminMapper {
 	public boolean countNotice() {
 		return sqlSession.selectOne("notice.countNotice");
 	}
+	// 점주 회원가입 목록
+	public List<LoginDTO> ownerList() {
+      List<LoginDTO> ownerList = sqlSession.selectList("login.ownerList");
+      return ownerList;
+	}
+	   
+	public int ownerListOk(String ownerId){
+      int res = sqlSession.update("login.ownerListOk", ownerId);
+      return res;
+	}
 }

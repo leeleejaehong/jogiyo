@@ -54,4 +54,14 @@
 	<select id="isPass" resultType="String" parameterType="String">
 		select passwd from jaccount where id = #{id}
 	</select>
+	<update id="updatePassword">
+		update jaccount set passwd = #{passwd} where id = #{id}
+	</update>
+		<select id="ownerList" resultType="loginDTO">
+       select * from jaccount where grade = 'ROLE_4'
+   </select>
+   
+   <update id="ownerListOk" parameterType="loginDTO">
+      update jaccount set grade = 'ROLE_2' where id = #{ownerId}
+   </update>
 </mapper>

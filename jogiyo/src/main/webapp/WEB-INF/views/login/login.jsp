@@ -119,7 +119,7 @@
                         onclick="alert('카카오 로그인을 먼저 해주세요')">아이디 찾기</a> |
                         
                         <a href="/login/pw_find.do"
-                        onclick="alert('카카오 로그인을 먼저 해주세요')">비밀번호 찾기</a> |
+                        onclick="alert('카카오 로그인을 먼저 해주세요')">비밀번호 변경하기</a> |
                         
                         <a href="/login/owner_membership.do"
                         onclick="alert('카카오 로그인을 먼저 해주세요')">점주 회원가입</a>
@@ -130,6 +130,7 @@
     </div>
     <div align="center" style="margin-bottom: 200px; border-radius: 8px;">
     </div>
+    </div>
     <jsp:include page="../footer.jsp"/>
-</div>
+
 

@@ -13,7 +13,7 @@
 <div class="content_middle_section"></div>
 <!-- 장바구니 가격 합계 -->
 <!-- cartInfo -->
-<div class="content_totalCount_section">
+<div class="content_totalCount_section" align="center">
 	<table class="order-table">
 		<caption>표 제목 부분</caption>
 		<tbody>
@@ -34,7 +34,7 @@
 			<c:forEach items="${basket}" var="ba">
 				<tr class="basketTable">
 					<td class="td_width_1" style="display: none;">${ba.menuid}</td>
-					<td class="td_width_2">${ba.img}</td>
+					<td class="td_width_2"><img src="${pageContext.request.contextPath}/resources/img/${ba.img}" alt="${ba.menuname}"></td>
 					<td class="td_width_3">${ba.menuname}</td>
 					<td class="td_width_4 price_td"><span class="red_color"><fmt:formatNumber
 								value="${ba.price}" pattern="##,### 원" /></span><br></td>

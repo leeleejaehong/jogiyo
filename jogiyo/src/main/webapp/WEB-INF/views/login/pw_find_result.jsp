@@ -2,38 +2,36 @@
     pageEncoding="UTF-8"%>
 <!-- 비밀번호 찾기 결과 페이지 -->
 <jsp:include page="../header.jsp"/>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/login.css">
-<html>
-<head>
-	<title>비밀번호 찾기</title>
-</head>
-	<body>
-		<form name="f" method="post" action="pw_find_result.do">
-		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-		<table width="600" align="center" class="outline">
-			<td align="center">
-				<h4>비밀번호 찾기</h4>
-				<p>고객님과 일치하는 비밀번호 목록입니다.</p>
-				<li>
-				<strong>
-				
-				<input type="radio" name="select">
-				<lable for="selcet0" class="label_rd">"${pw}"</lable>
-					
-				</strong>
-				</li>
-			</td>
-			
-			<tr>
-			<td align="center">
-			<button type="button" onclick="alert('로그인 페이지로 이동합니다.');
-			window.location.href='login.do';">로그인</button>
-			
-			</td>
-			</tr>
-			
-		</table>
-		</form>
-	</body>
-</html>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/myPageUpdate.css">
+<div class="my-page-container">
+    <h1 class="my-page-title">비밀번호 수정</h1>
+
+    <form action="/login/updatePassword.do" method="post" class="my-page-form" name="f">
+        <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+		<input type="hidden" name="id" value="${id}">
+        <label for="passwd1" class="my-page-label">변경할 비밀번호:</label>
+        <input type="password" id="passwd1" name="passwd1" value="" class="my-page-input"><br>
+
+        <label for="passwd" class="my-page-label">변경할 비밀번호 확인:</label>
+        <input type="password" id="passwd" name="passwd" value="" class="my-page-input"><br>
+        <div align="center">
+		<input type="button" onclick="checkPass()" name="checkPasswd" id="checkPasswd" value="비밀번호 확인">
+        <button type="submit" id="btn" class="my-page-button" disabled="disabled">Update</button>
+    	</div>
+    </form>
+    <div class="my-page-message" id="message"></div>
+</div>
+<script type="text/javascript">
+function checkPass() {
+	let passwd = $("#passwd").val();
+	let passwd1 = $("#passwd1").val();
+	if (passwd != "" && passwd == passwd1){
+		alert("비밀번호가 일치합니다!");
+		document.getElementById('btn').disabled = false;
+	} else{
+		alert("비밀번호가 일치하지 않습니다!");
+	}
+}
+</script>
 <jsp:include page="../footer.jsp"/>

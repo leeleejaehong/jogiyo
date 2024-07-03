@@ -110,7 +110,7 @@ public class CustomerMapper {
 	}
 
 	public int deleteCartItems(String userId) {
-		return sqlSession.delete("customer.deleteBasket", userId); // 적절한 Mapper 메서드 호출 (예시로 표시)
+		return sqlSession.delete("customer.deleteBasket", userId); 
 	}
 	
 	public int convertToInt(Object value) {

@@ -115,9 +115,8 @@ public class LoginController {
 		
 		LoginDTO pfind = loginmapper.pw_find(params);
 		if (pfind != null) {
-			String pw = pfind.getPasswd();
 			req.setAttribute("msg", "비밀번호를 찾았습니다!");
-			req.setAttribute("url", "/login/pw_find_result.do?pw="+pw);
+			req.setAttribute("url", "/login/pw_find_result.do?id="+id);
 		}else {
 			req.setAttribute("msg", "입력하신 정보와 일치하는 비밀번호가 없습니다.");
 			req.setAttribute("url", "login.do");
@@ -162,8 +161,8 @@ public class LoginController {
 	
 	@RequestMapping("/login/pw_find_result.do")
 	public String pw_ff(HttpServletRequest req) {
-		String pw = req.getParameter("pw");
-		req.setAttribute("pw", pw);
+		String id = req.getParameter("id");
+		req.setAttribute("id", id);
 		return "/login/pw_find_result";
 	}
 	
@@ -218,6 +217,18 @@ public class LoginController {
 		}else {
 			return "NO";
 		}
+	}
+	@RequestMapping("/login/updatePassword.do")
+	public String updatePassword(HttpServletRequest req, LoginDTO dto) {
+		int res = loginmapper.updatePassword(dto);
+		if (res>0) {
+			req.setAttribute("msg","비밀번호가 변경되었습니다.");
+			req.setAttribute("url", "login.do");
+		}else {
+			req.setAttribute("msg", "비밀번호가 변경에 실패하셨습니다.");
+			req.setAttribute("url", "login.do");
+		}
+		return "message";
 	}
 	
 }

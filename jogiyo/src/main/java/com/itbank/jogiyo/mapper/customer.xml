@@ -85,6 +85,9 @@
      <delete id="basketDelete" parameterType="String">
        delete from jbasket where basketid= #{basketid}
    </delete>
+    <delete id="deleteBasket" parameterType="String">
+       delete from jbasket where id= #{id}
+   </delete>
    <delete id="orderDelete" parameterType="String">
        delete from jorder where orderid= #{orderid}
    </delete>

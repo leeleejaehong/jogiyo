@@ -90,5 +90,9 @@ public class LoginMapper {
 		dto.setPasswd(bcryptPasswordEncoder.encode(dto.getPasswd()));
 		return sqlSession.update("customer.updateCustomer", dto);
 	}
+	public int updatePassword(LoginDTO dto) {
+		dto.setPasswd(bcryptPasswordEncoder.encode(dto.getPasswd()));
+		return sqlSession.update("login.updatePassword", dto);
+	}
 
 }

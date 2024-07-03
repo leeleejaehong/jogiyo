@@ -125,6 +125,27 @@ public class AdminController {
 		adminmapper.deleteUser(id);
 		return "OK";
 	}
-	
+	//점주 회원가입 목록
+   @RequestMapping(value = "admin/ownerList.do")
+   public String ownerList(HttpServletRequest req) {
+      List<LoginDTO> ownerList = adminmapper.ownerList();
+      System.out.println(ownerList);
+      req.setAttribute("ownerList", ownerList);
+      return "admin/ownerList";
+   }
+	// 점주 회원가입 승인
+   @RequestMapping(value = "admin/ownerList_ok.do")
+   public String ownerList_ok(HttpServletRequest req) {
+      String ownerId = req.getParameter("id");
+      int res = adminmapper.ownerListOk(ownerId);
+       if (res > 0) {
+             req.setAttribute("msg", "승인이 완료되었습니다.");
+             req.setAttribute("url", "ownerList.do");
+          } else {
+              req.setAttribute("msg", "승인에 실패하였습니다.");
+              req.setAttribute("url", "ownerList.do");
+          }
+      return "message";
+   }
 	
 }
