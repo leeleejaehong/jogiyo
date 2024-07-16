@@ -20,6 +20,10 @@ public class StoreDTO {
 	private String catename;
 	private int run;
 	private String stopdate;
+	//0703수정
+	private int row_count;
+	private int reply_count;
+	private double rev_avg;
 
 	public String getStopdate() {
 		return stopdate;
@@ -122,6 +126,24 @@ public class StoreDTO {
 	}
 	public void setRun(int run) {
 		this.run = run;
+	}
+	public int getRow_count() {
+		return row_count;
+	}
+	public void setRow_count(int row_count) {
+		this.row_count = row_count;
+	}
+	public int getReply_count() {
+		return reply_count;
+	}
+	public void setReply_count(int reply_count) {
+		this.reply_count = reply_count;
+	}
+	public double getRev_avg() {
+		return rev_avg;
+	}
+	public void setRev_avg(double rev_avg) {
+		this.rev_avg = rev_avg;
 	}
 
 	

@@ -44,22 +44,19 @@
     }
 
     .listings {
-        display: grid;
-        grid-template-columns: repeat(1, 1fr); /* 한 줄에 한 개의 항목만 나오도록 설정 */
-        gap: 20px;
-        width: 30%; /* 화면 너비를 40%로 조정 */
-        margin: 0 auto; /* 가운데 정렬 */
-    }
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 20px;
+}
 
     .listing {
-        display: flex;
-        justify-content: space-between; /* 버튼을 가운데 정렬하기 위해 추가 */
-        align-items: center; /* 세로 중앙 정렬을 위해 추가 */
-        padding: 20px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background-color: #fff;
-    }
+	position: relative;
+	display: flex;
+	padding: 20px;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	background-color: #fff;
+}
 
     .listing img {
         width: 100px;
@@ -108,15 +105,32 @@
     }
 
     .modify-form input[type="submit"] {
-        background-color: #4CAF50;
+        background-color: #fa0050;
         color: white;
         padding: 8px 16px;
         border: none;
         border-radius: 4px;
         cursor: pointer;
     }
-
+    
     .modify-form input[type="submit"]:hover {
-        background-color: #45a049;
+        background-color: #e00045;
     }
+    .modify-form input[type="button"] {
+        background-color: #fa0050;
+        color: white;
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    
+    .modify-form input[type="button"]:hover {
+        background-color: #e00045;
+    }
+    .container {
+	width: 100%;
+	max-width: 1200px;
+	margin: 0 auto;
+}
 </style>

@@ -4,7 +4,22 @@
 <jsp:include page="../header.jsp"/>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/ownerInfo.css">
-
+<script>
+    let ck = false;
+    function check() {
+        const jfrm = document.f;
+        let length = jfrm.length - 1;
+        for (let i = 0; i < length; i++) {
+            if (jfrm[i].value == "" || jfrm[i].value == null) {
+                alert(jfrm[i].title + "를 입력해주세요.");
+                jfrm[i].focus();
+                return false;
+            }
+        }
+        return true;
+    }
+    
+</script>
 
 <div class="owner-info-page">
     <div class="container">

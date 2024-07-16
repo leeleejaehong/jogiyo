@@ -116,7 +116,7 @@
 </style>
 
 
-<div align="center" style="margin-top: 20px;""margin-bottom: 20px;">
+<div align="center" style="margin-top: 20px; margin-bottom: 20px;">
    <h1><span style="font-weight: bold; color:#fa0050; font-family: 'Gothic A1', sans-serif;">비밀번호 찾기</span></h1>
    <h4><span style="font-weight: bold; color:#black; font-family: 'Gothic A1', sans-serif;">아이디와 전화번호를 입력해주세요.</span></h4>
    </div>
@@ -125,7 +125,7 @@
 
 		<form name="f" method="post" action="/login/pw_find_ok_two.do" class="form-container">
 		<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-		<div align="center" style="margin-top: -5px;""margin-bottom: 30px;" "border-radius: 8px;">
+		<div align="center" style="margin-top: -5px; margin-bottom: 30px; border-radius: 8px;">
 		
 		<table>
 			<tr class="form-row">

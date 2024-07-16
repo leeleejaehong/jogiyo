@@ -8,7 +8,6 @@
     <div class="order-table-container">
         <div class="order-header">
             <h2>Past Orders</h2>
-            <span>2024-06-09</span>
         </div>
         <table class="order-table">
             <thead>
@@ -17,7 +16,6 @@
                     <th>Date</th>
                     <th>Menu</th>
                     <th>Total</th>
-                    <th>Reorder</th>
                     <th>Review</th>
                     <th>Delete</th>
                 </tr>
@@ -31,9 +29,6 @@
                          ${order.menuname}
                     </td>
                     <td>${order.totprice}</td>
-                    <td class="actions">
-                        <button onclick="reorder()">재주문</button>
-                    </td>
                     <td class="actions">
                     	<button onclick="writeReview(${order.storeid})">리뷰 쓰기</button>
                     </td>

@@ -3,6 +3,7 @@ package com.itbank.jogiyo.customer.web;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -37,6 +38,7 @@ import com.itbank.jogiyo.dto.NoticeDTO;
 import com.itbank.jogiyo.dto.OrderDTO;
 import com.itbank.jogiyo.dto.ReviewDTO;
 import com.itbank.jogiyo.dto.StoreDTO;
+import com.itbank.jogiyo.dto.UserCouponDTO;
 import com.itbank.jogiyo.dto.ViewCateStoreDTO;
 import com.itbank.jogiyo.dto.ViewStoreDTO;
 import com.itbank.jogiyo.login.service.LoginMapper;
@@ -101,8 +103,36 @@ public class CustomerController {
 	@RequestMapping("/customer/basket.do")
 	public String BasketList(HttpServletRequest req) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		List<BasketDTO> list = customerMapper.basket(authentication.getName());
-		req.setAttribute("basket", list);
+		try {
+			List<BasketDTO> list = customerMapper.basket(authentication.getName());
+			int sid = customerMapper.checkBasket(authentication.getName());
+			Map<String, Object> params = new HashMap<String, Object>();
+			params.put("id", authentication.getName());
+			params.put("storeid", sid);
+			List<UserCouponDTO> coupon = customerMapper.customerCoupon(params);
+			req.setAttribute("cCoupon", coupon);
+			req.setAttribute("basket", list);
+
+			// 첫 번째 가게 ID를 요청 속성에 추가
+			if (!list.isEmpty()) {
+				req.setAttribute("storeid", list.get(0).getStoreid());
+			} else {
+				req.setAttribute("storeid", "가게 없음");
+			}
+
+			// 쿠폰 목록이 비어 있지 않으면 첫 번째 쿠폰 ID를 요청 속성에 추가
+			if (!coupon.isEmpty()) {
+				req.setAttribute("couponid", coupon.get(0).getCouponid());
+			} else {
+				req.setAttribute("couponid", "쿠폰 없음");
+			}
+
+		} catch (Exception e) {
+			System.err.println("장바구니 또는 쿠폰 목록 조회 중 에러 발생");
+			e.printStackTrace();
+			return "error/exception";
+		}
+
 		return "customer/basket";
 	}
 
@@ -118,7 +148,7 @@ public class CustomerController {
 	@RequestMapping("/customer/coupon.do")
 	public String cCouponList(HttpServletRequest req) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		List<CouponDTO> coupon = customerMapper.customerCoupon(authentication.getName());
+		List<UserCouponDTO> coupon = customerMapper.CouponList(authentication.getName());
 		req.setAttribute("cCoupon", coupon);
 		return "customer/coupon";
 	}
@@ -126,9 +156,16 @@ public class CustomerController {
 	@RequestMapping(value = "/customer/viewStore.do")
 	public String viewStore(HttpServletRequest req, @RequestParam("storeid") int storeid,
 			@RequestParam(value = "isReview", required = false) String isReview) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Map<String, Object> params = new HashMap<String, Object>();
+		params.put("id", authentication.getName());
+		params.put("storeid", storeid);
+		List<UserCouponDTO> coupon = customerMapper.customerCoupon(params);
+		req.setAttribute("cCoupon", coupon);
+
 		StoreDTO dto = customerMapper.viewStore(storeid);
 		List<ViewStoreDTO> menuList = customerMapper.viewStoreInfo(storeid);
-		Map<String, List<ViewStoreDTO>> menuMap = new HashMap<>();
+		Map<String, List<ViewStoreDTO>> menuMap = new LinkedHashMap<>();
 		for (ViewStoreDTO menu : menuList) {
 			if (!menuMap.containsKey(menu.getJstorename())) {
 				menuMap.put(menu.getJstorename(), new ArrayList<>());
@@ -143,8 +180,11 @@ public class CustomerController {
 		if (review.size() != 0 || review.isEmpty()) {
 			req.setAttribute("review", review);
 		}
+		//
+		List<CouponDTO> scoupon = customerMapper.storeCoupon(storeid);
 		req.setAttribute("store", dto);
 		req.setAttribute("menuMap", menuMap);
+		req.setAttribute("storecou", scoupon);
 		PropertyReader reader = new PropertyReader();
 		String key = reader.getProperty("kakao_key");
 		req.setAttribute("key", key);
@@ -152,11 +192,12 @@ public class CustomerController {
 	}
 
 	@RequestMapping("/customer/storeList.do")
-	public String jogiyoStoreList(HttpServletRequest req, @RequestParam(value = "cateId", required = false) String cateId) {
+	public String jogiyoStoreList(HttpServletRequest req,
+			@RequestParam(value = "cateId", required = false) String cateId) {
 		List<StoreDTO> list = new ArrayList<>();
-		if(cateId != null) {
+		if (cateId != null) {
 			list = customerMapper.storeListByCate(cateId);
-		}else {
+		} else {
 			list = customerMapper.storeList();
 		}
 		List<CategoryDTO> list2 = customerMapper.cateList();
@@ -165,14 +206,14 @@ public class CustomerController {
 		return "customer/jogiyoStoreList";
 	}
 
-	@RequestMapping(value = "/customer/basketList.do", method = RequestMethod.POST)
-	public String OrderBasketList(HttpServletRequest req, @RequestParam("sub") String menuid,
-			@RequestParam("sub2") String storename) {
-		List<MenuDTO> list = customerMapper.basketList(menuid);
-		req.setAttribute("basket", list);
-		req.setAttribute("storename", storename);
-		return "customer/basket";
-	}
+//	@RequestMapping(value = "/customer/basketList.do", method = RequestMethod.POST)
+//	public String OrderBasketList(HttpServletRequest req, @RequestParam("sub") String menuid,
+//			@RequestParam("sub2") String storename) {
+//		List<MenuDTO> list = customerMapper.basketList(menuid);
+//		req.setAttribute("basket", list);
+//		req.setAttribute("storename", storename);
+//		return "customer/basket";
+//	}
 
 	@ResponseBody
 	@RequestMapping(value = "customer/listCate.ajax", produces = "text/plain;charset=UTF-8", method = RequestMethod.POST)
@@ -201,8 +242,10 @@ public class CustomerController {
 			object.addProperty("extraaddress", dto.getExtraaddress());
 			object.addProperty("postcode", dto.getPostcode());
 			object.addProperty("catename", dto.getCatename());
-			object.addProperty("lat", dto.getLat());
-			object.addProperty("har", dto.getHar());
+			// 0703윤장호수정
+			object.addProperty("row_count", dto.getRow_count());
+			object.addProperty("reply_count", dto.getReply_count());
+			object.addProperty("rev_avg", dto.getRev_avg());
 			jArray.add(object);
 		}
 		String json = gson.toJson(jArray);
@@ -228,13 +271,21 @@ public class CustomerController {
 	public ResponseEntity<String> insertBasket(@RequestBody BasketDTO[] baksets) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 		int res = 0;
-		for (BasketDTO basket : baksets) {
-			basket.setId(authentication.getName());
-			basket.setTotprice(basket.getTotprice() * basket.getQty());
-			res += customerMapper.insertBasket(basket);
+		int sid = customerMapper.checkBasket(authentication.getName());
+		System.out.println(sid);
+		System.out.println(baksets[0].getStoreid());
+		if (sid == 0 || sid == baksets[0].getStoreid()) {
+			for (BasketDTO basket : baksets) {
+				basket.setId(authentication.getName());
+				basket.setTotprice(basket.getTotprice() * basket.getQty());
+				res += customerMapper.insertBasket(basket);
+			}
+			String msg = "장바구니에 물품을 " + res + "개 만큼 담았습니다. \n장바구니 페이지로 이동하시겠습니까?";
+			return ResponseEntity.ok(msg);
+		} else {
+			String msg = "이미 장바구니에 다른 가게 상품이 담겨있습니다.";
+			return ResponseEntity.ok(msg);
 		}
-		String msg = "장바구니에 물품을 " + res + "개 만큼 담았습니다. \n장바구니 페이지로 이동하시겠습니까?";
-		return ResponseEntity.ok(msg);
 	}
 
 	@RequestMapping(value = "customer/insertReview.do", method = RequestMethod.POST, produces = "text/plain;charset=UTF-8")
@@ -282,7 +333,7 @@ public class CustomerController {
 				int menuID = customerMapper.convertToInt(item.get("menuID"));
 				int storeid = customerMapper.convertToInt(item.get("storeid"));
 				int cateid = customerMapper.convertToInt(item.get("cateid"));
-				String address = (String)item.get("address");
+				String address = (String) item.get("address");
 				order.setQty(quantity);
 				order.setTotprice(total);
 				order.setStoreid(storeid); // 실제 storeID로 설정
@@ -297,12 +348,13 @@ public class CustomerController {
 			customerMapper.insertDelivery(delivery);
 			int seq = customerMapper.seqDelivery();
 			customerMapper.deleteCartItems(authentication.getName());
-			return Integer.toString(seq-1);
+			return Integer.toString(seq - 1);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return e.getMessage();
 		}
 	}
+
 	@RequestMapping("/customer/viewDelivery.do")
 	public String viewDelivery(@RequestParam("deliveryid") int deliveryid, HttpServletRequest req) {
 		PropertyReader reader = new PropertyReader();
@@ -314,18 +366,35 @@ public class CustomerController {
 	}
 
 	@RequestMapping("/customer/notice.do")
-	public String noticeList(HttpServletRequest req) {
-		List<NoticeDTO> list = customerMapper.listNotice();
-		req.setAttribute("list", list);
+	public String noticeList(HttpServletRequest req, @RequestParam(value = "page", defaultValue = "1") int page) {
+
+		int itemsPerPage = 7;
+		int startIndex = (page - 1) * itemsPerPage;
+		int endIndex = page * itemsPerPage;
+
+		Map<String, Object> params = new HashMap<>();
+		params.put("startIndex", startIndex);
+		params.put("endIndex", endIndex);
+
+		List<NoticeDTO> rList = customerMapper.getNotice(params);
+		for (NoticeDTO dto : rList) {
+			System.out.println(dto.getSubject());
+		}
+		int totalCount = customerMapper.getNoticeCount();
+		int pageCount = (int) Math.ceil((double) totalCount / itemsPerPage);
+		req.setAttribute("rList", rList);
+		req.setAttribute("pageCount", pageCount);
+		req.setAttribute("currentPage", page);
 		return "customer/listNotice";
 	}
-	
+
 	@RequestMapping("/customer/viewNotice.do")
 	public String viewNotice(HttpServletRequest req, @RequestParam("notiid") int notiid) {
 		NoticeDTO dto = customerMapper.viewNotice(notiid);
 		req.setAttribute("dto", dto);
 		return "customer/viewNotice";
 	}
+
 	@RequestMapping("customer/listDelivery.do")
 	public String listDelivery(HttpServletRequest req) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -333,73 +402,144 @@ public class CustomerController {
 		req.setAttribute("dlist", dlist);
 		return "customer/listDelivery";
 	}
-	 //장바구니 삭제
-    @RequestMapping(value = "/customer/BasketDelete.do", method = RequestMethod.POST) 
-     public ModelAndView BasketDelete(HttpServletRequest req, @RequestParam("basketid") String basketid) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        int list = customerMapper.basketDelete(basketid); 
-        ModelAndView mav = new ModelAndView();
-         if (list > 0) {
-            mav.addObject("msg", "장바구니에서 삭제 성공");
-            mav.addObject("url", "/customer/basket.do");
-            mav.setViewName("message");
-         } else {
-            mav.addObject("msg", "장바구니에서 삭제 실패");
-            mav.addObject("url", "/customer/basket.do");
-            mav.setViewName("message");
-         }
-         return mav;
-     }
-    //과거 주문내역 삭제
-    
-    @RequestMapping(value = "/customer/orderDelete.do", method =RequestMethod.POST) 
-     public ModelAndView OrderDelete(HttpServletRequest req, @RequestParam("orderid") String orderid) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        int list = customerMapper.orderDelete(orderid); 
-        ModelAndView mav = new ModelAndView();
-         if (list > 0) {
-            mav.addObject("msg", "주문내역 삭제 성공");
-            mav.addObject("url", "/customer/pastOrder.do");
-            mav.setViewName("message");
-         } else {
-            mav.addObject("msg", "주문내역 삭제 실패");
-            mav.addObject("url", "/customer/pastOrder.do");
-            mav.setViewName("message");
-         }
-         return mav;
-     }
-    //바로결제경로
-    @RequestMapping("customer/directPay.do")
-    public String directPayPage(Model model) {
-         // 결제 페이지로 이동
-         return "customer/directPay";
-     }
-    
-     @ResponseBody
-     @RequestMapping(value = "customer/directOrder.ajax", method = RequestMethod.POST, consumes = "application/json")
-     public String directOrder(@RequestBody List<OrderDTO> orderList) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        DeliveryDTO delivery = new DeliveryDTO();
-        String menuname = "";
-        for(OrderDTO dto : orderList) {
-           dto.setId(authentication.getName());
-           menuname += dto.getMenuname()+ " ";
-           System.out.println(dto.getMenuname());
-           delivery.setDestiaddress(dto.getAddress());
-           delivery.setStoreid(dto.getStoreid());
-        }
-        delivery.setMenuname(menuname);
-        delivery.setId(authentication.getName());
-        customerMapper.insertDelivery(delivery);
-        int seq = customerMapper.seqDelivery();
-           try {
-                customerMapper.directOrder(orderList);
-                return Integer.toString(seq-1);
-            } catch (Exception e) {
-                e.printStackTrace();
-                return "error";
-            }
-        }
+
+	// 장바구니 삭제
+	@RequestMapping(value = "/customer/BasketDelete.do", method = RequestMethod.POST)
+	public ModelAndView BasketDelete(HttpServletRequest req, @RequestParam("basketid") String basketid) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		int list = customerMapper.basketDelete(basketid);
+		ModelAndView mav = new ModelAndView();
+		if (list > 0) {
+			mav.addObject("msg", "장바구니에서 삭제 성공");
+			mav.addObject("url", "/customer/basket.do");
+			mav.setViewName("message");
+		} else {
+			mav.addObject("msg", "장바구니에서 삭제 실패");
+			mav.addObject("url", "/customer/basket.do");
+			mav.setViewName("message");
+		}
+		return mav;
+	}
+	// 과거 주문내역 삭제
+
+	@RequestMapping(value = "/customer/orderDelete.do", method = RequestMethod.POST)
+	public ModelAndView OrderDelete(HttpServletRequest req, @RequestParam("orderid") String orderid) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		int list = customerMapper.orderDelete(orderid);
+		ModelAndView mav = new ModelAndView();
+		if (list > 0) {
+			mav.addObject("msg", "주문내역 삭제 성공");
+			mav.addObject("url", "/customer/pastOrder.do");
+			mav.setViewName("message");
+		} else {
+			mav.addObject("msg", "주문내역 삭제 실패");
+			mav.addObject("url", "/customer/pastOrder.do");
+			mav.setViewName("message");
+		}
+		return mav;
+	}
+
+	// 바로결제경로
+	@RequestMapping("customer/directPay.do")
+	public String directPayPage(Model model) {
+		// 결제 페이지로 이동
+		return "customer/directPay";
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "customer/directOrder.ajax", method = RequestMethod.POST, consumes = "application/json")
+	public String directOrder(@RequestBody List<OrderDTO> orderList) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		DeliveryDTO delivery = new DeliveryDTO();
+		String menuname = "";
+		for (OrderDTO dto : orderList) {
+			dto.setId(authentication.getName());
+			menuname += dto.getMenuname() + " ";
+			delivery.setDestiaddress(dto.getAddress());
+			delivery.setStoreid(dto.getStoreid());
+		}
+		delivery.setMenuname(menuname);
+		delivery.setId(authentication.getName());
+		customerMapper.insertDelivery(delivery);
+		int seq = customerMapper.seqDelivery();
+		try {
+			customerMapper.directOrder(orderList);
+			return Integer.toString(seq - 1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return "error";
+		}
+
+	}
+
+	// 가게쿠폰받기
+	@ResponseBody
+	@RequestMapping(value = "customer/getCoupon.do", method = RequestMethod.POST)
+	public Map<String, String> getCoupon(@RequestParam int couponid) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		Map<String, String> response = new HashMap<>();
+		String userId = authentication.getName();
+		try {
+			// 파라미터 준비
+			Map<String, Object> params = new HashMap<>();
+			params.put("couponid", couponid);
+			params.put("id", userId);
+
+			// 쿠폰이 이미 존재하는지 확인
+			int count = customerMapper.checkCoupon(params);
+			if (count > 0) {
+				response.put("message", "이미 이 쿠폰을 받았습니다.");
+				return response;
+			}
+
+			// 쿠폰 삽입 서비스 호출
+			customerMapper.getCoupon(params);
+
+			response.put("message", "쿠폰을 받았습니다.");
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("message", "쿠폰을 받지 못했습니다." + e);
+		}
+
+		return response;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "customer/updateBasketQty.ajax", method = RequestMethod.POST)
+	public String updateBasketQty(@RequestParam("menuid") int menuid, @RequestParam("qty") int qty) {
+		// 파라미터 준비
+		Map<String, Object> params = new HashMap<>();
+		params.put("menuid", menuid);
+		params.put("qty", qty);
+		System.out.println("!!!!!!!");
+
+		// 수량 업데이트 매퍼 호출
+		int result = customerMapper.updateBasketQty(params);
+
+		// 결과 반환
+		if (result > 0) {
+			return "success";
+		} else {
+			return "fail";
+		}
+
+	}
+
+	// 사용 쿠폰 삭제 기능
+	@ResponseBody
+	@RequestMapping(value = "customer/useCoupon.ajax", method = RequestMethod.POST, consumes = "application/json")
+	public void deleteUserCoupon(@RequestBody Map<String, Integer> payload) {
+		if (payload.containsKey("usercid")) {
+			int usercid = payload.get("usercid");
+			System.out.println("쿠폰아이디 : " + usercid);
+			Map<String, Object> paramMap = new HashMap<>();
+			paramMap.put("usercid", usercid);
+
+			customerMapper.userCouponDel(paramMap);
+		} else {
+			System.out.println("usercid 파라미터가 필요합니다.");
+		}
+	}
 
 //  @ResponseBody
 //  @RequestMapping(value = "/customer/kakaopay.ajax", method = RequestMethod.POST)

@@ -34,11 +34,12 @@
                         "<img src='" + contextPath + "/resources/img/" + item.img + "' width='80' height='80'>" +
                         "<div class='details'>" +
                             "<h2><a onclick='viewStore(" + item.storeid + ")' href='#'>" + item.storename + "</a></h2>" +
-                            "<div class='rating'>4.8 ★</div>" +
-                            "<div class='reviews'>리뷰 3537 | 사장님댓글 2694</div>" +
+                            //7073 윤장호수정
+                            "<div class='rating'>"+ item.rev_avg +" ★</div>" +
+                            "<div class='reviews'>리뷰"+ item.row_count +" | 사장님댓글 " + item.reply_count + "</div>" +
                             "<div class='min_order'>가게설명 | " + item.storecontent + "</div>" +
                             "<div class='discount'>쿠폰 | " + item.couponid + "</div>" +
-                            "<div class='time'>22-37분</div>" +
+                            
                         "</div>" +
                       "</div>";
    

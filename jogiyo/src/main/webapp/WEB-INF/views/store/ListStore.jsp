@@ -5,7 +5,20 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/storeInfo.css">
-
+<script>
+function editStore(storeid){
+   var confirmed= confirm('해당 가게로 이동하시겠습니까?');
+   if(confirmed){
+   //var storeid = document.getElementById('storeid').value;
+   location.href="/store/editStore.do?storeid="+storeid;
+   return true;
+   }else{
+      return false;
+   }
+   
+}
+</script>
+<div class="container">
 <div class="listings">
     <c:forEach var="dto" items="${getStore}">
         <div class="listing">
@@ -17,15 +30,16 @@
                 <div class="min_order">가게 주인id: ${dto.id}</div>
                 <form class="modify-form" name="f" method="post" action="/store/selectStore.do" onsubmit="return confirm('해당 가게로 이동하시겠습니까?');">
                     <input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
-                     <input type="hidden" name="storeid" value="${dto.storeid}">
+                     <input type="hidden" name="storeid" value="${dto.storeid}" id="storeid">
                      <input type="hidden" name ="storename" value="${dto.storename}">
+                     <input type="button" value="수정하기" onclick="editStore(${dto.storeid})">
                     <input type="submit" value="이동하기">
                 </form>
             </div>
         </div>
     </c:forEach>
 </div>
-
+</div>
 <jsp:include page="../footer.jsp"/>
  
  <!--  

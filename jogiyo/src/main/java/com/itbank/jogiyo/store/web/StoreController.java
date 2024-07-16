@@ -145,7 +145,7 @@ public class StoreController {
 		return "store/selectStore";
 	}
 	@RequestMapping("/store/reviewStore.do")
-	public ModelAndView reviewStore(@RequestParam("storeid") String storeid,
+	public ModelAndView reviewStore(@RequestParam("storeid") String storeid, HttpServletRequest req,
 	                                @RequestParam(value = "page", defaultValue = "1") int page) {
 	    int itemsPerPage = 5; // 한 페이지에 보여질 리뷰 수
 	    int startIndex = (page - 1) * itemsPerPage; // 시작 인덱스 수정
@@ -156,7 +156,7 @@ public class StoreController {
 	    params.put("storeid", storeid);
 	    params.put("startIndex", startIndex);
 	    params.put("endIndex", endIndex);
-
+	   
 	   
 	    List<ReviewDTO> rList = storemapper.getReview(params);
 
@@ -164,11 +164,14 @@ public class StoreController {
 	    int totalCount = storemapper.getReviewCount(Integer.parseInt(storeid));
 	    int pageCount = (int) Math.ceil((double) totalCount / itemsPerPage); // 전체 페이지 수 계산
 
-	   
+	    String storename= req.getParameter("storename");
+	    req.setAttribute("storename", storename);
+	    req.setAttribute("storeid", storeid);
 	    ModelAndView mav = new ModelAndView("store/reviewStore");
 	    mav.addObject("rList", rList);
 	    mav.addObject("currentPage", page);
 	    mav.addObject("pageCount", pageCount); 
+	    mav.addObject("storename",storename);
 
 	    return mav;
 	}
@@ -231,6 +234,7 @@ public class StoreController {
 	@RequestMapping("/store/runStore.do")
 		public String runStoreMenu(HttpServletRequest req) {
 			String storeid = req.getParameter("storeid");
+			String storename=req.getParameter("storename");
 			int res= storemapper.runStore(Integer.parseInt(storeid));
 			if (res>0) {
 				req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);
@@ -248,9 +252,11 @@ public class StoreController {
 	@RequestMapping("/store/storeMenu.do")
 	public String storeMenu(HttpServletRequest req) {
 		String storeid=req.getParameter("storeid");
+		String storename=req.getParameter("storename");
 		req.setAttribute("storeid",storeid);
 		List<MenuDTO>mlist = storemapper.listMenu(Integer.parseInt(storeid));
 		req.setAttribute("mlist",mlist);
+		req.setAttribute("storename", storename);
 		return "store/storeMenu";
 	}
 	
@@ -317,10 +323,12 @@ public class StoreController {
 	public String editMenu(HttpServletRequest req) {
 		String menuid=req.getParameter("menuid");
 		String storeid=req.getParameter("storeid");
+		String storename=req.getParameter("storename");
 		List<MenuDTO>getMenu=storemapper.getMenu(Integer.parseInt(menuid));
 		List<JstoreCateDTO>cateList = storemapper.getCateList(Integer.parseInt(storeid));
 		req.setAttribute("cateList", cateList);
 		req.setAttribute("getMenu", getMenu);
+		req.setAttribute("storename", storename);
 		return "store/editMenu";
 	}
 	@RequestMapping(value="/store/editMenuPro.do" ,method=RequestMethod.POST)
@@ -400,11 +408,11 @@ public class StoreController {
 		int res = storemapper.updateStore(dto);
 		if (res>0) {
 			mav.addObject("msg" , "가게수정 완료!");
-			mav.addObject("url" , "/store/storeInfo.do");
+			mav.addObject("url" , "/store/ListStore.do");
 			mav.setViewName("message");
 		}else {
 			mav.addObject("msg" , "가게수정 실패! 관리자에게 문의해주세요");
-			mav.addObject("url" , "/store/storeInfo.do");
+			mav.addObject("url" , "/store/ListStore.do");
 			mav.setViewName("message");
 		
 		}
@@ -460,7 +468,9 @@ public class StoreController {
 	@RequestMapping("/store/addCate.do")
 	public String addCate(HttpServletRequest req) {
 		String storeid=req.getParameter("storeid");
+		String storename=req.getParameter("storename");
 		req.setAttribute("storeid", storeid);
+		req.setAttribute("storename",storename);
 		
 		
 		return "/store/addCate";
@@ -561,7 +571,7 @@ public class StoreController {
 			req.setAttribute("url", "/store/storeMenu.do?storeid="+storeid);	
 		}else {
 			req.setAttribute("msg", "품절처리실패");
-			req.setAttribute("url", "/store/storeMenu.do");
+			req.setAttribute("url", "/store/storeMenu.do?storeid="+storeid);
 		}
 		return "message";
 	}
@@ -572,10 +582,10 @@ public class StoreController {
 		int res=storemapper.startMenu(Integer.parseInt(menuid));
 		if(res>0) {
 			req.setAttribute("msg", "품절취소완료");
-			req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);	
+			req.setAttribute("url", "/store/storeMenu.do?storeid="+storeid);	
 		}else {
 			req.setAttribute("msg", "품절취소실패");
-			req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);
+			req.setAttribute("url", "/store/storeMenu.do?storeid="+storeid);
 		}
 		return "message";
 	}
@@ -597,12 +607,17 @@ public class StoreController {
 			System.out.println("쿠폰dto 생성시 오류");
 		}
 		int res = storemapper.addCoupon(dto);
+		int res2 = storemapper.updateCoupon(storeid);
+		if(res2>0) {
 		if(res>0) {
-			req.setAttribute("msg", "쿠폰등록완료!");
-			req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);
+				req.setAttribute("msg", "쿠폰등록완료!");
+				req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);
+			}else {
+				req.setAttribute("msg", "쿠폰등록실패!");
+				req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);
+			}
 		}else {
-			req.setAttribute("msg", "쿠폰등록실패!");
-			req.setAttribute("url", "/store/selectStore.do?storeid="+storeid);
+			System.out.println("error coupon");
 		}
 		return "message";
 	}
@@ -657,6 +672,14 @@ public class StoreController {
 	}
 	return "message";
 	}
+	@RequestMapping("/store/headerSearch.do")
+	public String headerSearch(HttpServletRequest req) {
+		String headerSearch = req.getParameter("headerSearch");
+		List<StoreDTO>storeList=storemapper.headerSearch(headerSearch);
+		req.setAttribute("storeList",storeList);
+		return "customer/jogiyoStoreList";
+	}
+	
 }
 
 	

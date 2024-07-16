@@ -146,5 +146,23 @@
     FROM JREVIEW
     WHERE STOREID = #{storeid}
 </select>
-	
+<select id ="headerSearch" parameterType="String" resultType="storeDTO">
+ 	SELECT 
+	    j1.*,
+	    COUNT(j2.storeid) AS row_count,
+	    COUNT(j2.reply) AS reply_count,
+	    ROUND(AVG(j2.GRADE), 1) AS rev_avg
+	FROM 
+   	 jstore j1
+	LEFT JOIN 
+    	jreview j2 ON j1.storeid = j2.storeid
+	WHERE 
+	    j1.storename LIKE '%' || #{headerSearch} || '%'
+	    OR j1.address LIKE '%' || #{headerSearch} || '%'
+	GROUP BY 
+	    j1.storeid, j1.storename, j1.address,j1.CATEID ,j1.STORECONTENT ,
+	    j1.ID ,j1.IMG ,j1.COUPONID ,j1.ADDRESS ,j1.DETAILADDRESS ,j1.EXTRAADDRESS ,
+	    j1.POSTCODE ,j1.RUN ,j1.STOPDATE
+</select>
+<update id="updateCoupon" parameterType="int"> update jstore set couponid=couponid+1 where storeid=#{storeid} </update>
  </mapper>

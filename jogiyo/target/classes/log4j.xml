@@ -10,9 +10,20 @@
 		</layout>
 	</appender>
 	
+	<appender name="fileLogger" class="org.apache.log4j.DailyRollingFileAppender">
+	    <param name="file" value="D:\\jogiyo\\logs\\jogiyo.log" />
+	    <param name="Append" value="true" />
+	    <param name="DatePattern" value="'.'yyyy-MM-dd" />
+	    <layout class="org.apache.log4j.PatternLayout">
+	        <param name="ConversionPattern" value="[%d{yyyy-MM-dd HH:mm:ss}] %-5p: %F:%L - %m%n" />
+	    </layout>
+	</appender>
+	
 	<!-- Application Loggers -->
-	<logger name="com.itbank.jogiyo">
-		<level value="info" />
+	<logger name="com.itbank.jogiyo" additivity="false">
+		<level value="debug"></level> 
+		<appender-ref ref="fileLogger" />
+		<appender-ref ref="console" />
 	</logger>
 	
 	<!-- 3rdparty Loggers -->
@@ -34,7 +45,8 @@
 
 	<!-- Root Logger -->
 	<root>
-		<priority value="warn" />
+		<priority value="debug" />
+		<appender-ref ref="fileLogger" />
 		<appender-ref ref="console" />
 	</root>
 	

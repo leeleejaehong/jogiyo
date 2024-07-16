@@ -17,6 +17,7 @@
 	rel="stylesheet">
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/resources/css/main.css">
+<link rel="shortcut icon" href="${pageContext.request.contextPath}/resources/img/favicon.ico" type="image/x-icon">
 
 <script type="text/javascript">
 	function viewStore(id) {
@@ -47,17 +48,20 @@
 					src="${pageContext.request.contextPath}/resources/img/yogiyo.png"
 					style="width: 97.66px; height: 68.56px; vertical-align: bottom;">
 			</a></li>
+			<sec:authorize access="hasAnyRole('ROLE_1','ROLE_2')">
 			<li><a href="#">스토어</a>
 				<ul class="submenu">
 					<li><a
 						href="${pageContext.request.contextPath}/store/AddStore.do">스토어
 							추가하기</a></li>
 					<li><a
-						href="${pageContext.request.contextPath}/store/Myinfo.do">내
-							정보(점주)</a></li>
-					<li><a
-						href="${pageContext.request.contextPath}/customer/mypage.do">내정보
-							보기(일반사용자)</a></li>
+						href="${pageContext.request.contextPath}/store/ListStore.do">내
+							가게리스트</a></li>
+				</ul></li>
+				</sec:authorize>
+				<sec:authorize access="isAuthenticated()">
+				<li><a href="#">마이페이지</a>
+					<ul class="submenu">
 					<li><a
 						href="${pageContext.request.contextPath}/customer/pastOrder.do">과거
 							주문내역</a></li>
@@ -66,16 +70,14 @@
 					<li><a
 						href="${pageContext.request.contextPath}/customer/coupon.do">내쿠폰</a></li>
 					<li><a
-						href="${pageContext.request.contextPath}/store/ListStore.do">내
-							가게리스트</a></li>
-					<li><a href="${pageContext.request.contextPath}/store/test.do">맵</a></li>
-				</ul></li>
+						href="${pageContext.request.contextPath}/customer/mypage.do">내정보 보기</a></li>
+					<li><a href="${pageContext.request.contextPath}/customer/listDelivery.do">배달현황 보기</a></li>
+					</ul>
+				</li>
+				</sec:authorize>
 			<sec:authorize access="hasRole('ROLE_1')">
 				<li><a href="#">관리</a>
 					<ul class="submenu">
-						<li><a
-							href="${pageContext.request.contextPath}/admin/insertCate.do">카테고리
-								추가</a></li>
 						<li><a
 							href="${pageContext.request.contextPath}/admin/viewSales.do">매출현황
 								보기</a></li>
@@ -89,19 +91,8 @@
 							href="${pageContext.request.contextPath}/admin/ownerList.do">점주 회원가입 목록</a></li>
 					</ul></li>
 			</sec:authorize>
-			<li><a
-				href="${pageContext.request.contextPath}/customer/mypage.do">내정보
-					보기</a></li>
-			<li><a href="${pageContext.request.contextPath}/customer/notice.do">공지사항 보기</a></li>		
-			<li><a href="${pageContext.request.contextPath}/customer/listDelivery.do">배달현황 보기</a></li>
+			<li><a href="${pageContext.request.contextPath}/customer/notice.do">공지사항 보기</a></li>
 		</ul>
-		<sec:authorize access="isAuthenticated()">
-			<sec:authentication property="principal.authorities"
-				var="authorities" />
-			<c:forEach items="${authorities}" var="authority">
-				<p>사용자의 권한: ${authority.authority}</p>
-			</c:forEach>
-		</sec:authorize>
 		<div class="login">
 			<sec:authorize access="isAuthenticated()">
 				<form method="post" action="/login/logout.do">
@@ -118,33 +109,37 @@
 	</div>
 
 	<div class="search-section">
-		<div class="container">
-			<h1>어디로 배달해 드릴까요?</h1>
-			<p>배달받으실 동 이름으로 검색해주세요</p>
+		<div class="header-container">
+			<h1><font style="font-weight:bold; color:white">어디로 <font style="color:orange">배달해</font> 드릴까요?</font></h1>
+			<p><font style="font-weight:bold; color:white">가게 이름이나 배달받으실 동 이름으로 검색해주세요</font></p>
 			<div class="search-bar">
-				<button class="location-btn">
-					<img src="/images/loca.svg" alt="location icon">
+				<button class="location-btn" style="background-image: url('${pageContext.request.contextPath}/resources/img/point.jpeg')">
+					<%-- <img src="${pageContext.request.contextPath}/resources/img/point.jpeg" alt="location icon"> --%>
 				</button>
-				<input type="text" placeholder="주소를 입력해주세요" id="search-input">
-				<button class="x-button" onclick="clearSearch()">X</button>
-				<button>검색</button>
+				<form name="fffff" action="${pageContext.request.contextPath}/store/headerSearch.do" method="post">
+				<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
+				<input type="text" placeholder="배달받을 주소 혹은 가게이름을 검색해주세요" id="search-input" name="headerSearch" style="width:400px">
+				<input type="submit" value="검색" style="width:100px;">
+				<input type="reset" value="취소" style="width:100px;">
+				</form>
+				<%-- 
 				<div class="dropdown">
 					<a href="#">현재위치로 설정하기</a> <a href="#">검색 기록 1</a> <a href="#">검색
-						기록 2</a>
+						기록 2</a>--%>
 				</div>
 			</div>
 		</div>
-	</div>
 	  <div class="fixedBtn_wrap topBtn">
       <a href="${pageContext.request.contextPath}/customer/storeList.do" class="btn_fixedTicketing">주문하기</a>
       <a href="#" id="btn_gotoTop"><img src="https://img.cgv.co.kr/R2014/images/common/btn/gotoTop.png" alt="최상단으로 이동" /></a>
     </div>
 	<script>
-		function clearSearch() {
-			document.getElementById('search-input').value = '';
-		}
-		document.addEventListener("DOMContentLoaded", function() {
-			const menuItems = document.querySelectorAll(".menu > li");
+		<%--
+	function clearSearch() {
+		document.getElementById('search-input').value = '';
+	}
+	document.addEventListener("DOMContentLoaded", function() {
+		const menuItems = document.querySelectorAll(".menu > li");
 
 			menuItems.forEach(function(menuItem) {
 				menuItem.addEventListener("mouseover", function() {
@@ -162,4 +157,5 @@
 				});
 			});
 		});
+		--%>
 	</script>

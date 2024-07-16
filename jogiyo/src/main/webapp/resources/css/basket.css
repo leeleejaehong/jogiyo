@@ -1,4 +1,73 @@
 @charset "UTF-8";
+* {margin:0; padding: 0;}
+ul li {list-style: none;}
+a {text-decoration: none; color: inherit;}
+
+    .form-group-wrap{
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        background-color: #f6f6f6;
+        padding: 30px 20px;
+        /* border: 1px solid #eeeeee; */
+        margin-top: 30px;
+        margin-bottom: 30px;
+    }
+    .form-group {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .input-field, .button-field {
+        height: 40px;
+        border-radius: 0px;
+        padding: 0 10px;
+        margin: 5px;
+    }
+
+    .input-field {
+        width: 180px;
+        min-width: 100px;
+        border: 1px solid #ccc;
+    }
+
+    .button-field {
+        background: #64646470;
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+        padding: 0 20px;
+        margin-right: 30px;
+        transition: all 0.5s;
+    }
+    .button-field-del {
+        background: #64646470;
+        color: #ffffff;
+        border: none;
+        cursor: pointer;
+        padding: 5px 20px;
+        margin-right: 30px;
+        margin-bottom: 5px;
+        transition: all 0.5s;
+    }
+
+    .button-field:hover {
+        background: #525252;
+    }
+    .button-pay{
+        font-weight: bold;
+        min-width: 100px;
+        background: #fa0050; 
+        margin-right: 0;
+        margin-bottom: 20px;
+    } 
+    .button-pay:hover {
+        background: #e00047; 
+    }
+
 
 body {
 	font-family: Arial, sans-serif;
@@ -6,17 +75,25 @@ body {
 	margin: 0;
 	padding: 20px;
 }
-.content_totalCount_section{
-	width: 50%;
-	margin: auto;
-}
+.quantity_div {display: flex; justify-content:center; align-items: center;}
+	.quantity_div .quantity_input {width: 30px; border: none; outline: none; text-align: center;}
+	.quantity_div .quantity_modify_btn {margin-left: 6px; display: inline-block; border: 1px solid #ccc; border-radius: 4px; padding: 0 4px;}
+	.quantity_div .quantity_btn {border: none; background: transparent; font-size: 18px;}
+	
+	
+	
+
+
 .order-table-container {
 	background-color: #ffffff;
 	padding: 20px;
-/* 	border-radius: 8px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
-	max-width: 50%;
-	margin: auto;
+	border-radius: 8px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	max-width: 1200px;
+	margin-bottom: 30px;
+	margin-top: 30px;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .order-table {
@@ -38,10 +115,9 @@ body {
 
 .actions button {
 	padding: 8px 10px;
-	background-color: #fa006c;
+	background-color: #fa0050;
 	color: white;
 	border: none;
-	border-radius: 4px;
 	cursor: pointer;
 	width: 90px;
 }
@@ -110,41 +186,4 @@ th {
 .td_width_4 {
 	text-align: center;
 	width: 15%;
-}
-.address-inputs {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.address-inputs input[type="text"] {
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    width: calc(100% - 22px);
-}
-
-.address-inputs input[type="button"] {
-    background-color: #fa006c;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 4px;
-    cursor: pointer;
-    width: auto;
-    align-self: flex-start;
-}
-
-.address-inputs input[type="button"]:hover {
-    background-color: #d50050;
-}
-#kaobtn {
-    background: #fee500;
-    color: #000;
-    border-radius: 12px;
-    padding: 10px 20px;
-    border: none;
-    cursor: pointer;
-    width: 120px;
 }

@@ -1,134 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <jsp:include page="../header.jsp"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/star.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/resources/css/reviewStore.css">
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<html>
-<head>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #white;
-            margin: 0;
-            padding: 0;
-            color: #white;
-        }
-        .container {
-            width: 50%;
-            margin: 0 auto;
-            color: #white;
-        }
-        h2 {
-            color: #555;
-            margin-bottom: 20px;
-        }
-        .pagination {
-            margin: 20px 0;
-            text-align: center;
-        }
-        .pagination a {
-            color: #555;
-            display: inline-block;
-            padding: 8px 16px;
-            text-decoration: none;
-            transition: background-color .3s;
-            border: 1px solid #ddd;
-            margin: 0 4px;
-            border-radius: 4px;
-        }
-        .pagination a.active {
-            background-color: #fa0050;
-            color: white;
-            border: 1px solid #fa0050;
-        }
-        .pagination a:hover:not(.active) {
-            background-color: #ddd;
-        }
-        .review-container {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-        }
-        .review-item {
-            list-style: none;
-            margin-bottom: 20px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid #ddd;
-        }
-        .review-item:last-child {
-            border-bottom: none;
-        }
-        .review-content {
-            text-align: left;
-            display: flex;
-            flex-wrap: wrap;
-        }
-        .review-content h3, .review-content p {
-            margin: 10px 0;
-        }
-        .review-content img {
-            max-width: 200px;
-            height: auto;
-            border-radius: 8px;
-            margin-top: 10px;
-            margin-right: 20px;
-        }
-        .star-rating {
-            margin-top: 10px;
-        }
-        .star-rating input {
-            display: none;
-        }
-        .star-rating label {
-            color: #ffd700;
-            font-size: 20px;
-        }
-        .reply {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #f1f1f1;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px 20px;
-            color: white;
-            background-color: #fa0050;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        button:hover {
-            background-color: #d90445;
-        }
-        .form-container {
-            display: none;
-            margin-top: 10px;
-            background-color: #f9f9f9;
-            padding: 20px;
-            border-radius: 4px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        
-        .form-container textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            resize: vertical;
-        }
-        .form-container input[type="submit"], .form-container input[type="button"] {
-            padding: 10px 20px;
-            margin-right: 10px;
-        }
-    </style>
-</head>
-<body>
-<div class="container">
-    <div align="center" style="margin-top: 80px;">
-    <h1><span style="font-weight: bold; color:#fa0050; font-family: 'Gothic A1', sans-serif;">리뷰관리 페이지</span></h1>
-    <div align="center" style="margin-top: 40px;">
+<div class="store-container2">
+<div class="toolbar">
+        <ul>
+            <li><a href="/store/selectStore.do?storeid=${storeid}&storename=${storename}">주문목록</a></li>
+            <li><a href="/store/reviewStore.do?storeid=${storeid}&storename=${storename}">리뷰관리</a></li>
+            <li><a href="/store/storeMenu.do?storeid=${storeid}&storename=${storename}">메뉴관리</a></li>
+            <li><a href="/store/storeSales2.do?storeid=${storeid}&storename=${storename}">매출관리(기간별)</a></li>
+            <li><a href="/store/storeSales.do?storeid=${storeid}&storename=${storename}">매출관리(메뉴별)</a></li>
+            <li><a href="/store/addCate.do?storeid=${storeid}&storename=${storename}">카테고리추가</a></li>
+            <li><a href="/store/stopStore.do?storeid=${storeid}&storename=${storename}">가게일시정지</a></li>
+            <li><a href="/store/addCoupon.do?storeid=${storeid}&storename=${storename}">쿠폰추가하기</a></li>
+        </ul>
+    </div>
+ 
+    <div class="container" >
+    <div style="margin-top: 10px; width:100%;">
+    <h1>리뷰관리 페이지</h1>
+    <div style="margin-top: 40px;">
     <c:if test="${empty rList}">
         <p>등록된 리뷰가 없습니다.</p>
     </c:if>
@@ -158,7 +50,7 @@
                             <h3>주문일자: ${dto.reviewdate}</h3>
                             <h2>리뷰내용: ${dto.revcotent}</h2>
                             <c:if test="${not empty dto.reply}">
-                                <p class="reply">⤷사장님댓글: ${dto.reply}</p>
+                                <p class="reply">⤷ 사장님댓글: ${dto.reply}</p>
                             </c:if>
                             <div class="star-rating">
                                 <fieldset>
@@ -170,17 +62,18 @@
                         </fieldset>
                                 <p>평점: ${dto.grade}</p>
                             </div>
-                        </div>
-                    </div>
-                    <c:if test="${empty dto.reply}">
+                            <c:if test="${empty dto.reply}">
                         <button onclick="showForm(${dto.reviewid})">댓글등록</button>
                     </c:if>
                     <c:if test="${not empty dto.reply}">
-                        <button onclick="showForm(${dto.reviewid})">댓글수정</button>
-                        <button onclick="location.href='/store/deleteReview.do?reviewid=${dto.reviewid}&storeid=${dto.storeid}'">답글삭제</button>
+                        <button onclick="showForm2(${dto.reviewid})">댓글수정</button>
+                        <button onclick="location.href='/store/deleteReview.do?reviewid=${dto.reviewid}&storeid=${dto.storeid}'">답글삭제</button><br>
                     </c:if>
+                        </div>
+                    </div>
+                    
                     <br>
-                    <div id="myForm${dto.reviewid}" class="form-container">
+                    <div id="myForm${dto.reviewid}" class="form-container" style="display: none;">
                         <h4>${empty dto.reply ? '댓글추가' : '댓글수정'}</h4>
                         <form id="form${dto.reviewid}" action="${empty dto.reply ? 'addReviewOk.do' : 'editReviewOk.do'}" method="post">
                             <input type="hidden" name="reviewid" value="${dto.reviewid}">
@@ -190,7 +83,7 @@
                             <textarea id="reply${dto.reviewid}" name="reply" rows="4">${dto.reply}</textarea>
                             <br>
                             <button type="submit" value="${empty dto.reply ? '등록' : '수정'}">등록</button>
-                            <button type="button" value="취소" onclick="cancelForm(${dto.reviewid})">수정</button>
+                            <button type="button" onclick="cancelForm(${dto.reviewid})">취소</button>
                         </form>
                     </div>
                 </div>
@@ -213,22 +106,76 @@
                     <c:param name="page" value="1"/>
                     <c:param name="storeid" value="${param.storeid}"/>
                 </c:url>
-                ...
-                <!-- Pagination logic continues here -->
-                ...
+                <c:url value="/store/reviewStore.do" var="prevPageUrl">
+                    <c:param name="page" value="${currentPage - 1}"/>
+                    <c:param name="storeid" value="${param.storeid}"/>
+                </c:url>
+                <a href="${firstPageUrl}">First</a>
+                <c:if test="${currentPage > 1}">
+                    <a href="${prevPageUrl}">Previous</a>
+                </c:if>
+                <c:forEach begin="${startPage}" end="${endPage}" var="pageNumber">
+                    <c:url value="/store/reviewStore.do" var="pageUrl">
+                        <c:param name="page" value="${pageNumber}"/>
+                        <c:param name="storeid" value="${param.storeid}"/>
+                    </c:url>
+                    <a href="${pageUrl}" class="${pageNumber == currentPage ? 'active' : ''}">${pageNumber}</a>
+                </c:forEach>
+                <c:url value="/store/reviewStore.do" var="nextPageUrl">
+                    <c:param name="page" value="${currentPage + 1}"/>
+                    <c:param name="storeid" value="${param.storeid}"/>
+                </c:url>
+                <c:if test="${currentPage lt pageCount}">
+                    <a href="${nextPageUrl}">Next</a>
+                </c:if>
+                <c:url value="/store/reviewStore.do" var="lastPageUrl">
+                    <c:param name="page" value="${pageCount}"/>
+                    <c:param name="storeid" value="${param.storeid}"/>
+                </c:url>
+                <a href="${lastPageUrl}">End</a>
             </c:if>
         </div>
     </c:if>
 </div>
-<script>
-    function showForm(id) {
-        document.getElementById('myForm' + id).style.display = 'block';
+</div>
+</div>
+<script type="text/javascript">
+    function showForm(reviewId) {
+        var form = document.getElementById("myForm" + reviewId);
+        if (form !== null) {
+            form.style.display = "block";
+            var textarea = form.querySelector('textarea');
+            if (textarea) {
+                textarea.focus();
+            }
+        } else {
+            console.error("showform에러");
+        }
     }
 
-    function cancelForm(id) {
-        document.getElementById('myForm' + id).style.display = 'none';
+    function showForm2(reviewId) {
+        var form = document.getElementById("myForm" + reviewId);
+        if (form !== null) {
+            form.style.display = "block";
+            var textarea = form.querySelector('textarea');
+            if (textarea) {
+                textarea.focus();
+            }
+        } else {
+            console.error("showform2에러");
+        }
+    }
+
+    function cancelForm(reviewId) {
+        var form = document.getElementById("form" + reviewId);
+        if (form !== null) {
+            form.reset(); 
+            var formDiv = document.getElementById("myForm" + reviewId);
+            if (formDiv !== null) {
+                formDiv.style.display = "none"; 
+            }
+        } else {
+            console.error("cancelError");
+        }
     }
 </script>
-</body>
-</html>
-

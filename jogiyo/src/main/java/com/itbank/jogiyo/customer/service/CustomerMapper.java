@@ -2,6 +2,7 @@ package com.itbank.jogiyo.customer.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import com.itbank.jogiyo.dto.NoticeDTO;
 import com.itbank.jogiyo.dto.OrderDTO;
 import com.itbank.jogiyo.dto.ReviewDTO;
 import com.itbank.jogiyo.dto.StoreDTO;
+import com.itbank.jogiyo.dto.UserCouponDTO;
 import com.itbank.jogiyo.dto.ViewCateStoreDTO;
 import com.itbank.jogiyo.dto.ViewStoreDTO;
 
@@ -50,8 +52,12 @@ public class CustomerMapper {
 		return sqlSession.selectList("customer.pastOrderList", id);
 	}
 
-	public List<CouponDTO> customerCoupon(String id) {
-		return sqlSession.selectList("customer.customerCoupon", id);
+	public List<UserCouponDTO> customerCoupon(Map<String, Object> params) {
+		return sqlSession.selectList("customer.customerCoupon", params);
+	}
+
+	public List<UserCouponDTO> CouponList(String id) {
+		return sqlSession.selectList("customer.CouponList", id);
 	}
 
 	public StoreDTO viewStore(int storeid) {
@@ -65,7 +71,8 @@ public class CustomerMapper {
 	public List<StoreDTO> storeList() {
 		return sqlSession.selectList("customer.storeList");
 	}
-	public List<StoreDTO> storeListByCate(String cateId){
+
+	public List<StoreDTO> storeListByCate(String cateId) {
 		return sqlSession.selectList("customer.storeListByCate", cateId);
 	}
 
@@ -110,9 +117,9 @@ public class CustomerMapper {
 	}
 
 	public int deleteCartItems(String userId) {
-		return sqlSession.delete("customer.deleteBasket", userId); 
+		return sqlSession.delete("customer.deleteBasket", userId); // 적절한 Mapper 메서드 호출 (예시로 표시)
 	}
-	
+
 	public int convertToInt(Object value) {
 		if (value instanceof String) {
 			return Integer.parseInt((String) value);
@@ -124,32 +131,79 @@ public class CustomerMapper {
 			throw new IllegalArgumentException("Unexpected value type: " + value.getClass().getName());
 		}
 	}
-	public List<NoticeDTO> listNotice(){
+
+	public List<NoticeDTO> listNotice() {
 		List<NoticeDTO> list = sqlSession.selectList("notice.listNotice");
 		return list;
 	}
+
 	public NoticeDTO viewNotice(int notiid) {
 		return sqlSession.selectOne("notice.viewNotice", notiid);
 	}
+
 	public int insertDelivery(DeliveryDTO dto) {
 		return sqlSession.insert("delivery.insertDelivery", dto);
 	}
+
 	public DeliveryDTO viewDelivery(int deliveryid) {
 		return sqlSession.selectOne("delivery.viewDelivery", deliveryid);
 	}
+
 	public int seqDelivery() {
 		return sqlSession.selectOne("delivery.seqDelivery");
 	}
+
 	public List<DeliveryDTO> listDelivery(String id) {
 		return sqlSession.selectList("delivery.listDelivery", id);
 	}
+
 	public int basketDelete(String basketid) {
-	      return sqlSession.delete("customer.basketDelete", basketid);
-	   }
+		return sqlSession.delete("customer.basketDelete", basketid);
+	}
+
 	public int orderDelete(String orderid) {
-	      return sqlSession.delete("customer.orderDelete", orderid);
-	   }
+		return sqlSession.delete("customer.orderDelete", orderid);
+	}
+
 	public int directOrder(List<OrderDTO> orderList) {
-	      return sqlSession.insert("customer.directOrder", orderList);
-	   }
+		return sqlSession.insert("customer.directOrder", orderList);
+	}
+
+	public int checkBasket(String id) {
+		List<String> sid = sqlSession.selectList("customer.checkBasket", id);
+		if (sid.size() == 0) {
+			return 0;
+		} else {
+			return Integer.parseInt(sid.get(0));
+		}
+	}
+
+	public List<CouponDTO> storeCoupon(int storeid) {
+		return sqlSession.selectList("customer.storecoupon", storeid);
+	}
+
+	public int checkCoupon(Map<String, Object> params) {
+		return sqlSession.selectOne("customer.checkCoupon", params);
+	}
+
+	public int getCoupon(Map<String, Object> params) {
+		return sqlSession.insert("customer.getCoupon", params);
+	}
+
+	public int updateBasketQty(Map<String, Object> params) {
+		return sqlSession.update("customer.updateBasketQty", params);
+	}
+
+	public int userCouponDel(Map<String, Object> paramMap) {
+		return sqlSession.delete("customer.userCouponDel", paramMap);
+	}
+
+	public List<NoticeDTO> getNotice(Map<String, Object> params) {
+		return sqlSession.selectList("notice.getNotice", params);
+	}
+
+	public int getNoticeCount() {
+		return sqlSession.selectOne("notice.getNoticeCount");
+	}
+
 }

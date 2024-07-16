@@ -145,4 +145,10 @@ public class StoreMapper {
 	public int getReviewCount(int storeid) {
 		return sqlSession.selectOne("store.getReviewCount", storeid);
 	}
+	public List<StoreDTO> headerSearch(String headerSearch){
+		return sqlSession.selectList("store.headerSearch",headerSearch);
+	}
+	public int updateCoupon(int storeid) {
+		return sqlSession.update("store.updateCoupon", storeid);
+	}
 }

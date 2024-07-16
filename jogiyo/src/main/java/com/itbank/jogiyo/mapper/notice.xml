@@ -32,4 +32,19 @@
 	       end as result
 			from jnoti
 	</select>
+	<select id="getNotice" parameterType="map" resultType="noticeDTO">
+    <![CDATA[
+   SELECT * FROM (
+    SELECT ROWNUM AS rnum, R.* FROM (
+    SELECT * FROM jnoti ORDER BY indate DESC
+    ) R
+    WHERE ROWNUM <= #{endIndex}
+    ) WHERE rnum > #{startIndex}
+    ]]>
+   </select>
+    <select id="getNoticeCount" resultType="int">
+    SELECT COUNT(*) AS TOTAL_COUNT
+    FROM Jnoti
+    </select>
+	
  </mapper>

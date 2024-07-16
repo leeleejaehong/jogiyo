@@ -23,9 +23,13 @@
       where a.id = #{id}
    </select>
 	
-	<select id ="customerCoupon" parameterType="String" resultType="CouponDTO">
-		select * from jcoupon a join jusercoupon u on a.couponid = u.couponid where u.id=#{id}
+	<select id ="customerCoupon" parameterType="java.util.Map" resultType="UserCouponDTO">
+		SELECT u.usercid, u.couponid, a.couname, a.coucontent, a.storeid, s.storename 
+			FROM jusercoupon u INNER JOIN jcoupon a ON a.couponid = u.couponid
+			INNER JOIN jstore s ON a.storeid = s.storeid WHERE u.id = #{id} AND s.STOREID = #{storeid}
 	</select>
+	
+	
 	
 	<select id="viewStore" parameterType="int" resultType="storeDTO">
 		select * from jstore where storeid = #{storeid}
@@ -40,7 +44,16 @@
 		order by jscateid, menuid
 	</select>
 	<select id="storeList" resultType="StoreDTO">
-         select * from jstore 
+    <!-- 윤장호 0703수정 --> 
+        SELECT s.storeid, s.storename, s.CATEID, s.STORECONTENT, s.ID, s.IMG, s.COUPONID, s.ADDRESS, s.DETAILADDRESS, s.EXTRAADDRESS, s.POSTCODE, s.RUN, s.STOPDATE,
+       COUNT(r.storeid) AS row_count,
+       COUNT(r.reply) AS reply_count,
+        ROUND(AVG(r.GRADE), 1) AS rev_avg
+      FROM jstore s
+      LEFT JOIN jreview r ON s.storeid = r.storeid
+      GROUP BY s.storeid, s.storename, s.CATEID, s.STORECONTENT, s.ID, s.IMG, s.COUPONID, s.ADDRESS, s.DETAILADDRESS, s.EXTRAADDRESS, s.POSTCODE, s.RUN, s.STOPDATE
+      ORDER BY row_count DESC
+        
    </select>
    <select id="storeListByCate" parameterType="String" resultType="storeDTO">
    		select * from jstore where cateid = #{cateid}
@@ -49,11 +62,21 @@
          select * from jcate
    </select>
 <select id="cateStoreList" parameterType="String" resultType="storeDTO">
-         select storeid, storename, js.cateid, 
+         <!--  select storeid, storename, js.cateid, 
    storecontent, id, js.img, couponid, 
    address, detailaddress, 
    extraaddress, postcode, jc.catename  
    from jstore js, jcate jc where js.cateid = jc.cateid and js.cateid = #{cateid}
+            0703윤장호수정-->
+    SELECT s.storeid, s.storename, s.CATEID, s.STORECONTENT, s.ID, s.IMG, s.COUPONID, s.ADDRESS, s.DETAILADDRESS, s.EXTRAADDRESS, s.POSTCODE, s.RUN, s.STOPDATE,
+       COUNT(r.storeid) AS row_count,
+       COUNT(r.reply) AS reply_count,
+       ROUND(AVG(r.GRADE), 1) AS rev_avg
+      FROM jstore s
+      LEFT JOIN jreview r ON s.storeid = r.storeid
+      WHERE s.CATEID = #{cateid}
+      GROUP BY s.storeid, s.storename, s.CATEID, s.STORECONTENT, s.ID, s.IMG, s.COUPONID, s.ADDRESS, s.DETAILADDRESS, s.EXTRAADDRESS, s.POSTCODE, s.RUN, s.STOPDATE
+      ORDER BY row_count DESC  
    </select>
    <select id="basketList" resultType="MenuDTO" parameterType="list">
         select * from jmenu where menuid in
@@ -81,25 +104,55 @@
     FROM JBASKET
     WHERE menuid = #{menuid} AND id = #{id}
 	</insert>
-    
+    <delete id="deleteBasket" parameterType="String">
+       delete from jbasket where id= #{userId}
+   </delete>
      <delete id="basketDelete" parameterType="String">
        delete from jbasket where basketid= #{basketid}
-   </delete>
-    <delete id="deleteBasket" parameterType="String">
-       delete from jbasket where id= #{id}
    </delete>
    <delete id="orderDelete" parameterType="String">
        delete from jorder where orderid= #{orderid}
    </delete>
    <insert id="directOrder" parameterType="java.util.List">
-  INSERT INTO JORDER (orderid, id, indate, qty, totprice, storeid, menuid)
-  SELECT JORDER_SEQ.NEXTVAL, T.* FROM
-  (
-    <foreach collection="list" item="item" separator="UNION ALL">
-      SELECT #{item.id} as id, SYSDATE as indate, #{item.qty} as qty, 
-             #{item.totprice} as totprice, #{item.storeid} as storeid, #{item.menuid} as menuid
-      FROM DUAL
-    </foreach>
-  ) T
-</insert>
+	  INSERT INTO JORDER (orderid, id, indate, qty, totprice, storeid, menuid)
+	  SELECT JORDER_SEQ.NEXTVAL, T.* FROM
+	  (
+	    <foreach collection="list" item="item" separator="UNION ALL">
+	      SELECT #{item.id} as id, SYSDATE as indate, #{item.qty} as qty, 
+	             #{item.totprice} as totprice, #{item.storeid} as storeid, #{item.menuid} as menuid
+	      FROM DUAL
+	    </foreach>
+	  ) T
+	</insert>
+	<select id="checkBasket" parameterType="String" resultType="String">
+		SELECT j2.STOREID FROM JBASKET j, JMENU j2 WHERE j.MENUID = j2.MENUID and j.id = #{id}
+	</select>
+	
+	<!--  -->
+	<select id ="CouponList" parameterType="String" resultType="UserCouponDTO">
+		SELECT u.usercid, u.couponid, a.couname, a.coucontent, a.storeid, s.storename 
+			FROM jusercoupon u INNER JOIN jcoupon a ON a.couponid = u.couponid
+			INNER JOIN jstore s ON a.storeid = s.storeid WHERE u.id = #{id} 
+	</select>
+	
+	<select id ="storecoupon" parameterType="String" resultType="CouponDTO">
+      select * from jcoupon where storeid = #{storeid}
+   </select>
+   
+   <insert id="getCoupon" parameterType="map"> 
+   INSERT INTO jusercoupon (usercid, couponid, id, indate, storeid) 
+   SELECT jusercoupon_seq.NEXTVAL, j.couponid, #{id}, sysdate, j.storeid FROM jcoupon j 
+   WHERE j.couponid = #{couponid} 
+   </insert>
+   
+   <select id="checkCoupon" parameterType="map" resultType="int"> 
+   SELECT COUNT(*) FROM jusercoupon WHERE id = #{id,jdbcType=VARCHAR} AND couponid = #{couponid,jdbcType=INTEGER} 
+   </select>
+    <update id="updateBasketQty" parameterType="java.util.Map">
+       UPDATE jbasket SET qty = #{qty}, totprice= (SELECT (totprice/qty)*#{qty} FROM jbasket WHERE basketid = #{menuid}) WHERE basketid = #{menuid}
+    </update>
+	<delete id="userCouponDel" parameterType="map">
+       delete from jusercoupon where usercid = #{usercid,jdbcType=NUMERIC}
+   </delete>
+	
  </mapper>

@@ -25,12 +25,12 @@
 
 
 
-	<div class="add">
+	<div class="add-container2">
 		
-		<div class="content2">
+		
 		<div class="toolbar">
 <ul>
-            <strong><li>현재가게:${storename}</li></strong>
+           
             <li><a href="/store/selectStore.do?storeid=${storeid}&storename=${storename}">주문목록</a></li>
             <li><a href="/store/reviewStore.do?storeid=${storeid}&storename=${storename}">리뷰관리</a></li>
             <li><a href="/store/storeMenu.do?storeid=${storeid}&storename=${storename}">메뉴관리</a></li>
@@ -41,6 +41,7 @@
             <li><a href="/store/addCoupon.do?storeid=${storeid}&storename=${storename}">쿠폰추가하기</a></li>
         </ul>
 </div>
+<div class="content2">
 <div class="addMenu">
 <h2>메뉴 추가페이지</h2>
  			
@@ -86,7 +87,5 @@
 			</form>
  		</div>
  		</div>
-		</body>
 	</div>
-</html>
 <jsp:include page="../footer.jsp"/>
