@@ -15,8 +15,7 @@
 <div class="store-container2">
     <div class="toolbar">
         <ul>
-            
-            <li><a href="/store/selectStore.do?storeid=${storeid}&storename=${storename}">주문목록</a></li>
+   			<li><a href="/store/selectStore.do?storeid=${storeid}&storename=${storename}">주문목록</a></li>
             <li><a href="/store/reviewStore.do?storeid=${storeid}&storename=${storename}">리뷰관리</a></li>
             <li><a href="/store/storeMenu.do?storeid=${storeid}&storename=${storename}">메뉴관리</a></li>
             <li><a href="/store/storeSales2.do?storeid=${storeid}&storename=${storename}">매출관리(기간별)</a></li>
@@ -68,15 +67,16 @@
                 </tr>
                 <tr>
                     <td colspan="2" align="center">
-                        <input type="submit" value="수정하기">
-                        <input type="reset" value="취소">
+                        <input type="submit" value="수정하기" class="edit_in">
+                        <input type="reset" value="취소" class="edit_in">
                     </td>
                 </tr>
             </table>
         </form>
     </div>
 </div>
-
+</div>
+</div>
 <script>
     function check() {
         const jfrm = document.f;
@@ -92,5 +92,3 @@
     }
 </script>
 
-</body>
-</html>

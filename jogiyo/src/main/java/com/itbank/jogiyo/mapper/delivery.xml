@@ -27,7 +27,7 @@
 		    WHEN SYSDATE > ordertime + INTERVAL '10' MINUTE THEN 1
 		    ELSE run
 		END
-		WHERE SYSDATE > ordertime + INTERVAL '10' MINUTE 
+		WHERE SYSDATE > ordertime + INTERVAL '10' MINUTE AND run != 2
 	</update>
 	<select id="listDelivery" resultType="deliveryDTO" parameterType="String">
 		SELECT j.*, j2.STORENAME FROM JDELIVERY j, JSTORE j2 WHERE j.STOREID = j2.STOREID AND j.ID = #{id}
