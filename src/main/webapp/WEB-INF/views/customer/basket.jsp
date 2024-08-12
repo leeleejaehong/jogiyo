@@ -15,7 +15,7 @@
                <caption>표 제목 부분</caption>		<tbody>
 			<tr>
 				<th class="td_width_1"></th>
-				<th class="td_width_2"></th>
+				<th class="td_width_2">상품이미지</th>
 				<th class="td_width_3">상품명</th>
 				<th class="td_width_4">가격</th>
 				<th class="td_width_4">수량</th>
@@ -31,7 +31,7 @@
 
 				<tr class="basketTable">
 					<td class="td_width_1" style="display: none;">${ba.menuid}</td>
-					<td class="td_width_2">${ba.img}</td>
+					<td class="td_width_2"><img src="${pageContext.request.contextPath}/resources/img/${ba.img}" style="width: 130px;"></td>
 					<td class="td_width_3">${ba.menuname}</td>
 					<td class="td_width_4 price_td"><span class="red_color"><fmt:formatNumber
 								value="${ba.price}" pattern="##,### 원" /></span><br></td>

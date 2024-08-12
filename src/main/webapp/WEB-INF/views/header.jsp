@@ -46,7 +46,7 @@
 				style="display: inline-block; /* block 대신 inline-block으로 변경 */ padding: 0;">
 					<img alt="main"
 					src="${pageContext.request.contextPath}/resources/img/yogiyo.png"
-					style="width: 97.66px; height: 68.56px; vertical-align: bottom;">
+					style="width: 80.66px; height: 60.56px; vertical-align: bottom;">
 			</a></li>
 			<sec:authorize access="hasAnyRole('ROLE_1','ROLE_2')">
 			<li><a href="#">스토어</a>
